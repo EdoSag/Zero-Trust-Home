@@ -1,0 +1,107 @@
+{
+  "@@locale": "en",
+  "appTitle": "ZT Home",
+  "settings": "Settings",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "rename": "Rename",
+  "add": "Add",
+  "name": "Name",
+  "setupTitle": "Set up your home",
+  "setupBody": "Name your home and pick its rooms. You can change both later.",
+  "setupStart": "Set up my home",
+  "homeName": "Home name",
+  "defaultHomeName": "My home",
+  "pickRooms": "Which rooms does it have?",
+  "createHome": "Create home",
+  "roomLiving": "Living room",
+  "roomKitchen": "Kitchen",
+  "roomBedroom": "Bedroom",
+  "roomBathroom": "Bathroom",
+  "roomOffice": "Office",
+  "roomKids": "Kids' room",
+  "roomHallway": "Hallway",
+  "roomBalcony": "Balcony",
+  "roomGarden": "Garden",
+  "roomGarage": "Garage",
+  "roomOther": "Other room",
+  "addDevice": "Add a device",
+  "addRoom": "Add a room",
+  "roomName": "Room name",
+  "roomType": "Type of room",
+  "noDevicesTitle": "No devices yet",
+  "noDevicesBody": "Add your lights, plugs and sensors to control them from here.",
+  "favourites": "Favourites",
+  "noRoom": "Not in a room",
+  "stateOn": "On",
+  "stateOff": "Off",
+  "stateUnreachable": "Not responding",
+  "stateUnsupported": "Needs a newer ZT Home",
+  "deviceRoom": "Room",
+  "deviceFavourite": "Show in Favourites",
+  "removeDevice": "Remove device",
+  "deleteRoom": "Delete room",
+  "renameRoom": "Rename room",
+  "roomEmptyTitle": "Nothing in this room yet",
+  "roomEmptyBody": "Add a device, or move one here from its details.",
+  "homes": "Homes",
+  "manageHomes": "Manage homes",
+  "addHome": "Add a home",
+  "renameHome": "Rename home",
+  "deleteHome": "Delete home",
+  "addDeviceIntro": "Pick how the device connects. ZT Home talks to devices directly over your home network wherever the device allows it.",
+  "connMatter": "Matter",
+  "connMatterBody": "Devices with the Matter logo, from any brand, including ones already in Google Home or Apple Home.",
+  "connHa": "Home Assistant",
+  "connHaBody": "Everything your Home Assistant already controls: Zigbee, Z-Wave and more.",
+  "connHue": "Philips Hue",
+  "connHueBody": "Lights and sensors on a Hue Bridge.",
+  "connTuya": "Tuya / Smart Life",
+  "connTuyaBody": "Plugs, lights and switches set up with the Smart Life or Tuya app.",
+  "connShelly": "Shelly",
+  "connShellyBody": "Shelly relays, plugs and sensors.",
+  "connSwitcher": "Switcher",
+  "connSwitcherBody": "Switcher water heater switches and plugs.",
+  "comingSoon": "Coming soon",
+  "deviceCount": "{n, plural, =0{No devices} =1{1 device} other{{n} devices}}",
+  "@deviceCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "commandFailed": "{name} didn't respond. Try again.",
+  "@commandFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "removeDeviceBody": "{name} is removed from this home. The device itself isn't reset.",
+  "@removeDeviceBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteRoomBody": "{name} is deleted. Its devices stay in the home, without a room.",
+  "@deleteRoomBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteHomeBody": "{name} is deleted with its rooms and devices, on all your phones. The devices themselves aren't reset.",
+  "@deleteHomeBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
+}
