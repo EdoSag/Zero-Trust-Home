@@ -24,6 +24,11 @@ abstract final class EmailLinks {
   /// confirmed and to sign in here.
   static const confirmed = 'https://zerotrust.bz/auth/confirmed/';
 
+  /// True from the moment a reset link signed in until the reset screen is
+  /// done. Kept here because a link that starts the app can finish signing
+  /// in before anything listens for the password-recovery event.
+  static bool recoveryPending = false;
+
   static StreamSubscription<Uri>? _links;
   static final _used = <String>{};
 
@@ -56,6 +61,7 @@ abstract final class EmailLinks {
         type: OtpType.recovery,
         tokenHash: tokenHash,
       );
+      recoveryPending = true;
     } on Object catch (e) {
       // Expired or already used: the sign-in screen stays, and Forgot
       // password sends a new link.
