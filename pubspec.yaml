@@ -39,12 +39,12 @@ dependencies:
 dev_dependencies:
   # Release checks every Zero-Trust app runs in CI (keys, sync, sign-in, app
   # setup, database). Independent of zero_trust_core, so it may be newer.
-  # Core PR #57 (adds the `home` app id); move to the Dev merge once in.
+  # Core Dev at the merge of PR #57, which adds the `home` app id.
   zt_release_checks:
     git:
       url: https://github.com/EdoSag/Zero-Trust-Core.git
       path: packages/zt_release_checks
-      ref: 6b34a62e436a771b73d9a0e3b7e3f5d0a4208988
+      ref: 277df7b098227f8aa49cf3c5e761c517069878e7
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
