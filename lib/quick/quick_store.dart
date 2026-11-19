@@ -61,6 +61,21 @@ class QuickControlsOn extends Notifier<bool> {
   }
 }
 
+/// Counts the times the copy was removed (sign-out). A save that began
+/// before the latest removal is dropped, so it can't bring the copy back.
+final quickClearsProvider = NotifierProvider<QuickClears, int>(QuickClears.new);
+
+class QuickClears extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  /// Removes the copy, and any save still under way.
+  Future<void> clear() {
+    state++;
+    return ref.read(quickVaultProvider).clear();
+  }
+}
+
 /// Keeps the quick controls' copy up to date while the app is unlocked,
 /// and removes it when they are turned off. Watched by the unlocked app.
 final quickSyncProvider = Provider<QuickSync>((ref) {
@@ -70,7 +85,12 @@ final quickSyncProvider = Provider<QuickSync>((ref) {
     ..listen(roomsProvider, (_, _) => sync.changed())
     ..listen(devicesProvider, (_, _) => sync.changed())
     ..listen(scenesProvider, (_, _) => sync.changed())
-    ..listen(quickControlsOnProvider, (_, _) => sync.changed());
+    ..listen(quickControlsOnProvider, (_, on) {
+      // Turned off: removed now, not after a pause.
+      if (!on) sync.stop();
+      sync.changed();
+    })
+    ..listen(quickClearsProvider, (_, _) => sync.stop());
   ref.onDispose(sync.dispose);
   return sync;
 });
@@ -86,8 +106,14 @@ class QuickSync {
 
   void changed() {
     _timer?.cancel();
-    _timer = Timer(wait, () => _saving = _save());
+    _timer = Timer(wait, () {
+      // One at a time, in order: a removal never overtakes a save.
+      _saving = (_saving ?? Future<void>.value()).then((_) => _save());
+    });
   }
+
+  /// Drops the save waiting to start.
+  void stop() => _timer?.cancel();
 
   /// Waits for a save in progress (tests).
   Future<void> settle() async {
@@ -99,6 +125,10 @@ class QuickSync {
 
   Future<void> _save() async {
     final vault = _ref.read(quickVaultProvider);
+    final clears = _ref.read(quickClearsProvider);
+    bool stale() =>
+        _ref.read(quickClearsProvider) != clears ||
+        !_ref.read(quickControlsOnProvider);
     try {
       if (!_ref.read(quickControlsOnProvider)) return await vault.clear();
       final homes = _ref.read(homesProvider).value;
@@ -116,6 +146,8 @@ class QuickSync {
         final fabric = await repo.loadFabric(h.id);
         if (fabric != null) fabrics.add(fabric);
       }
+      // Signed out or turned off while this was being put together.
+      if (stale()) return;
       await vault.save(
         QuickSnapshot(
           homes: homes,

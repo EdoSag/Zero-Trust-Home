@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
@@ -127,6 +129,35 @@ void main() {
     await tester.pumpAndSettle();
     expect(vault.text, isNull);
     expect(vault.clears, greaterThan(0));
+  });
+
+  testWidgets('signing out while a save is under way leaves nothing', (
+    tester,
+  ) async {
+    final vault = FakeVault();
+    await tester.pumpWidget(
+      app(
+        const HomePage(),
+        homes: const [flat],
+        devices: [lamp],
+        adapters: [FakeAdapter()],
+        overrides: [quickVaultProvider.overrideWithValue(vault)],
+      ),
+    );
+    await tester.pumpAndSettle();
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(HomePage)),
+    );
+    await repo.saveHaServer(server);
+    repo.haServerGate = Completer<void>();
+    container.read(quickSyncProvider);
+    // The save starts, and waits on the token.
+    await tester.pump(const Duration(seconds: 2));
+    await container.read(quickClearsProvider.notifier).clear();
+    repo.haServerGate!.complete();
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+    expect(vault.text, isNull);
   });
 
   group('background engine', () {

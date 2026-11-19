@@ -83,7 +83,7 @@ class _AppGateState extends ConsumerState<AppGate> with WidgetsBindingObserver {
     ref.listen(currentUserProvider, (_, user) {
       if (user == null) {
         // Signed out: nothing of the account stays for the controls panel.
-        ref.read(quickVaultProvider).clear().ignore();
+        ref.read(quickClearsProvider.notifier).clear().ignore();
         ref.read(vaultControllerProvider.notifier).lock();
         setState(() => _signingIn = true);
       }
