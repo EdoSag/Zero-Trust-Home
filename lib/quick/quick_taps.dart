@@ -72,13 +72,20 @@ class QuickTaps {
     };
   }
 
+  /// The device's first reading that reached it. Adapters start out "not
+  /// reachable" while they connect, so that alone isn't an answer: only
+  /// when nothing better comes in time is it taken as one.
   Future<DeviceState?> _state(String id) async {
     final done = Completer<DeviceState?>();
+    DeviceState? last;
     final sub = _ref.listen(deviceStateProvider(id), (_, next) {
-      if (next.hasValue && !done.isCompleted) done.complete(next.value);
+      final value = next.value;
+      if (value == null) return;
+      last = value;
+      if (value.reachable && !done.isCompleted) done.complete(value);
     }, fireImmediately: true);
     try {
-      return await done.future.timeout(firstState, onTimeout: () => null);
+      return await done.future.timeout(firstState, onTimeout: () => last);
     } finally {
       sub.close();
     }
