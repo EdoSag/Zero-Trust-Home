@@ -96,7 +96,7 @@
       }
     }
   },
-  "deleteHomeBody": "{name} is deleted with its rooms and devices, on all your phones. The devices themselves aren't reset.",
+  "deleteHomeBody": "{name} is deleted with its rooms and devices, on all your phones. Matter devices are let go so they can be added again; other devices aren't reset.",
   "@deleteHomeBody": {
     "placeholders": {
       "name": {

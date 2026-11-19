@@ -134,11 +134,17 @@ class FakeAdapter implements DeviceAdapter {
   bool failing = false;
   final forgotten = <String>[];
 
+  /// The other devices each forget was told about.
+  final forgottenOthers = <List<String>>[];
+
   @override
   Future<void> forget(
     HomeDevice device, {
     required List<HomeDevice> others,
-  }) async => forgotten.add(device.id);
+  }) async {
+    forgotten.add(device.id);
+    forgottenOthers.add([for (final d in others) d.id]);
+  }
 
   DeviceState stateOf(String deviceId) =>
       _states[deviceId] ?? const DeviceState(values: {Capability.onOff: false});

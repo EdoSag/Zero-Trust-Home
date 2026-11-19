@@ -236,7 +236,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String deleteHomeBody(String name) {
-    return '$name is deleted with its rooms and devices, on all your phones. The devices themselves aren\'t reset.';
+    return '$name is deleted with its rooms and devices, on all your phones. Matter devices are let go so they can be added again; other devices aren\'t reset.';
   }
 
   @override

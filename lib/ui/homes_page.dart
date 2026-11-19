@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../adapters/device_adapter.dart';
 import '../data/home_store.dart';
 import '../l10n/l10n.dart';
 import '../model/device.dart';
@@ -67,7 +68,19 @@ class HomesPage extends ConsumerWidget {
                       action: l.delete,
                       destructive: true,
                     );
-                    if (ok) await repo.deleteHome(home.id);
+                    if (!ok) return;
+                    // Before the home's keys go: Matter devices are let go
+                    // while this phone can still speak to them.
+                    final devices =
+                        ref.read(devicesProvider).value ?? const <HomeDevice>[];
+                    await ref
+                        .read(deviceControlProvider)
+                        .forgetAll([
+                          for (final d in devices)
+                            if (d.homeId == home.id) d,
+                        ])
+                        .timeout(const Duration(seconds: 30), onTimeout: () {});
+                    await repo.deleteHome(home.id);
                   }
                 },
                 itemBuilder: (_) => [

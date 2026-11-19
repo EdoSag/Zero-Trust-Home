@@ -508,7 +508,7 @@ abstract class AppL10n {
   /// No description provided for @deleteHomeBody.
   ///
   /// In en, this message translates to:
-  /// **'{name} is deleted with its rooms and devices, on all your phones. The devices themselves aren\'t reset.'**
+  /// **'{name} is deleted with its rooms and devices, on all your phones. Matter devices are let go so they can be added again; other devices aren\'t reset.'**
   String deleteHomeBody(String name);
 
   /// No description provided for @copy.

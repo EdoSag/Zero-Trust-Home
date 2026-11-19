@@ -255,6 +255,7 @@ void main() {
   testWidgets('homes: switch, and delete one with its rooms and devices', (
     tester,
   ) async {
+    final fake = FakeAdapter();
     final prefs = InMemoryPreferencesStore();
     await tester.pumpWidget(
       app(
@@ -277,8 +278,14 @@ void main() {
             name: 'Stove',
             adapter: 'fake',
           ),
+          const HomeDevice(
+            id: 'd8',
+            homeId: 'h2',
+            name: 'Kettle',
+            adapter: 'fake',
+          ),
         ],
-        adapters: [FakeAdapter()],
+        adapters: [fake],
       ),
     );
     await tester.pumpAndSettle();
@@ -308,6 +315,12 @@ void main() {
     expect([for (final h in repo.homes) h.id], ['h1']);
     expect([for (final r in repo.rooms) r.id], ['r1']);
     expect([for (final d in repo.devices) d.id], ['d1']);
+    // Its devices were let go first, each told only of those still left.
+    expect(fake.forgotten, unorderedEquals(['d8', 'd9']));
+    expect(fake.forgottenOthers, [
+      unorderedEquals(['d1', fake.forgotten.last]),
+      ['d1'],
+    ]);
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(find.text('Living room'), findsOneWidget);

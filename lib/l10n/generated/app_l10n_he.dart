@@ -237,7 +237,7 @@ class AppL10nHe extends AppL10n {
 
   @override
   String deleteHomeBody(String name) {
-    return '$name יימחק עם החדרים והמכשירים שבו, בכל הטלפונים שלך. המכשירים עצמם לא מתאפסים.';
+    return '$name יימחק עם החדרים והמכשירים שבו, בכל הטלפונים שלך. מכשירי Matter משוחררים כדי שאפשר יהיה להוסיף אותם שוב; מכשירים אחרים לא מתאפסים.';
   }
 
   @override
