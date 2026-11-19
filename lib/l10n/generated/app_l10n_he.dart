@@ -703,4 +703,11 @@ class AppL10nHe extends AppL10n {
   String deleteSceneTitle(String name) {
     return 'למחוק את $name?';
   }
+
+  @override
+  String get quickControls => 'שליטה בלי לפתוח את האפליקציה';
+
+  @override
+  String get quickControlsBody =>
+      'הדלקה וכיבוי של אורות, שקעים ותרחישים מפקדי המכשירים של הטלפון. עותק של המכשירים והמפתחות שלהם נשמר רק בטלפון הזה, נעול על ידי Android.';
 }

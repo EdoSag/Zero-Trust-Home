@@ -11,6 +11,10 @@ import 'app/email_links.dart';
 import 'app/home_config.dart';
 import 'l10n/l10n.dart';
 
+// The controls panel's background engine starts here (QuickEngine.kt): it
+// must be part of the app's build.
+export 'quick/quick_engine.dart' show quickMain;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
 
+import '../quick/quick_store.dart';
 import '../ui/home_page.dart';
 import 'auth_providers.dart';
 import 'email_links.dart';
@@ -81,6 +82,8 @@ class _AppGateState extends ConsumerState<AppGate> with WidgetsBindingObserver {
     });
     ref.listen(currentUserProvider, (_, user) {
       if (user == null) {
+        // Signed out: nothing of the account stays for the controls panel.
+        ref.read(quickClearsProvider.notifier).clear().ignore();
         ref.read(vaultControllerProvider.notifier).lock();
         setState(() => _signingIn = true);
       }
@@ -137,6 +140,7 @@ class HomeShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(ztSyncControllerProvider);
+    ref.watch(quickSyncProvider);
     return const HomePage();
   }
 }

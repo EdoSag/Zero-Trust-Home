@@ -194,5 +194,7 @@
   "deleteSceneBody": "המכשירים יישארו כמו שהם.",
   "sceneDone": "{name} הופעל.",
   "sceneFailed": "{name}: אין תשובה מ{devices}.",
-  "deleteSceneTitle": "למחוק את {name}?"
+  "deleteSceneTitle": "למחוק את {name}?",
+  "quickControls": "שליטה בלי לפתוח את האפליקציה",
+  "quickControlsBody": "הדלקה וכיבוי של אורות, שקעים ותרחישים מפקדי המכשירים של הטלפון. עותק של המכשירים והמפתחות שלהם נשמר רק בטלפון הזה, נעול על ידי Android."
 }

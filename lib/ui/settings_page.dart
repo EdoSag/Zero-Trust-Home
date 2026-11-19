@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
 
 import '../l10n/l10n.dart';
+import '../quick/quick_store.dart';
 import 'homes_page.dart';
 
 /// The shared Zero-Trust settings screen, with Home's own rows.
@@ -28,6 +29,13 @@ class HomeSettingsPage extends ConsumerWidget {
           onTap: () => Navigator.of(
             context,
           ).push(MaterialPageRoute<void>(builder: (_) => const HomesPage())),
+        ),
+        SwitchListTile(
+          secondary: const Icon(Icons.toggle_on_outlined),
+          title: Text(l.quickControls),
+          subtitle: Text(l.quickControlsBody),
+          value: ref.watch(quickControlsOnProvider),
+          onChanged: (on) => ref.read(quickControlsOnProvider.notifier).set(on),
         ),
       ],
     );
