@@ -31,7 +31,12 @@ class DeviceTile extends ConsumerWidget {
     } else if (!reachable) {
       status = l.stateUnreachable;
     } else if (state?.on != null) {
-      status = on ? l.stateOn : l.stateOff;
+      final onOff = on ? l.stateOn : l.stateOff;
+      final power = state?.number(Capability.power);
+      // What it draws, while it draws something.
+      status = on && power != null && power > 0
+          ? l.stateWithPower(onOff, formatWatts(power))
+          : onOff;
     } else {
       status = '';
     }
@@ -153,6 +158,10 @@ class _DeviceDetails extends ConsumerWidget {
     final device = devices.where((d) => d.id == deviceId).firstOrNull;
     if (device == null) return const SizedBox(height: 48);
     final repo = ref.read(homeRepositoryProvider);
+    final power = ref
+        .watch(deviceStateProvider(deviceId))
+        .value
+        ?.number(Capability.power);
     final rooms =
         (ref.watch(roomsProvider).value ?? const [])
             .where((r) => r.homeId == device.homeId)
@@ -203,6 +212,15 @@ class _DeviceDetails extends ConsumerWidget {
                     repo.saveDevice(device.copyWith(roomId: roomId)),
               ),
             ),
+            if (power != null)
+              ListTile(
+                leading: const Icon(Icons.bolt_outlined),
+                title: Text(l.powerNow),
+                trailing: Text(
+                  l.watts(formatWatts(power)),
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
             SwitchListTile(
               secondary: const Icon(Icons.star_outline),
               title: Text(l.deviceFavourite),

@@ -12,7 +12,7 @@ encrypted relay to a hub in the home.
 
 ## Where it stands
 
-This is the foundation (phase H0 of the plan). It has:
+Phase H0 (the foundation) and the first part of H1 (real devices) are in:
 
 - **Account, lock, settings and sync** from the shared core, in English and
   Hebrew.
@@ -22,13 +22,17 @@ This is the foundation (phase H0 of the plan). It has:
 - **The device model:** one kind of device for every brand, described by
   what it can do (on/off, brightness, lock, temperature, power...). The home
   screen, the tiles and the details sheet are built on it.
+- **Tuya / Smart Life devices, locally:** plugs, switches and lights set up
+  in the Smart Life or Tuya app are found on the Wi-Fi, added with their
+  local key, switched, and show their state and power draw live. The app
+  talks to them directly (protocol 3.3, 3.4 and 3.5); Tuya's servers are not
+  involved. The local key is stored in the encrypted device item.
 - **The adapter interface:** each way of reaching devices (Matter, Home
   Assistant, Hue, Tuya/Smart Life, Shelly, Switcher) is one adapter behind
-  `DeviceAdapter`. None is in yet, so "Add a device" lists them as coming
-  soon.
+  `DeviceAdapter`. The ones not built yet are listed under "Add a device"
+  as coming soon.
 
-Next: the Matter adapter (phase H1), so real devices can be added and
-controlled.
+Next: the Matter adapter (the rest of phase H1).
 
 ## How it is built
 
@@ -38,6 +42,12 @@ controlled.
 - `lib/adapters/device_adapter.dart`: `DeviceAdapter`, the registry
   (`deviceAdaptersProvider`), live state per device (`deviceStateProvider`)
   and `DeviceControl` for sending commands.
+- `lib/adapters/tuya/`: the Tuya local protocol. `tuya_codec.dart` is the
+  wire format (no network, tested against frames made by the open-source
+  tinytuya library), `tuya_link.dart` one connection to one device,
+  `tuya_discovery.dart` the UDP announcements, `tuya_adapter.dart` the
+  `DeviceAdapter` (pairing, reconnecting, following a device to a new
+  address).
 - `lib/data/home_store.dart`: items in the shared `vault_items` table,
   sealed with the Home app key (`app = 'home'`): kinds `home`, `room` and
   `device`. No database change was needed. A device's address (node id, IP,

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
 import 'package:zerotrust_home/adapters/device_adapter.dart';
 import 'package:zerotrust_home/app/home_config.dart';
@@ -141,9 +142,11 @@ Widget app(
   List<DeviceAdapter> adapters = const [],
   Locale locale = ZtLanguages.english,
   PreferencesStore? preferences,
+  List<Override> overrides = const [],
 }) {
   return ProviderScope(
     overrides: [
+      ...overrides,
       ztAppConfigProvider.overrideWithValue(homeAppConfig),
       ztPreferencesStoreProvider.overrideWithValue(
         preferences ?? InMemoryPreferencesStore(),

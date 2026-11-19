@@ -186,3 +186,10 @@ IconData deviceIcon(DeviceType type) => switch (type) {
   DeviceType.camera => Icons.videocam_outlined,
   DeviceType.other => Icons.devices_other_outlined,
 };
+
+/// Watts as shown: one decimal below 100 ("12.3"), whole above ("1840").
+String formatWatts(num watts) {
+  if (watts >= 100) return watts.round().toString();
+  final text = watts.toStringAsFixed(1);
+  return text.endsWith('.0') ? text.substring(0, text.length - 2) : text;
+}

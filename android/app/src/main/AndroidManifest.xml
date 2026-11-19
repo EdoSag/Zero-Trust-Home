@@ -2,6 +2,9 @@
     <!-- Sign-in and sync with the shared Zero-Trust account. -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+    <!-- Finding devices on the home network: lets the app hear the broadcast
+         packets devices announce themselves with (held only while looking). -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
 
     <application
         android:supportsRtl="true"

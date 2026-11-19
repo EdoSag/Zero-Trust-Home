@@ -510,6 +510,192 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'{name} is deleted with its rooms and devices, on all your phones. The devices themselves aren\'t reset.'**
   String deleteHomeBody(String name);
+
+  /// No description provided for @copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
+
+  /// No description provided for @copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copied;
+
+  /// No description provided for @powerNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Power now'**
+  String get powerNow;
+
+  /// No description provided for @tuyaIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices that are set up in the Smart Life or Tuya app. ZT Home then talks to them directly over your Wi-Fi, without Tuya\'s servers.'**
+  String get tuyaIntro;
+
+  /// No description provided for @tuyaSearching.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for devices on your Wi-Fi…'**
+  String get tuyaSearching;
+
+  /// No description provided for @tuyaSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The phone has to be on the same Wi-Fi as the device. A device can take up to 10 seconds to show up.'**
+  String get tuyaSearchHint;
+
+  /// No description provided for @tuyaAlreadyAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Already added'**
+  String get tuyaAlreadyAdded;
+
+  /// No description provided for @tuyaManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the address by hand'**
+  String get tuyaManual;
+
+  /// No description provided for @tuyaPairTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect the device'**
+  String get tuyaPairTitle;
+
+  /// No description provided for @tuyaDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart plug'**
+  String get tuyaDefaultName;
+
+  /// No description provided for @tuyaIp.
+  ///
+  /// In en, this message translates to:
+  /// **'IP address'**
+  String get tuyaIp;
+
+  /// No description provided for @tuyaDeviceId.
+  ///
+  /// In en, this message translates to:
+  /// **'Device ID'**
+  String get tuyaDeviceId;
+
+  /// No description provided for @tuyaVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Protocol version'**
+  String get tuyaVersion;
+
+  /// No description provided for @tuyaLocalKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Local key'**
+  String get tuyaLocalKey;
+
+  /// No description provided for @tuyaLocalKeyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Where do I find the local key?'**
+  String get tuyaLocalKeyHelp;
+
+  /// No description provided for @tuyaKeyLength.
+  ///
+  /// In en, this message translates to:
+  /// **'A local key has 16 characters.'**
+  String get tuyaKeyLength;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get fieldRequired;
+
+  /// No description provided for @tuyaConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get tuyaConnect;
+
+  /// No description provided for @tuyaErrKey.
+  ///
+  /// In en, this message translates to:
+  /// **'The device didn\'t accept this key. Check the key, and the protocol version if you entered it by hand. The key changes when a device is removed and set up again in Smart Life.'**
+  String get tuyaErrKey;
+
+  /// No description provided for @tuyaKeyHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding the local key'**
+  String get tuyaKeyHelpTitle;
+
+  /// No description provided for @tuyaKeyHelpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Each device has a secret local key, given to it when it is set up in the Smart Life app. ZT Home needs it once, to talk to the device directly. Tuya only shows it on its developer site:\n\n1. Sign up for free at iot.tuya.com and create a cloud project.\n2. In the project, open Devices, choose Link App Account and scan the code with the Smart Life app.\n3. In API Explorer, run \"Query Device Details\" with the Device ID below, and copy \"local_key\" from the answer.\n\nThe key is saved encrypted in your ZT account. It never leaves your devices unencrypted.'**
+  String get tuyaKeyHelpBody;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @showKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the key'**
+  String get showKey;
+
+  /// No description provided for @hideKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the key'**
+  String get hideKey;
+
+  /// No description provided for @stateWithPower.
+  ///
+  /// In en, this message translates to:
+  /// **'{state} · {watts} W'**
+  String stateWithPower(String state, String watts);
+
+  /// No description provided for @watts.
+  ///
+  /// In en, this message translates to:
+  /// **'{watts} W'**
+  String watts(String watts);
+
+  /// No description provided for @tuyaFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Device at {ip}'**
+  String tuyaFound(String ip);
+
+  /// No description provided for @tuyaFoundDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'ID ending in {tail} · protocol {version}'**
+  String tuyaFoundDetails(String tail, String version);
+
+  /// No description provided for @tuyaTooOld.
+  ///
+  /// In en, this message translates to:
+  /// **'Protocol {version} isn\'t supported yet'**
+  String tuyaTooOld(String version);
+
+  /// No description provided for @tuyaErrUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'No answer from {ip}. Check that the device is plugged in and on the same Wi-Fi as this phone.'**
+  String tuyaErrUnreachable(String ip);
+
+  /// No description provided for @deviceAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added'**
+  String deviceAdded(String name);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

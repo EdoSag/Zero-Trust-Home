@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/home_store.dart';
 import '../model/device.dart';
+import 'tuya/tuya_adapter.dart';
+import 'tuya/tuya_providers.dart';
 
 /// One way of reaching devices: Matter, Home Assistant, a Hue bridge, a
 /// brand's local protocol. The rest of the app only knows [HomeDevice],
@@ -32,10 +34,9 @@ enum ConnectionKind {
   final String adapterId;
 }
 
-/// The adapters this build has, by id. Empty until the first one lands
-/// (Matter); tests register their own.
+/// The adapters this build has, by id. Tests register their own.
 final deviceAdaptersProvider = Provider<Map<String, DeviceAdapter>>(
-  (ref) => const {},
+  (ref) => {TuyaAdapter.adapterId: ref.watch(tuyaAdapterProvider)},
 );
 
 /// The live state of one device, by id. Null while there is no adapter for

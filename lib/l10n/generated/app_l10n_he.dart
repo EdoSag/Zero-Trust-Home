@@ -239,4 +239,115 @@ class AppL10nHe extends AppL10n {
   String deleteHomeBody(String name) {
     return '$name יימחק עם החדרים והמכשירים שבו, בכל הטלפונים שלך. המכשירים עצמם לא מתאפסים.';
   }
+
+  @override
+  String get copy => 'העתקה';
+
+  @override
+  String get copied => 'הועתק';
+
+  @override
+  String get powerNow => 'הספק נוכחי';
+
+  @override
+  String get tuyaIntro =>
+      'מכשירים שהוגדרו באפליקציית Smart Life או Tuya. ‏ZT Home מדבר איתם ישירות דרך ה-Wi-Fi שלך, בלי השרתים של Tuya.';
+
+  @override
+  String get tuyaSearching => 'מחפש מכשירים ב-Wi-Fi שלך…';
+
+  @override
+  String get tuyaSearchHint =>
+      'הטלפון צריך להיות מחובר לאותה רשת Wi-Fi כמו המכשיר. עשויות לעבור עד 10 שניות עד שמכשיר מופיע.';
+
+  @override
+  String get tuyaAlreadyAdded => 'כבר נוסף';
+
+  @override
+  String get tuyaManual => 'הזנת הכתובת ידנית';
+
+  @override
+  String get tuyaPairTitle => 'חיבור המכשיר';
+
+  @override
+  String get tuyaDefaultName => 'שקע חכם';
+
+  @override
+  String get tuyaIp => 'כתובת IP';
+
+  @override
+  String get tuyaDeviceId => 'מזהה המכשיר (Device ID)';
+
+  @override
+  String get tuyaVersion => 'גרסת הפרוטוקול';
+
+  @override
+  String get tuyaLocalKey => 'מפתח מקומי (Local key)';
+
+  @override
+  String get tuyaLocalKeyHelp => 'איפה מוצאים את המפתח המקומי?';
+
+  @override
+  String get tuyaKeyLength => 'מפתח מקומי הוא באורך 16 תווים.';
+
+  @override
+  String get fieldRequired => 'שדה חובה';
+
+  @override
+  String get tuyaConnect => 'חיבור';
+
+  @override
+  String get tuyaErrKey =>
+      'המכשיר לא קיבל את המפתח הזה. כדאי לבדוק את המפתח, ואת גרסת הפרוטוקול אם הזנת אותה ידנית. המפתח מתחלף כשמסירים מכשיר ומגדירים אותו מחדש ב-Smart Life.';
+
+  @override
+  String get tuyaKeyHelpTitle => 'איך מוצאים את המפתח המקומי';
+
+  @override
+  String get tuyaKeyHelpBody =>
+      'לכל מכשיר יש מפתח מקומי סודי, שהוא מקבל כשמגדירים אותו באפליקציית Smart Life. ‏ZT Home צריך אותו פעם אחת, כדי לדבר עם המכשיר ישירות. Tuya מציגה אותו רק באתר המפתחים שלה:\n\n1. נרשמים בחינם באתר iot.tuya.com ויוצרים פרויקט ענן (Cloud project).\n2. בפרויקט פותחים את Devices, בוחרים Link App Account וסורקים את הקוד עם אפליקציית Smart Life.\n3. ב-API Explorer מריצים את \"Query Device Details\" עם מזהה המכשיר שמופיע למטה, ומעתיקים את \"local_key\" מהתשובה.\n\nהמפתח נשמר מוצפן בחשבון ה-ZT שלך. הוא אף פעם לא יוצא מהמכשירים שלך בלי הצפנה.';
+
+  @override
+  String get close => 'סגירה';
+
+  @override
+  String get showKey => 'הצגת המפתח';
+
+  @override
+  String get hideKey => 'הסתרת המפתח';
+
+  @override
+  String stateWithPower(String state, String watts) {
+    return '$state · $watts ואט';
+  }
+
+  @override
+  String watts(String watts) {
+    return '$watts ואט';
+  }
+
+  @override
+  String tuyaFound(String ip) {
+    return 'מכשיר בכתובת $ip';
+  }
+
+  @override
+  String tuyaFoundDetails(String tail, String version) {
+    return 'מזהה שמסתיים ב-$tail · פרוטוקול $version';
+  }
+
+  @override
+  String tuyaTooOld(String version) {
+    return 'פרוטוקול $version עדיין לא נתמך';
+  }
+
+  @override
+  String tuyaErrUnreachable(String ip) {
+    return 'אין תגובה מ-$ip. כדאי לבדוק שהמכשיר מחובר לחשמל ונמצא באותה רשת Wi-Fi כמו הטלפון.';
+  }
+
+  @override
+  String deviceAdded(String name) {
+    return '$name נוסף';
+  }
 }
