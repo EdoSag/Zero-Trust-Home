@@ -77,6 +77,17 @@ class MemoryRepository extends HomeRepository {
 
   final fabrics = <String, MatterFabric>{};
 
+  /// What "syncing" does in a test: nothing, fail, or bring another
+  /// phone's items.
+  Future<void> Function()? onSync;
+  var syncs = 0;
+
+  @override
+  Future<void> syncFabrics() async {
+    syncs++;
+    await onSync?.call();
+  }
+
   @override
   Future<MatterFabric?> loadFabric(String homeId) async => fabrics[homeId];
   @override

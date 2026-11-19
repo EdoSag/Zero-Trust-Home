@@ -161,19 +161,60 @@ class HomeRepository {
   Future<void> removeFabric(String homeId) =>
       fabricsCollection.delete(_sync, MatterFabric.itemId(homeId));
 
+  /// Brings this phone up to date with the account and sends what it has
+  /// saved. Throws [MatterFabricNeedsSync] when the account can't be
+  /// reached.
+  Future<void> syncFabrics() async {
+    await _sync.syncNow();
+    if (_ref.read(ztSyncControllerProvider).error != null) {
+      throw const MatterFabricNeedsSync();
+    }
+  }
+
+  final _fabrics = <String, Future<MatterFabric>>{};
+
   /// The home's Matter fabric, made the first time a Matter device is
-  /// added. Throws [MatterFabricUnreadable] rather than replace one this
-  /// version can't read: the home's devices only trust the saved key.
-  Future<MatterFabric> fabricFor(String homeId) async {
-    final saved = await loadFabric(homeId);
-    if (saved != null) {
+  /// added.
+  ///
+  /// A home must have exactly one: devices only trust the key of the fabric
+  /// they were added with. So calls on this phone share one answer, and a
+  /// fabric is only made after syncing shows the account has none (another
+  /// phone may have made it), then sent at once. Throws
+  /// [MatterFabricNeedsSync] when that can't be checked, and
+  /// [MatterFabricUnreadable] rather than replace one this version can't
+  /// read.
+  Future<MatterFabric> fabricFor(String homeId) {
+    final running = _fabrics[homeId];
+    if (running != null) return running;
+    final made = _fabricFor(homeId);
+    _fabrics[homeId] = made;
+    // A failure is not remembered: the next call tries again.
+    made.then(
+      (_) {},
+      onError: (_) {
+        _fabrics.remove(homeId);
+      },
+    );
+    return made;
+  }
+
+  Future<MatterFabric> _fabricFor(String homeId) async {
+    MatterFabric usable(MatterFabric saved) {
       if (!saved.isUsable) throw const MatterFabricUnreadable();
       return saved;
     }
-    final fabric = MatterFabric.create(homeId);
+
+    var saved = await loadFabric(homeId);
+    if (saved != null) return usable(saved);
+    await syncFabrics();
+    saved = await loadFabric(homeId);
+    if (saved != null) return usable(saved);
     // Refuses to overwrite an item a newer version of the app wrote.
-    await saveFabric(fabric);
-    return fabric;
+    await saveFabric(MatterFabric.create(homeId));
+    await syncFabrics();
+    // What the account holds now: if another phone made one in the same
+    // moment and won, this is theirs.
+    return usable((await loadFabric(homeId))!);
   }
 
   Future<void> removeHome(String id) => homesCollection.delete(_sync, id);
@@ -237,6 +278,7 @@ class HomeRepository {
     for (final r in await allRooms()) {
       if (r.homeId == id) await removeRoom(r.id);
     }
+    _fabrics.remove(id);
     if (await loadFabric(id) != null) await removeFabric(id);
     await removeHome(id);
   }
@@ -248,4 +290,13 @@ class MatterFabricUnreadable implements Exception {
   const MatterFabricUnreadable();
   @override
   String toString() => 'MatterFabricUnreadable';
+}
+
+/// The home has no Matter keys yet and the account can't be reached to see
+/// whether another phone made them. Adding the first Matter device needs a
+/// connection once.
+class MatterFabricNeedsSync implements Exception {
+  const MatterFabricNeedsSync();
+  @override
+  String toString() => 'MatterFabricNeedsSync';
 }

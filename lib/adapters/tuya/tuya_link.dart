@@ -128,13 +128,27 @@ class TuyaLink {
     }
     final dps = tuyaDps(message.json);
     if (dps != null && dps.isNotEmpty && !_changes.isClosed) _changes.add(dps);
+    final hasData = dps != null && dps.isNotEmpty;
+    // A query that was only acknowledged so far takes the readings that
+    // follow, whatever command carries them.
+    final acknowledged = _waiting.where((p) => p.acknowledged).firstOrNull;
+    if (acknowledged != null && hasData) {
+      _waiting.remove(acknowledged);
+      acknowledged.completer.complete(_Answer(dps: dps));
+      return;
+    }
     final pending = _waiting
         .where((p) => p.command == message.command)
         .firstOrNull;
-    if (pending != null) {
-      _waiting.remove(pending);
-      pending.completer.complete(_Answer(dps: dps, refused: message.refused));
+    if (pending == null) return;
+    if (pending.wantsData && !hasData && !message.refused) {
+      // Some devices acknowledge a query with an empty frame and send the
+      // readings right after.
+      pending.acknowledged = true;
+      return;
     }
+    _waiting.remove(pending);
+    pending.completer.complete(_Answer(dps: dps, refused: message.refused));
   }
 
   void _fail(TuyaException error) {
@@ -154,16 +168,19 @@ class TuyaLink {
     Uint8List Function() frame,
     int Function() command, {
     bool raw = false,
+    bool wantsData = false,
     TuyaFailure onSilence = TuyaFailure.keyRejected,
   }) {
     final result = _queue.then((_) async {
       if (_closed) throw const TuyaException(TuyaFailure.unreachable);
-      final pending = _Pending(command(), raw);
+      final pending = _Pending(command(), raw, wantsData: wantsData);
       _waiting.add(pending);
       try {
         _socket.add(frame());
         return await pending.completer.future.timeout(_timeout);
       } on TimeoutException {
+        // Acknowledged, and nothing followed: it has nothing to report.
+        if (pending.acknowledged) return const _Answer();
         // Connected but silent: a device ignores what it can't decrypt.
         final error = TuyaException(onSilence, 'No answer');
         _fail(error);
@@ -191,10 +208,12 @@ class TuyaLink {
 
   /// Every data point of the device, also sent to [changes].
   Future<Map<String, dynamic>> query() async {
-    var answer = await _request(_codec.query, () => _codec.queryCommand);
+    Future<_Answer> ask() =>
+        _request(_codec.query, () => _codec.queryCommand, wantsData: true);
+    var answer = await ask();
     if (answer.refused && !_codec.queryAsControl) {
       _codec.queryAsControl = true;
-      answer = await _request(_codec.query, () => _codec.queryCommand);
+      answer = await ask();
     }
     return answer.dps ?? const {};
   }
@@ -227,9 +246,13 @@ class TuyaLink {
 }
 
 class _Pending {
-  _Pending(this.command, this.raw);
+  _Pending(this.command, this.raw, {this.wantsData = false});
   final int command;
   final bool raw;
+
+  /// A query: an empty answer is only an acknowledgement.
+  final bool wantsData;
+  var acknowledged = false;
   final completer = Completer<_Answer>();
 }
 
