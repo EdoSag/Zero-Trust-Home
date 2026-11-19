@@ -128,14 +128,8 @@ class MemoryRepository extends HomeRepository {
 
   final haServers = <String, HaServer>{};
 
-  /// When set, reading a Home Assistant server waits for it (slow storage).
-  Completer<void>? haServerGate;
-
   @override
-  Future<HaServer?> loadHaServer(String homeId) async {
-    await haServerGate?.future;
-    return haServers[homeId];
-  }
+  Future<HaServer?> loadHaServer(String homeId) async => haServers[homeId];
 
   @override
   Future<void> saveHaServer(HaServer s) async => haServers[s.homeId] = s;

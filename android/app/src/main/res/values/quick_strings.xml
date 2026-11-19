@@ -2,14 +2,5 @@
 <!-- Texts of ZT Home in the phone's Device Controls panel. -->
 <resources>
     <string name="quick_scene">Scene</string>
-    <string name="quick_unreachable">Not reachable</string>
-    <string name="quick_on_off">On or off</string>
-    <string name="quick_lock">Lock</string>
-    <string name="quick_on">On</string>
-    <string name="quick_off">Off</string>
-    <string name="quick_locked">Locked</string>
-    <string name="quick_unlocked">Unlocked</string>
-    <string name="quick_open">Open</string>
-    <string name="quick_closed">Closed</string>
-    <string name="quick_open_percent">Open %1$d%%</string>
+    <string name="quick_tap_to_open">Opens ZT Home</string>
 </resources>

@@ -705,9 +705,39 @@ class AppL10nHe extends AppL10n {
   }
 
   @override
-  String get quickControls => 'שליטה בלי לפתוח את האפליקציה';
+  String get quickControls => 'הצגת מכשירים מחוץ לאפליקציה';
 
   @override
   String get quickControlsBody =>
-      'הדלקה וכיבוי של אורות, שקעים ותרחישים מפקדי המכשירים של הטלפון. עותק של המכשירים והמפתחות שלהם נשמר רק בטלפון הזה, נעול על ידי Android.';
+      'כבוי: פקדי המכשירים של הטלפון רק פותחים את ZT Home. פועל: השמות של הבתים, החדרים, המכשירים והתרחישים נשמרים בטלפון הזה, נעולים על ידי Android, כדי שהפקדים יוכלו להציג אותם. לחיצה שם פותחת את ZT Home ומתבצעת אחרי שפותחים את הנעילה. הדרך להגיע למכשירים לא יוצאת מהאפליקציה.';
+
+  @override
+  String quickTurnedOn(String name) {
+    return '$name פועל.';
+  }
+
+  @override
+  String quickTurnedOff(String name) {
+    return '$name כבוי.';
+  }
+
+  @override
+  String quickLocked(String name) {
+    return '$name נעול.';
+  }
+
+  @override
+  String quickOpened(String name) {
+    return '$name פתוח.';
+  }
+
+  @override
+  String quickClosed(String name) {
+    return '$name סגור.';
+  }
+
+  @override
+  String quickNoAnswer(String name) {
+    return '$name לא ענה.';
+  }
 }

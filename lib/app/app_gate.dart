@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
 
+import '../l10n/l10n.dart';
 import '../quick/quick_store.dart';
+import '../quick/quick_taps.dart';
 import '../ui/home_page.dart';
 import 'auth_providers.dart';
 import 'email_links.dart';
@@ -133,12 +137,51 @@ class _AppGateState extends ConsumerState<AppGate> with WidgetsBindingObserver {
   }
 }
 
-/// Home once unlocked: keeps sync running under the pages.
-class HomeShell extends ConsumerWidget {
+/// Home once unlocked: keeps sync running under the pages, and carries out
+/// a tap from the phone's controls panel that opened the app.
+class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeShell> createState() => _HomeShellState();
+}
+
+class _HomeShellState extends ConsumerState<HomeShell> {
+  StreamSubscription<void>? _taps;
+
+  @override
+  void initState() {
+    super.initState();
+    _taps = ref.read(quickVaultProvider).taps.listen((_) => _runTap());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _runTap());
+  }
+
+  @override
+  void dispose() {
+    _taps?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _runTap() async {
+    if (!mounted) return;
+    final l = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    String? said;
+    try {
+      said = await ref.read(quickTapsProvider).run(l);
+    } on Object {
+      said = null;
+    }
+    if (said == null || !mounted) return;
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(said), duration: const Duration(seconds: 4)),
+      );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     ref.watch(ztSyncControllerProvider);
     ref.watch(quickSyncProvider);
     return const HomePage();

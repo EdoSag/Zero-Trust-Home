@@ -393,6 +393,54 @@
       }
     }
   },
-  "quickControls": "Controls without opening the app",
-  "quickControlsBody": "Switch lights, plugs and scenes from the phone's device controls. A copy of your devices and their keys stays on this phone only, sealed by Android."
+  "quickControls": "Show devices outside the app",
+  "quickControlsBody": "Off: the phone's controls panel only opens ZT Home. On: the names of your homes, rooms, devices and scenes are kept on this phone, sealed by Android, so the panel can list them. A tap there opens ZT Home and is carried out once you unlock. How to reach your devices never leaves the app.",
+  "quickTurnedOn": "{name} is on.",
+  "@quickTurnedOn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickTurnedOff": "{name} is off.",
+  "@quickTurnedOff": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickLocked": "{name} is locked.",
+  "@quickLocked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickOpened": "{name} is open.",
+  "@quickOpened": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickClosed": "{name} is closed.",
+  "@quickClosed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickNoAnswer": "{name} didn't answer.",
+  "@quickNoAnswer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

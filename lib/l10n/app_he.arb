@@ -195,6 +195,12 @@
   "sceneDone": "{name} הופעל.",
   "sceneFailed": "{name}: אין תשובה מ{devices}.",
   "deleteSceneTitle": "למחוק את {name}?",
-  "quickControls": "שליטה בלי לפתוח את האפליקציה",
-  "quickControlsBody": "הדלקה וכיבוי של אורות, שקעים ותרחישים מפקדי המכשירים של הטלפון. עותק של המכשירים והמפתחות שלהם נשמר רק בטלפון הזה, נעול על ידי Android."
+  "quickControls": "הצגת מכשירים מחוץ לאפליקציה",
+  "quickControlsBody": "כבוי: פקדי המכשירים של הטלפון רק פותחים את ZT Home. פועל: השמות של הבתים, החדרים, המכשירים והתרחישים נשמרים בטלפון הזה, נעולים על ידי Android, כדי שהפקדים יוכלו להציג אותם. לחיצה שם פותחת את ZT Home ומתבצעת אחרי שפותחים את הנעילה. הדרך להגיע למכשירים לא יוצאת מהאפליקציה.",
+  "quickTurnedOn": "{name} פועל.",
+  "quickTurnedOff": "{name} כבוי.",
+  "quickLocked": "{name} נעול.",
+  "quickOpened": "{name} פתוח.",
+  "quickClosed": "{name} סגור.",
+  "quickNoAnswer": "{name} לא ענה."
 }

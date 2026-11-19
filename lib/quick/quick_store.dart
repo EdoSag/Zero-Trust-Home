@@ -4,17 +4,27 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
 
-import '../adapters/homeassistant/ha_server.dart';
-import '../adapters/matter/matter_fabric.dart';
 import '../data/home_store.dart';
 import 'quick_snapshot.dart';
 
-/// Where the quick controls' copy is kept: a file sealed with a key in the
-/// Android Keystore (`QuickVault.kt`). Tests give a fake.
+/// A tap in the controls panel or on the widget, waiting for the app to be
+/// unlocked: [action] is `toggle` (a device) or `scene`.
+typedef QuickTap = ({String action, String id});
+
+/// Where the names for the controls panel and widget are kept: a file
+/// sealed with a key in the Android Keystore (`QuickVault.kt`), and the
+/// tap that opened the app. Tests give a fake.
 abstract interface class QuickVault {
   Future<void> save(String text);
   Future<String?> load();
   Future<void> clear();
+
+  /// The tap that opened the app, once; null when there is none or it is
+  /// more than a couple of minutes old.
+  Future<QuickTap?> takeTap();
+
+  /// Taps made while the app is open and unlocked.
+  Stream<void> get taps;
 }
 
 class QuickChannelVault implements QuickVault {
@@ -27,31 +37,55 @@ class QuickChannelVault implements QuickVault {
   Future<String?> load() => _channel.invokeMethod<String>('load');
   @override
   Future<void> clear() => _channel.invokeMethod<void>('clear');
+
+  @override
+  Future<QuickTap?> takeTap() async {
+    final tap = await _channel.invokeMethod<Map<Object?, Object?>>('takeTap');
+    final action = tap?['action'];
+    final id = tap?['id'];
+    if (action is! String || id is! String) return null;
+    return (action: action, id: id);
+  }
+
+  static final _taps = StreamController<void>.broadcast();
+  static var _listening = false;
+
+  @override
+  Stream<void> get taps {
+    if (!_listening) {
+      _listening = true;
+      _channel.setMethodCallHandler((call) async {
+        if (call.method == 'tapped') _taps.add(null);
+      });
+    }
+    return _taps.stream;
+  }
 }
 
 final quickVaultProvider = Provider<QuickVault>((ref) => QuickChannelVault());
 
-/// Whether devices can be switched from the phone's controls panel without
-/// opening the app. On unless the person turns it off.
+/// Whether the controls panel and the home screen widget may show device
+/// names. Off unless the person turns it on (the suite's widget privacy
+/// rule); off, they only open the app.
 final quickControlsOnProvider = NotifierProvider<QuickControlsOn, bool>(
   QuickControlsOn.new,
 );
 
 class QuickControlsOn extends Notifier<bool> {
-  static const _key = 'home.quickControls';
+  static const _key = 'home.showOutside';
 
   @override
   bool build() {
     _load();
-    return true;
+    return false;
   }
 
   Future<void> _load() async {
     try {
       final saved = await ref.read(ztPreferencesStoreProvider).read(_key);
-      if (saved == 'off') state = false;
+      if (saved == 'on') state = true;
     } on Object {
-      // On.
+      // Off.
     }
   }
 
@@ -137,16 +171,7 @@ class QuickSync {
       final scenes = _ref.read(scenesProvider).value;
       // Not loaded yet: don't replace a good copy with an empty one.
       if (homes == null || rooms == null || devices == null) return;
-      final repo = _ref.read(homeRepositoryProvider);
-      final haServers = <HaServer>[];
-      final fabrics = <MatterFabric>[];
-      for (final h in homes) {
-        final server = await repo.loadHaServer(h.id);
-        if (server != null) haServers.add(server);
-        final fabric = await repo.loadFabric(h.id);
-        if (fabric != null) fabrics.add(fabric);
-      }
-      // Signed out or turned off while this was being put together.
+      // Signed out or turned off since this was asked for.
       if (stale()) return;
       await vault.save(
         QuickSnapshot(
@@ -154,8 +179,6 @@ class QuickSync {
           rooms: rooms,
           devices: devices,
           scenes: scenes ?? const [],
-          haServers: haServers,
-          fabrics: fabrics,
         ).encode(),
       );
     } on Object {

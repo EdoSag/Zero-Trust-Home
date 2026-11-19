@@ -1270,14 +1270,50 @@ abstract class AppL10n {
   /// No description provided for @quickControls.
   ///
   /// In en, this message translates to:
-  /// **'Controls without opening the app'**
+  /// **'Show devices outside the app'**
   String get quickControls;
 
   /// No description provided for @quickControlsBody.
   ///
   /// In en, this message translates to:
-  /// **'Switch lights, plugs and scenes from the phone\'s device controls. A copy of your devices and their keys stays on this phone only, sealed by Android.'**
+  /// **'Off: the phone\'s controls panel only opens ZT Home. On: the names of your homes, rooms, devices and scenes are kept on this phone, sealed by Android, so the panel can list them. A tap there opens ZT Home and is carried out once you unlock. How to reach your devices never leaves the app.'**
   String get quickControlsBody;
+
+  /// No description provided for @quickTurnedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is on.'**
+  String quickTurnedOn(String name);
+
+  /// No description provided for @quickTurnedOff.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is off.'**
+  String quickTurnedOff(String name);
+
+  /// No description provided for @quickLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is locked.'**
+  String quickLocked(String name);
+
+  /// No description provided for @quickOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is open.'**
+  String quickOpened(String name);
+
+  /// No description provided for @quickClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is closed.'**
+  String quickClosed(String name);
+
+  /// No description provided for @quickNoAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} didn\'t answer.'**
+  String quickNoAnswer(String name);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

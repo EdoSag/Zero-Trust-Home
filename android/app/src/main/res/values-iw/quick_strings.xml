@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="quick_scene">תרחיש</string>
-    <string name="quick_unreachable">לא זמין</string>
-    <string name="quick_on_off">הדלקה או כיבוי</string>
-    <string name="quick_lock">נעילה</string>
-    <string name="quick_on">פועל</string>
-    <string name="quick_off">כבוי</string>
-    <string name="quick_locked">נעול</string>
-    <string name="quick_unlocked">לא נעול</string>
-    <string name="quick_open">פתוח</string>
-    <string name="quick_closed">סגור</string>
-    <string name="quick_open_percent">פתוח %1$d%%</string>
+    <string name="quick_tap_to_open">פותח את ZT Home</string>
 </resources>
