@@ -93,6 +93,32 @@ void main() {
         await link.heartbeat();
       });
 
+      test('readings that follow an empty acknowledgement count', () async {
+        device.acknowledgesQueries = true;
+        final link = await openTo(device);
+        addTearDown(link.close);
+        final dps = await link.query();
+        expect(dps['1'], false);
+        expect(dps['20'], 2301);
+        // And the link still works after.
+        await link.set({'1': true});
+        expect((await link.query())['1'], true);
+      });
+
+      test(
+        'an acknowledgement with nothing after is an empty answer',
+        () async {
+          device
+            ..acknowledgesQueries = true
+            ..nothingToReport = true;
+          final link = await openTo(device);
+          addTearDown(link.close);
+          expect(await link.query(), isEmpty);
+          expect(link.isOpen, isTrue);
+          await link.heartbeat();
+        },
+      );
+
       test('a wrong local key is told apart from no answer', () async {
         await expectLater(
           () async {

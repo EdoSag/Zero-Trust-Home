@@ -46,6 +46,13 @@ class FakeTuyaDevice {
   /// devices; they want the query as a control command.
   bool wantsQueryAsControl = false;
 
+  /// Acknowledges a query with an empty frame, then sends the readings in
+  /// a status frame, like some devices do.
+  bool acknowledgesQueries = false;
+
+  /// With [acknowledgesQueries]: sends nothing after the acknowledgement.
+  bool nothingToReport = false;
+
   /// Stops answering heartbeats (the device hung).
   bool silent = false;
 
@@ -120,10 +127,10 @@ class FakeTuyaDevice {
                   utf8.encode('json obj data unvalid'),
                 );
               } else {
-                _sendJson(socket, TuyaCommand.query, {'dps': dps});
+                _answerQuery(socket, TuyaCommand.query);
               }
             case TuyaCommand.queryNew:
-              _sendJson(socket, TuyaCommand.queryNew, {'dps': dps});
+              _answerQuery(socket, TuyaCommand.queryNew);
             case TuyaCommand.control || TuyaCommand.controlNew:
               final json = _plainJson(socket, frame);
               if (json == null) continue;
@@ -146,6 +153,15 @@ class FakeTuyaDevice {
       onDone: () => _clients.remove(socket),
       onError: (_) => _clients.remove(socket),
     );
+  }
+
+  void _answerQuery(Socket socket, int command) {
+    if (!acknowledgesQueries) {
+      _sendJson(socket, command, {'dps': dps});
+      return;
+    }
+    _send(socket, command, const []);
+    if (!nothingToReport) push(Map.of(dps));
   }
 
   /// The JSON a frame carries, or null when it wasn't sealed with the

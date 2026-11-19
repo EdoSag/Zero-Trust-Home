@@ -17,8 +17,12 @@ class MainActivity : FlutterFragmentActivity() {
      */
     private var multicastLock: WifiManager.MulticastLock? = null
 
+    /** The Matter library, for the Dart side. */
+    private var matter: MatterPlugin? = null
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        matter = MatterPlugin(this, flutterEngine.dartExecutor.binaryMessenger)
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             "dev.sagron.zerotrusthome/network",
@@ -56,6 +60,8 @@ class MainActivity : FlutterFragmentActivity() {
     }
 
     override fun onDestroy() {
+        matter?.dispose()
+        matter = null
         releaseMulticastLock()
         super.onDestroy()
     }

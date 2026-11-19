@@ -27,12 +27,21 @@ Phase H0 (the foundation) and the first part of H1 (real devices) are in:
   local key, switched, and show their state and power draw live. The app
   talks to them directly (protocol 3.3, 3.4 and 3.5); Tuya's servers are not
   involved. The local key is stored in the encrypted device item.
+- **Matter devices:** a device that is already on the Wi-Fi joins the
+  home from its setup code (typed, or the text of its QR code). Each home
+  has its own Matter fabric: its keys are made on the phone and saved
+  encrypted in the account, so every phone of the account controls the
+  same devices, and each phone has its own key in the Android Keystore.
+  Plugs, switches and lights switch and dim, with live state; a power
+  strip shows one device per socket. This uses the open Matter SDK (see
+  `matter/README.md`), not Google Play services. 64-bit ARM phones only.
 - **The adapter interface:** each way of reaching devices (Matter, Home
   Assistant, Hue, Tuya/Smart Life, Shelly, Switcher) is one adapter behind
   `DeviceAdapter`. The ones not built yet are listed under "Add a device"
   as coming soon.
 
-Next: the Matter adapter (the rest of phase H1).
+Next: adding brand-new Matter devices over Bluetooth and by scanning the
+QR code with the camera.
 
 ## How it is built
 

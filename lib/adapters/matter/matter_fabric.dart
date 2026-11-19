@@ -90,27 +90,38 @@ class MatterFabric {
   }
 
   /// A certificate for one phone, for the public key it made (65 bytes,
-  /// uncompressed). Each call gives a new node id.
+  /// uncompressed). [nodeId] keeps a phone the node it already was;
+  /// without it the phone becomes a new node.
   MatterNode issueController(
     Uint8List publicKey, {
+    String? nodeId,
     Random? random,
     DateTime? now,
-  }) => _issue(publicKey, random, now, admin: true);
+  }) => _issue(publicKey, nodeId, random, now, admin: true);
 
   /// A certificate for a device being added, from the signing request it
-  /// sent (PKCS#10 DER). Throws [MatterCertException] when the request is
-  /// not properly signed.
-  MatterNode issueDevice(Uint8List csr, {Random? random, DateTime? now}) =>
-      _issue(matterCsrPublicKey(csr), random, now, admin: false);
+  /// sent (PKCS#10 DER). [nodeId] is the id the device is being added
+  /// under (see [matterNewNodeId]). Throws [MatterCertException] when the
+  /// request is not properly signed.
+  MatterNode issueDevice(
+    Uint8List csr, {
+    String? nodeId,
+    Random? random,
+    DateTime? now,
+  }) => _issue(matterCsrPublicKey(csr), nodeId, random, now, admin: false);
 
   MatterNode _issue(
     Uint8List publicKey,
+    String? id,
     Random? random,
     DateTime? now, {
     required bool admin,
   }) {
     final rng = random ?? Random.secure();
-    final nodeId = _randomId(rng);
+    final nodeId = id ?? _randomId(rng);
+    if (!RegExp(r'^[0-9A-F]{16}$').hasMatch(nodeId)) {
+      throw const MatterCertException('Not a node id');
+    }
     final root = _CertInfo.read(rootCert);
     return MatterNode(
       nodeId: nodeId,
@@ -396,6 +407,10 @@ class _CertInfo {
 
 Uint8List _randomBytes(Random rng, int count) =>
     Uint8List.fromList([for (var i = 0; i < count; i++) rng.nextInt(256)]);
+
+/// A fresh node id for a device about to be added: 16 hex digits.
+String matterNewNodeId([Random? random]) =>
+    _randomId(random ?? Random.secure());
 
 /// A 64-bit id that is never 0 and stays below Matter's reserved ranges
 /// (and positive in Java).

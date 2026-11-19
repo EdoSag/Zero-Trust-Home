@@ -6,6 +6,11 @@
          packets devices announce themselves with (held only while looking). -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
 
+    <!-- Matter: the library looks devices up on the home network and reads
+         which network the phone is on. -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <application
         android:supportsRtl="true"
         android:label="ZT Home"

@@ -13,7 +13,10 @@ The SDK has no published Android package, so this repository builds it:
   in the SDK project's own build image, and publishes them as the GitHub
   release `matter-sdk-<tag>` of this repository.
 
-The app's Android build takes the libraries from that release.
+The app's Android build takes the libraries from that release:
+`android/app/build.gradle.kts` downloads them once into
+`android/app/libs/matter/` (not committed). The native side is
+`MatterPlugin.kt`; the Dart side is `lib/adapters/matter/`.
 
 To move to a newer SDK: change the tag in `sdk.env` in a pull request. The
 pull request builds the libraries (about an hour), so a release that

@@ -243,6 +243,7 @@ class _DeviceDetails extends ConsumerWidget {
                   destructive: true,
                 );
                 if (!ok) return;
+                await ref.read(deviceControlProvider).forget(device);
                 await repo.deleteDevice(device.id);
                 if (context.mounted) Navigator.pop(context);
               },

@@ -22,6 +22,7 @@ class MemoryRepository extends HomeRepository {
     List<Room> rooms = const [],
     List<HomeDevice> devices = const [],
   }) {
+    fabricSettle = Duration.zero;
     for (final h in homes) {
       _homes[h.id] = h;
     }
@@ -77,6 +78,17 @@ class MemoryRepository extends HomeRepository {
 
   final fabrics = <String, MatterFabric>{};
 
+  /// What "syncing" does in a test: nothing, fail, or bring another
+  /// phone's items.
+  Future<void> Function()? onSync;
+  var syncs = 0;
+
+  @override
+  Future<void> syncFabrics() async {
+    syncs++;
+    await onSync?.call();
+  }
+
   @override
   Future<MatterFabric?> loadFabric(String homeId) async => fabrics[homeId];
   @override
@@ -114,6 +126,13 @@ class FakeAdapter implements DeviceAdapter {
   final _changes = StreamController<String>.broadcast();
   final sent = <(String, DeviceCommand)>[];
   bool failing = false;
+  final forgotten = <String>[];
+
+  @override
+  Future<void> forget(
+    HomeDevice device, {
+    required List<HomeDevice> others,
+  }) async => forgotten.add(device.id);
 
   DeviceState stateOf(String deviceId) =>
       _states[deviceId] ?? const DeviceState(values: {Capability.onOff: false});
