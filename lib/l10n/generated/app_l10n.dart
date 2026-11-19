@@ -1158,6 +1158,114 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Battery'**
   String get battery;
+
+  /// No description provided for @scenes.
+  ///
+  /// In en, this message translates to:
+  /// **'Scenes'**
+  String get scenes;
+
+  /// No description provided for @addScene.
+  ///
+  /// In en, this message translates to:
+  /// **'Add scene'**
+  String get addScene;
+
+  /// No description provided for @newScene.
+  ///
+  /// In en, this message translates to:
+  /// **'New scene'**
+  String get newScene;
+
+  /// No description provided for @editScene.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit scene'**
+  String get editScene;
+
+  /// No description provided for @sceneName.
+  ///
+  /// In en, this message translates to:
+  /// **'Scene name'**
+  String get sceneName;
+
+  /// No description provided for @sceneNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Like Good night or Movie'**
+  String get sceneNameHint;
+
+  /// No description provided for @sceneCopyNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy how things are now'**
+  String get sceneCopyNow;
+
+  /// No description provided for @sceneDontChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t change'**
+  String get sceneDontChange;
+
+  /// No description provided for @scenePartOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Part open'**
+  String get scenePartOpen;
+
+  /// No description provided for @sceneSetTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Set temperature'**
+  String get sceneSetTemperature;
+
+  /// No description provided for @sceneNeedsName.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the scene a name.'**
+  String get sceneNeedsName;
+
+  /// No description provided for @sceneNeedsDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick at least one device to change.'**
+  String get sceneNeedsDevice;
+
+  /// No description provided for @sceneNoUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'A scene can lock a door but never unlocks one.'**
+  String get sceneNoUnlock;
+
+  /// No description provided for @sceneEditHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Touch and hold a scene to change it.'**
+  String get sceneEditHint;
+
+  /// No description provided for @deleteSceneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your devices stay as they are.'**
+  String get deleteSceneBody;
+
+  /// No description provided for @sceneDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is set.'**
+  String sceneDone(String name);
+
+  /// No description provided for @sceneFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: no answer from {devices}.'**
+  String sceneFailed(String name, String devices);
+
+  /// No description provided for @deleteSceneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}?'**
+  String deleteSceneTitle(String name);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

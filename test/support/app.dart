@@ -13,6 +13,7 @@ import 'package:zerotrust_home/data/home_store.dart';
 import 'package:zerotrust_home/l10n/l10n.dart';
 import 'package:zerotrust_home/model/device.dart';
 import 'package:zerotrust_home/model/home.dart';
+import 'package:zerotrust_home/model/scene.dart';
 
 /// Keeps everything in memory, in place of the encrypted store. Only the
 /// single-item saves and deletes are replaced, so the repository's own
@@ -23,7 +24,11 @@ class MemoryRepository extends HomeRepository {
     List<Home> homes = const [],
     List<Room> rooms = const [],
     List<HomeDevice> devices = const [],
+    List<Scene> scenes = const [],
   }) {
+    for (final s in scenes) {
+      _scenes[s.id] = s;
+    }
     for (final h in homes) {
       _homes[h.id] = h;
     }
@@ -38,7 +43,25 @@ class MemoryRepository extends HomeRepository {
   final _homes = <String, Home>{};
   final _rooms = <String, Room>{};
   final _devices = <String, HomeDevice>{};
+  final _scenes = <String, Scene>{};
   final _changes = StreamController<void>.broadcast();
+
+  List<Scene> get scenes => _scenes.values.toList();
+  Stream<List<Scene>> watchScenes() => _watch(() => scenes);
+
+  @override
+  Future<List<Scene>> allScenes() async => scenes;
+  @override
+  Future<void> saveScene(Scene s) async {
+    _scenes[s.id] = s;
+    _changes.add(null);
+  }
+
+  @override
+  Future<void> removeScene(String id) async {
+    _scenes.remove(id);
+    _changes.add(null);
+  }
 
   List<Home> get homes => _homes.values.toList();
   List<Room> get rooms => _rooms.values.toList();
@@ -142,6 +165,9 @@ class FakeAdapter implements DeviceAdapter {
   final _changes = StreamController<String>.broadcast();
   final sent = <(String, DeviceCommand)>[];
   bool failing = false;
+
+  /// Devices that don't answer, while the rest do.
+  final failingIds = <String>{};
   final forgotten = <String>[];
 
   /// The other devices each forget was told about.
@@ -179,7 +205,9 @@ class FakeAdapter implements DeviceAdapter {
 
   @override
   Future<void> send(HomeDevice device, DeviceCommand command) async {
-    if (failing) throw StateError('no answer');
+    if (failing || failingIds.contains(device.id)) {
+      throw StateError('no answer');
+    }
     sent.add((device.id, command));
     set(
       device.id,
@@ -195,6 +223,7 @@ Widget app(
   List<Home> homes = const [],
   List<Room> rooms = const [],
   List<HomeDevice> devices = const [],
+  List<Scene> scenes = const [],
   List<DeviceAdapter> adapters = const [],
   Locale locale = ZtLanguages.english,
   PreferencesStore? preferences,
@@ -216,7 +245,12 @@ Widget app(
           homes: homes,
           rooms: rooms,
           devices: devices,
+          scenes: scenes,
         ),
+      ),
+      scenesProvider.overrideWith(
+        (ref) => (ref.watch(homeRepositoryProvider) as MemoryRepository)
+            .watchScenes(),
       ),
       homesProvider.overrideWith(
         (ref) => (ref.watch(homeRepositoryProvider) as MemoryRepository)

@@ -643,4 +643,64 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get battery => 'Battery';
+
+  @override
+  String get scenes => 'Scenes';
+
+  @override
+  String get addScene => 'Add scene';
+
+  @override
+  String get newScene => 'New scene';
+
+  @override
+  String get editScene => 'Edit scene';
+
+  @override
+  String get sceneName => 'Scene name';
+
+  @override
+  String get sceneNameHint => 'Like Good night or Movie';
+
+  @override
+  String get sceneCopyNow => 'Copy how things are now';
+
+  @override
+  String get sceneDontChange => 'Don\'t change';
+
+  @override
+  String get scenePartOpen => 'Part open';
+
+  @override
+  String get sceneSetTemperature => 'Set temperature';
+
+  @override
+  String get sceneNeedsName => 'Give the scene a name.';
+
+  @override
+  String get sceneNeedsDevice => 'Pick at least one device to change.';
+
+  @override
+  String get sceneNoUnlock => 'A scene can lock a door but never unlocks one.';
+
+  @override
+  String get sceneEditHint => 'Touch and hold a scene to change it.';
+
+  @override
+  String get deleteSceneBody => 'Your devices stay as they are.';
+
+  @override
+  String sceneDone(String name) {
+    return '$name is set.';
+  }
+
+  @override
+  String sceneFailed(String name, String devices) {
+    return '$name: no answer from $devices.';
+  }
+
+  @override
+  String deleteSceneTitle(String name) {
+    return 'Delete $name?';
+  }
 }

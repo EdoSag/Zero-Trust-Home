@@ -643,4 +643,64 @@ class AppL10nHe extends AppL10n {
 
   @override
   String get battery => 'סוללה';
+
+  @override
+  String get scenes => 'תרחישים';
+
+  @override
+  String get addScene => 'הוספת תרחיש';
+
+  @override
+  String get newScene => 'תרחיש חדש';
+
+  @override
+  String get editScene => 'עריכת תרחיש';
+
+  @override
+  String get sceneName => 'שם התרחיש';
+
+  @override
+  String get sceneNameHint => 'למשל לילה טוב או סרט';
+
+  @override
+  String get sceneCopyNow => 'להעתיק את המצב הנוכחי';
+
+  @override
+  String get sceneDontChange => 'ללא שינוי';
+
+  @override
+  String get scenePartOpen => 'פתוח חלקית';
+
+  @override
+  String get sceneSetTemperature => 'לכוון טמפרטורה';
+
+  @override
+  String get sceneNeedsName => 'צריך לתת לתרחיש שם.';
+
+  @override
+  String get sceneNeedsDevice => 'צריך לבחור לפחות מכשיר אחד לשנות.';
+
+  @override
+  String get sceneNoUnlock => 'תרחיש יכול לנעול דלת, אבל אף פעם לא פותח נעילה.';
+
+  @override
+  String get sceneEditHint => 'לחיצה ארוכה על תרחיש כדי לשנות אותו.';
+
+  @override
+  String get deleteSceneBody => 'המכשירים יישארו כמו שהם.';
+
+  @override
+  String sceneDone(String name) {
+    return '$name הופעל.';
+  }
+
+  @override
+  String sceneFailed(String name, String devices) {
+    return '$name: אין תשובה מ$devices.';
+  }
+
+  @override
+  String deleteSceneTitle(String name) {
+    return 'למחוק את $name?';
+  }
 }

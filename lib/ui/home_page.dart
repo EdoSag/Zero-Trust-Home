@@ -9,6 +9,7 @@ import 'common.dart';
 import 'device_tile.dart';
 import 'homes_page.dart';
 import 'room_page.dart';
+import 'scene_row.dart';
 import 'settings_page.dart';
 import 'setup_home_page.dart';
 
@@ -82,6 +83,7 @@ class HomePage extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
         children: [
+          if (devices.isNotEmpty) const SceneRow(),
           if (devices.isEmpty)
             Card(
               child: Padding(
@@ -152,6 +154,14 @@ class HomePage extends ConsumerWidget {
               onTap: () {
                 Navigator.pop(ctx);
                 addRoom(context, ref, homeId);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.auto_awesome_outlined),
+              title: Text(l.addScene),
+              onTap: () {
+                Navigator.pop(ctx);
+                openScene(context);
               },
             ),
             const SizedBox(height: 8),

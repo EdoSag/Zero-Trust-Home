@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/home_store.dart';
 import '../model/device.dart';
+import '../model/scene.dart';
 import 'homeassistant/ha_adapter.dart';
 import 'homeassistant/ha_providers.dart';
 import 'matter/matter_adapter.dart';
@@ -81,6 +82,40 @@ class DeviceControl {
       throw StateError('No adapter "${device.adapter}" on this phone');
     }
     await adapter.send(device, command);
+  }
+
+  /// Carries out [scene]: every device at once, each one's steps in order
+  /// (on before brightness). Returns the devices that didn't take every
+  /// step; a device deleted since the scene was made is left out.
+  Future<List<HomeDevice>> runScene(
+    Scene scene, {
+    Duration wait = const Duration(seconds: 15),
+  }) async {
+    final devices = {
+      for (final d in _ref.read(devicesProvider).value ?? const <HomeDevice>[])
+        d.id: d,
+    };
+    final steps = <String, List<SceneAction>>{};
+    for (final a in scene.actions) {
+      if (devices.containsKey(a.deviceId)) {
+        (steps[a.deviceId] ??= []).add(a);
+      }
+    }
+    final failed = <HomeDevice>[];
+    await Future.wait([
+      for (final MapEntry(key: id, value: actions) in steps.entries)
+        () async {
+          final device = devices[id]!;
+          try {
+            for (final a in actions) {
+              await send(device, a.command).timeout(wait);
+            }
+          } on Object {
+            failed.add(device);
+          }
+        }(),
+    ]);
+    return failed;
   }
 
   /// Call before a device is deleted (see [DeviceAdapter.forget]).
