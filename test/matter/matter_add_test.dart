@@ -124,7 +124,7 @@ void main() {
     expect(find.text('MT:Y.K9042C00KA0648G00'), findsOneWidget);
     // The fake device answers to the typed form of the same code.
     await tester.enterText(find.byType(TextFormField).first, bridge.code);
-    await tester.enterText(find.byType(TextFormField).at(1), 'Home Wi-Fi');
+    await tester.enterText(find.byType(TextFormField).at(1), ' Home Wi-Fi ');
     await tester.enterText(find.byType(TextFormField).at(2), 'secret pass');
     await tester.scrollUntilVisible(
       find.byType(FilledButton),
@@ -134,10 +134,10 @@ void main() {
     await tester.tap(find.byType(FilledButton));
     await tester.pumpAndSettle();
     expect(repo.devices, hasLength(1));
-    expect(bridge.wifis.single!.ssid, 'Home Wi-Fi');
+    expect(bridge.wifis.single!.ssid, ' Home Wi-Fi ');
     expect(bridge.wifis.single!.password, 'secret pass');
     // The name is remembered for next time, the password never.
-    expect(await preferences.read('matter.wifi.ssid'), 'Home Wi-Fi');
+    expect(await preferences.read('matter.wifi.ssid'), ' Home Wi-Fi ');
     expect(tester.takeException(), isNull);
   });
 
@@ -157,7 +157,10 @@ void main() {
     bridge.scanned = 'https://example.com';
     await tester.tap(find.byTooltip('Scan the QR code'));
     await tester.pumpAndSettle();
-    expect(find.textContaining("isn't a Matter code", skipOffstage: false), findsOneWidget);
+    expect(
+      find.textContaining("isn't a Matter code", skipOffstage: false),
+      findsOneWidget,
+    );
     // Going back from the camera changes nothing.
     bridge.scanned = null;
     await tester.tap(find.byTooltip('Scan the QR code'));
@@ -179,6 +182,16 @@ void main() {
     bridge.failure = MatterFailure.bluetoothDenied;
     await typeCode(tester, '34970112332');
     expect(find.textContaining('Nearby devices permission'), findsOneWidget);
+  });
+
+  testWidgets('Location off on older phones says what to do', (tester) async {
+    phone(tester);
+    await tester.pumpWidget(matterApp(const MatterAddPage()));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextFormField).at(1), 'Home Wi-Fi');
+    bridge.failure = MatterFailure.locationOff;
+    await typeCode(tester, '34970112332');
+    expect(find.textContaining('Turn on Location'), findsOneWidget);
   });
 
   testWidgets('a device that joins after the page was left is saved', (

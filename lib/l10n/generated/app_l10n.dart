@@ -508,7 +508,7 @@ abstract class AppL10n {
   /// No description provided for @deleteHomeBody.
   ///
   /// In en, this message translates to:
-  /// **'{name} is deleted with its rooms and devices, on all your phones. The devices themselves aren\'t reset.'**
+  /// **'{name} is deleted with its rooms and devices, on all your phones. Matter devices are let go so they can be added again; other devices aren\'t reset.'**
   String deleteHomeBody(String name);
 
   /// No description provided for @copy.
@@ -864,6 +864,12 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'ZT Home needs the Nearby devices permission to find a new device over Bluetooth. Allow it in the app\'s settings, then try again.'**
   String get matterErrBluetoothDenied;
+
+  /// No description provided for @matterErrLocationOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Location to add a new device. On this version of Android, phones can only find Bluetooth devices while Location is on.'**
+  String get matterErrLocationOff;
 
   /// No description provided for @matterErrNotFoundNew.
   ///

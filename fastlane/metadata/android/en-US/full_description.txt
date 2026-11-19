@@ -1,0 +1,22 @@
+Zero-Trust Home controls your lights and plugs over your own home network. Your phone talks to each device directly, so no cloud account sits between you and your home, and nothing about it leaves your phone unencrypted.
+
+WHAT IT DOES
+• Matter devices: scan the QR code on a new device, enter your Wi-Fi details, and the phone adds it over Bluetooth. Devices already set up in another app can be shared to Zero-Trust Home with a pairing code.
+• Tuya and Smart Life Wi-Fi plugs, controlled locally on your network.
+• Homes and rooms: as many homes as you like, each with its own rooms, with favourites shown first.
+• On and off, brightness, and live state that updates when someone uses the device itself.
+• Every phone on your account sees the same homes, rooms and devices.
+• Deleting a home lets its Matter devices go, so they can be added again.
+
+WHY ZERO-TRUST
+• Local control: commands go straight from your phone to the device on your network.
+• End-to-end encrypted: homes, rooms, devices and the keys your Matter devices trust are encrypted on your phone before they sync. We can't read them, and neither can anyone who breaks into the server.
+• One private account for every Zero-Trust app, unlocked with your fingerprint or face.
+• No ads, no trackers, no analytics, no data sold. Ever.
+• Open source (AGPL-3.0), so anyone can check what the app does.
+• English and Hebrew, with full right-to-left support.
+
+Part of the Zero-Trust suite: Notes, Tasks, Calendar, Contacts, Phone, Fitness, Meds, Time, Browser and Home. One account opens them all.
+
+Privacy policy: https://zerotrust.bz/privacy/
+Support: support@zerotrust.bz

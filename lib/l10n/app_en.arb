@@ -96,7 +96,7 @@
       }
     }
   },
-  "deleteHomeBody": "{name} is deleted with its rooms and devices, on all your phones. The devices themselves aren't reset.",
+  "deleteHomeBody": "{name} is deleted with its rooms and devices, on all your phones. Matter devices are let go so they can be added again; other devices aren't reset.",
   "@deleteHomeBody": {
     "placeholders": {
       "name": {
@@ -225,5 +225,6 @@
   "matterAddingNew": "Looking for the device, giving it the Wi-Fi and adding it to your home. This can take up to two minutes. Keep the phone close to it.",
   "matterErrBluetoothOff": "Turn on Bluetooth to add a new device, then try again.",
   "matterErrBluetoothDenied": "ZT Home needs the Nearby devices permission to find a new device over Bluetooth. Allow it in the app's settings, then try again.",
+  "matterErrLocationOff": "Turn on Location to add a new device. On this version of Android, phones can only find Bluetooth devices while Location is on.",
   "matterErrNotFoundNew": "The device wasn't found. Check that it is in pairing mode (often: just plugged in, or its button held until it blinks), keep the phone close to it, and check the Wi-Fi name and password."
 }

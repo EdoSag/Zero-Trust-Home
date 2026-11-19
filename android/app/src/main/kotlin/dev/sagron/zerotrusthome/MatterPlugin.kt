@@ -1,5 +1,8 @@
 package dev.sagron.zerotrusthome
 
+import android.os.Build
+import android.location.LocationManager
+import androidx.core.location.LocationManagerCompat
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.os.Handler
@@ -216,6 +219,13 @@ class MatterPlugin(
         host.allowBluetooth { allowed ->
             if (pairing !== adding) return@allowBluetooth
             if (!allowed) return@allowBluetooth failPairing("bluetoothDenied", "Not allowed")
+            // Up to Android 11, Bluetooth scans find nothing while Location is off.
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                val location = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+                if (location == null || !LocationManagerCompat.isLocationEnabled(location)) {
+                    return@allowBluetooth failPairing("locationOff", "Location is off")
+                }
+            }
             val adapter = (context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)
                 ?.adapter
                 ?: return@allowBluetooth failPairing("bluetoothOff", "No Bluetooth")

@@ -125,6 +125,7 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
       MatterFailure.unsupported => l.matterErrUnsupported,
       MatterFailure.bluetoothOff => l.matterErrBluetoothOff,
       MatterFailure.bluetoothDenied => l.matterErrBluetoothDenied,
+      MatterFailure.locationOff => l.matterErrLocationOff,
       MatterFailure.unreachable =>
         _kind == MatterAddKind.newDevice
             ? l.matterErrNotFoundNew
@@ -144,7 +145,8 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
     });
     final name = _name.text.trim();
     final wifi = _kind == MatterAddKind.newDevice
-        ? MatterWifi(ssid: _ssid.text.trim(), password: _password.text)
+        // As typed: a network's name may start or end with a space.
+        ? MatterWifi(ssid: _ssid.text, password: _password.text)
         : null;
     // Taken now: a device that joins after this page was left is still
     // saved, or nothing in the app could remove it from the home.

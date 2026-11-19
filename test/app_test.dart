@@ -5,6 +5,7 @@ import 'package:zerotrust_home/model/device.dart';
 import 'package:zerotrust_home/model/home.dart';
 import 'package:zerotrust_home/ui/add_device_page.dart';
 import 'package:zerotrust_home/ui/home_page.dart';
+import 'package:zerotrust_home/ui/homes_page.dart';
 
 import 'support/app.dart';
 
@@ -255,6 +256,7 @@ void main() {
   testWidgets('homes: switch, and delete one with its rooms and devices', (
     tester,
   ) async {
+    final fake = FakeAdapter();
     final prefs = InMemoryPreferencesStore();
     await tester.pumpWidget(
       app(
@@ -277,8 +279,14 @@ void main() {
             name: 'Stove',
             adapter: 'fake',
           ),
+          const HomeDevice(
+            id: 'd8',
+            homeId: 'h2',
+            name: 'Kettle',
+            adapter: 'fake',
+          ),
         ],
-        adapters: [FakeAdapter()],
+        adapters: [fake],
       ),
     );
     await tester.pumpAndSettle();
@@ -308,9 +316,45 @@ void main() {
     expect([for (final h in repo.homes) h.id], ['h1']);
     expect([for (final r in repo.rooms) r.id], ['r1']);
     expect([for (final d in repo.devices) d.id], ['d1']);
+    // Its devices were let go first, each told only of those still left.
+    expect(fake.forgotten, unorderedEquals(['d8', 'd9']));
+    expect(fake.forgottenOthers, [
+      unorderedEquals(['d1', fake.forgotten.last]),
+      ['d1'],
+    ]);
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(find.text('Living room'), findsOneWidget);
+  });
+
+  testWidgets('deleting a home: an unplugged device holds up no other', (
+    tester,
+  ) async {
+    final fake = FakeAdapter()..hanging.add('d1');
+    await tester.pumpWidget(
+      app(
+        const HomesPage(),
+        homes: const [flat],
+        devices: [
+          plug(),
+          plug(id: 'd2', name: 'Lamp'),
+        ],
+        adapters: [fake],
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(PopupMenuButton<String>).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pump();
+    // The second one is tried while the home and its keys are still there.
+    await tester.pump(const Duration(seconds: 11));
+    expect(fake.forgotten, ['d1', 'd2']);
+    await tester.pumpAndSettle();
+    expect(repo.homes, isEmpty);
+    expect(repo.devices, isEmpty);
   });
 
   testWidgets('add a device: ways without an adapter are "Coming soon"', (

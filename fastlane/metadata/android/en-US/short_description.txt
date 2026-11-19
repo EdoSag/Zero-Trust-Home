@@ -1,0 +1,1 @@
+A private smart home app for Matter and Tuya devices, with no cloud account.

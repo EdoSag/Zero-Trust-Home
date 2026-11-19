@@ -81,20 +81,35 @@ class DeviceControl {
   }
 
   /// Call before a device is deleted (see [DeviceAdapter.forget]).
-  Future<void> forget(HomeDevice device) async {
-    final adapter = _ref.read(deviceAdaptersProvider)[device.adapter];
-    if (adapter == null) return;
-    final devices = _ref.read(devicesProvider).value ?? const <HomeDevice>[];
-    try {
-      await adapter.forget(
-        device,
-        others: [
-          for (final d in devices)
-            if (d.adapter == device.adapter && d.id != device.id) d,
-        ],
-      );
-    } on Object {
-      // Deleting from the app never depends on the device answering.
+  Future<void> forget(HomeDevice device) => forgetAll([device]);
+
+  /// Call before several devices are deleted at once, such as a whole
+  /// home's. Each is told about only the devices still left, so the last
+  /// part of a shared device lets it go. Each one is given [wait] at most:
+  /// one unplugged device never keeps the others from being tried.
+  Future<void> forgetAll(
+    List<HomeDevice> gone, {
+    Duration wait = const Duration(seconds: 10),
+  }) async {
+    final adapters = _ref.read(deviceAdaptersProvider);
+    final left = [...?_ref.read(devicesProvider).value];
+    for (final device in gone) {
+      left.removeWhere((d) => d.id == device.id);
+      final adapter = adapters[device.adapter];
+      if (adapter == null) continue;
+      try {
+        await adapter
+            .forget(
+              device,
+              others: [
+                for (final d in left)
+                  if (d.adapter == device.adapter) d,
+              ],
+            )
+            .timeout(wait);
+      } on Object {
+        // Deleting from the app never depends on the device answering.
+      }
     }
   }
 }

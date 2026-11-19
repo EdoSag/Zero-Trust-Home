@@ -236,7 +236,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String deleteHomeBody(String name) {
-    return '$name is deleted with its rooms and devices, on all your phones. The devices themselves aren\'t reset.';
+    return '$name is deleted with its rooms and devices, on all your phones. Matter devices are let go so they can be added again; other devices aren\'t reset.';
   }
 
   @override
@@ -451,6 +451,10 @@ class AppL10nEn extends AppL10n {
   @override
   String get matterErrBluetoothDenied =>
       'ZT Home needs the Nearby devices permission to find a new device over Bluetooth. Allow it in the app\'s settings, then try again.';
+
+  @override
+  String get matterErrLocationOff =>
+      'Turn on Location to add a new device. On this version of Android, phones can only find Bluetooth devices while Location is on.';
 
   @override
   String get matterErrNotFoundNew =>
