@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../adapters/device_adapter.dart';
 import '../l10n/l10n.dart';
+import 'tuya_add_page.dart';
 
 /// The ways a device can be added. One that this version can't do yet is
 /// listed, greyed out, as "Coming soon".
@@ -73,6 +74,13 @@ class _ConnectionRow extends StatelessWidget {
       trailing: available
           ? const Icon(Icons.chevron_right)
           : Text(l.comingSoon, style: Theme.of(context).textTheme.labelSmall),
+      onTap: switch (kind) {
+        ConnectionKind.tuya => () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => const TuyaAddPage())),
+        // Their own pages come with their adapters.
+        _ => null,
+      },
     );
   }
 }

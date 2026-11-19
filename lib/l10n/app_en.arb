@@ -103,5 +103,91 @@
         "type": "String"
       }
     }
+  },
+  "copy": "Copy",
+  "copied": "Copied",
+  "powerNow": "Power now",
+  "tuyaIntro": "Devices that are set up in the Smart Life or Tuya app. ZT Home then talks to them directly over your Wi-Fi, without Tuya's servers.",
+  "tuyaSearching": "Looking for devices on your Wi-Fi…",
+  "tuyaSearchHint": "The phone has to be on the same Wi-Fi as the device. A device can take up to 10 seconds to show up.",
+  "tuyaAlreadyAdded": "Already added",
+  "tuyaManual": "Enter the address by hand",
+  "tuyaPairTitle": "Connect the device",
+  "tuyaDefaultName": "Smart plug",
+  "tuyaIp": "IP address",
+  "tuyaDeviceId": "Device ID",
+  "tuyaVersion": "Protocol version",
+  "tuyaLocalKey": "Local key",
+  "tuyaLocalKeyHelp": "Where do I find the local key?",
+  "tuyaKeyLength": "A local key has 16 characters.",
+  "fieldRequired": "Required",
+  "tuyaConnect": "Connect",
+  "tuyaErrKey": "The device didn't accept this key. Check the key, and the protocol version if you entered it by hand. The key changes when a device is removed and set up again in Smart Life.",
+  "tuyaKeyHelpTitle": "Finding the local key",
+  "tuyaKeyHelpBody": "Each device has a secret local key, given to it when it is set up in the Smart Life app. ZT Home needs it once, to talk to the device directly. Tuya only shows it on its developer site:\n\n1. Sign up for free at iot.tuya.com and create a cloud project.\n2. In the project, open Devices, choose Link App Account and scan the code with the Smart Life app.\n3. In API Explorer, run \"Query Device Details\" with the Device ID below, and copy \"local_key\" from the answer.\n\nThe key is saved encrypted in your ZT account. It never leaves your devices unencrypted.",
+  "close": "Close",
+  "showKey": "Show the key",
+  "hideKey": "Hide the key",
+  "stateWithPower": "{state} · {watts} W",
+  "@stateWithPower": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      },
+      "watts": {
+        "type": "String"
+      }
+    }
+  },
+  "watts": "{watts} W",
+  "@watts": {
+    "placeholders": {
+      "watts": {
+        "type": "String"
+      }
+    }
+  },
+  "tuyaFound": "Device at {ip}",
+  "@tuyaFound": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "tuyaFoundDetails": "ID ending in {tail} · protocol {version}",
+  "@tuyaFoundDetails": {
+    "placeholders": {
+      "tail": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "tuyaTooOld": "Protocol {version} isn't supported yet",
+  "@tuyaTooOld": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "tuyaErrUnreachable": "No answer from {ip}. Check that the device is plugged in and on the same Wi-Fi as this phone.",
+  "@tuyaErrUnreachable": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceAdded": "{name} added",
+  "@deviceAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

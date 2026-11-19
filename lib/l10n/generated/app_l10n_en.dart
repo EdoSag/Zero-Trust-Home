@@ -238,4 +238,115 @@ class AppL10nEn extends AppL10n {
   String deleteHomeBody(String name) {
     return '$name is deleted with its rooms and devices, on all your phones. The devices themselves aren\'t reset.';
   }
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get copied => 'Copied';
+
+  @override
+  String get powerNow => 'Power now';
+
+  @override
+  String get tuyaIntro =>
+      'Devices that are set up in the Smart Life or Tuya app. ZT Home then talks to them directly over your Wi-Fi, without Tuya\'s servers.';
+
+  @override
+  String get tuyaSearching => 'Looking for devices on your Wi-Fi…';
+
+  @override
+  String get tuyaSearchHint =>
+      'The phone has to be on the same Wi-Fi as the device. A device can take up to 10 seconds to show up.';
+
+  @override
+  String get tuyaAlreadyAdded => 'Already added';
+
+  @override
+  String get tuyaManual => 'Enter the address by hand';
+
+  @override
+  String get tuyaPairTitle => 'Connect the device';
+
+  @override
+  String get tuyaDefaultName => 'Smart plug';
+
+  @override
+  String get tuyaIp => 'IP address';
+
+  @override
+  String get tuyaDeviceId => 'Device ID';
+
+  @override
+  String get tuyaVersion => 'Protocol version';
+
+  @override
+  String get tuyaLocalKey => 'Local key';
+
+  @override
+  String get tuyaLocalKeyHelp => 'Where do I find the local key?';
+
+  @override
+  String get tuyaKeyLength => 'A local key has 16 characters.';
+
+  @override
+  String get fieldRequired => 'Required';
+
+  @override
+  String get tuyaConnect => 'Connect';
+
+  @override
+  String get tuyaErrKey =>
+      'The device didn\'t accept this key. Check the key, and the protocol version if you entered it by hand. The key changes when a device is removed and set up again in Smart Life.';
+
+  @override
+  String get tuyaKeyHelpTitle => 'Finding the local key';
+
+  @override
+  String get tuyaKeyHelpBody =>
+      'Each device has a secret local key, given to it when it is set up in the Smart Life app. ZT Home needs it once, to talk to the device directly. Tuya only shows it on its developer site:\n\n1. Sign up for free at iot.tuya.com and create a cloud project.\n2. In the project, open Devices, choose Link App Account and scan the code with the Smart Life app.\n3. In API Explorer, run \"Query Device Details\" with the Device ID below, and copy \"local_key\" from the answer.\n\nThe key is saved encrypted in your ZT account. It never leaves your devices unencrypted.';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get showKey => 'Show the key';
+
+  @override
+  String get hideKey => 'Hide the key';
+
+  @override
+  String stateWithPower(String state, String watts) {
+    return '$state · $watts W';
+  }
+
+  @override
+  String watts(String watts) {
+    return '$watts W';
+  }
+
+  @override
+  String tuyaFound(String ip) {
+    return 'Device at $ip';
+  }
+
+  @override
+  String tuyaFoundDetails(String tail, String version) {
+    return 'ID ending in $tail · protocol $version';
+  }
+
+  @override
+  String tuyaTooOld(String version) {
+    return 'Protocol $version isn\'t supported yet';
+  }
+
+  @override
+  String tuyaErrUnreachable(String ip) {
+    return 'No answer from $ip. Check that the device is plugged in and on the same Wi-Fi as this phone.';
+  }
+
+  @override
+  String deviceAdded(String name) {
+    return '$name added';
+  }
 }

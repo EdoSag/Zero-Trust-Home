@@ -117,6 +117,7 @@ class HomeDevice {
     String? name,
     DeviceType? type,
     bool? favourite,
+    Map<String, dynamic>? address,
   }) => HomeDevice(
     id: id,
     homeId: homeId,
@@ -124,7 +125,7 @@ class HomeDevice {
     name: name ?? this.name,
     type: type ?? this.type,
     adapter: adapter,
-    address: address,
+    address: address ?? this.address,
     capabilities: capabilities,
     favourite: favourite ?? this.favourite,
     createdAt: createdAt,
