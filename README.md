@@ -27,8 +27,10 @@ Phase H0 (the foundation) and the first part of H1 (real devices) are in:
   local key, switched, and show their state and power draw live. The app
   talks to them directly (protocol 3.3, 3.4 and 3.5); Tuya's servers are not
   involved. The local key is stored in the encrypted device item.
-- **Matter devices:** a device that is already on the Wi-Fi joins the
-  home from its setup code (typed, or the text of its QR code). Each home
+- **Matter devices:** a new device is found over Bluetooth from its QR
+  code (scanned with the camera, ZXing, no Google code) and given the
+  home's Wi-Fi; one already set up in another app joins from the code that
+  app shares. Each home
   has its own Matter fabric: its keys are made on the phone and saved
   encrypted in the account, so every phone of the account controls the
   same devices, and each phone has its own key in the Android Keystore.
@@ -40,8 +42,8 @@ Phase H0 (the foundation) and the first part of H1 (real devices) are in:
   `DeviceAdapter`. The ones not built yet are listed under "Add a device"
   as coming soon.
 
-Next: adding brand-new Matter devices over Bluetooth and by scanning the
-QR code with the camera.
+Next: Thread devices, and checking devices against the official list of
+Matter manufacturers.
 
 ## How it is built
 

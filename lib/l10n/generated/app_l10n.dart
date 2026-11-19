@@ -706,7 +706,7 @@ abstract class AppL10n {
   /// No description provided for @matterIntro.
   ///
   /// In en, this message translates to:
-  /// **'For now the device has to be on your Wi-Fi already: set it up in its own app, or in Google Home or Apple Home. There, choose to connect it to another app or to turn on pairing mode, and you get a setup code. Brand-new devices, straight out of the box, come in a later version.'**
+  /// **'A device already set up in another app (its own app, Google Home or Apple Home): there, choose to share it with another app or to turn on pairing mode, and enter the code you get. The phone has to be on the same Wi-Fi as the device.'**
   String get matterIntro;
 
   /// No description provided for @matterCode.
@@ -718,7 +718,7 @@ abstract class AppL10n {
   /// No description provided for @matterCodeHint.
   ///
   /// In en, this message translates to:
-  /// **'The 11 or 21 digits, or the text of the QR code (it starts with MT:). The phone has to be on the same Wi-Fi as the device.'**
+  /// **'The 11 or 21 digits, or the text of the QR code (it starts with MT:).'**
   String get matterCodeHint;
 
   /// No description provided for @matterCodeInvalid.
@@ -786,6 +786,90 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'The home\'s Matter keys couldn\'t be read. Sync this phone and try again.'**
   String get matterErrKeys;
+
+  /// No description provided for @matterKindNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New device'**
+  String get matterKindNew;
+
+  /// No description provided for @matterKindShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Already set up'**
+  String get matterKindShared;
+
+  /// No description provided for @matterIntroNew.
+  ///
+  /// In en, this message translates to:
+  /// **'A new device, or one that was reset: plug it in so it is in pairing mode, keep the phone close to it, and scan the QR code on the device or its box. The phone finds it over Bluetooth and gives it your Wi-Fi. Devices that use Thread instead of Wi-Fi can\'t be added yet.'**
+  String get matterIntroNew;
+
+  /// No description provided for @matterScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the QR code'**
+  String get matterScan;
+
+  /// No description provided for @matterScanNotMatter.
+  ///
+  /// In en, this message translates to:
+  /// **'That QR code isn\'t a Matter code. The Matter one is usually next to the Matter logo, on the device or its box.'**
+  String get matterScanNotMatter;
+
+  /// No description provided for @matterWifiName.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi name'**
+  String get matterWifiName;
+
+  /// No description provided for @matterWifiHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The device joins this Wi-Fi. Most devices need a 2.4 GHz network. The password is only given to the device, never saved.'**
+  String get matterWifiHint;
+
+  /// No description provided for @matterWifiPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi password'**
+  String get matterWifiPassword;
+
+  /// No description provided for @matterShowPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the password'**
+  String get matterShowPassword;
+
+  /// No description provided for @matterHidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the password'**
+  String get matterHidePassword;
+
+  /// No description provided for @matterAddingNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for the device, giving it the Wi-Fi and adding it to your home. This can take up to two minutes. Keep the phone close to it.'**
+  String get matterAddingNew;
+
+  /// No description provided for @matterErrBluetoothOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Bluetooth to add a new device, then try again.'**
+  String get matterErrBluetoothOff;
+
+  /// No description provided for @matterErrBluetoothDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'ZT Home needs the Nearby devices permission to find a new device over Bluetooth. Allow it in the app\'s settings, then try again.'**
+  String get matterErrBluetoothDenied;
+
+  /// No description provided for @matterErrNotFoundNew.
+  ///
+  /// In en, this message translates to:
+  /// **'The device wasn\'t found. Check that it is in pairing mode (often: just plugged in, or its button held until it blinks), keep the phone close to it, and check the Wi-Fi name and password.'**
+  String get matterErrNotFoundNew;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

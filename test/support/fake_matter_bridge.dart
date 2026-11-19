@@ -44,6 +44,19 @@ class FakeMatterBridge implements MatterBridge {
   final removed = <String>[];
   final invoked = <(String, int, int, int, Object?)>[];
   var cancelled = 0;
+
+  /// The Wi-Fi given to each pairing, null when none.
+  final wifis = <MatterWifi?>[];
+
+  /// What the camera "sees" next; null as if the person went back.
+  String? scanned;
+
+  @override
+  Future<String?> scanCode() async {
+    _check();
+    return scanned;
+  }
+
   var phoneKeys = 0;
 
   Future<Uint8List> Function(Uint8List csr)? _issue;
@@ -84,8 +97,13 @@ class FakeMatterBridge implements MatterBridge {
   }
 
   @override
-  Future<void> pair({required String nodeId, required String code}) async {
+  Future<void> pair({
+    required String nodeId,
+    required String code,
+    MatterWifi? wifi,
+  }) async {
     _check();
+    wifis.add(wifi);
     await holdPairing?.future;
     if (cancelled > 0 && !ignoresCancel) {
       throw const MatterException(MatterFailure.failed, 'Cancelled');

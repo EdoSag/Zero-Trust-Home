@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zero_trust_core/zero_trust_core.dart';
 
 import '../adapters/matter/matter_adapter.dart';
 import '../adapters/matter/matter_bridge.dart';
@@ -9,8 +10,21 @@ import '../data/home_store.dart';
 import '../l10n/l10n.dart';
 import 'common.dart';
 
-/// Adding a Matter device that is already on the home network: its setup
-/// code (typed, or the text of its QR code), a name and a room.
+/// How the device reaches the phone while it is being added.
+enum MatterAddKind {
+  /// New or reset: found over Bluetooth (or on the Wi-Fi) and given the
+  /// home's Wi-Fi.
+  newDevice,
+
+  /// Already on the Wi-Fi, set up in another app that shared it.
+  shared,
+}
+
+/// This phone's last Wi-Fi name given to a device (never the password).
+const _wifiNameKey = 'matter.wifi.ssid';
+
+/// Adding a Matter device: its setup code (scanned or typed), for a new
+/// device the home's Wi-Fi, then a name and a room.
 class MatterAddPage extends ConsumerStatefulWidget {
   const MatterAddPage({super.key});
 
@@ -22,10 +36,23 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
   final _form = GlobalKey<FormState>();
   final _name = TextEditingController();
   final _code = TextEditingController();
+  final _ssid = TextEditingController();
+  final _password = TextEditingController();
+  var _kind = MatterAddKind.newDevice;
   String? _roomId;
   var _busy = false;
+  var _showPassword = false;
   String? _error;
   var _named = false;
+  MatterAdapter? _adapter;
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(ztPreferencesStoreProvider).read(_wifiNameKey).then((saved) {
+      if (mounted && saved != null && _ssid.text.isEmpty) _ssid.text = saved;
+    }, onError: (_) {});
+  }
 
   @override
   void didChangeDependencies() {
@@ -36,14 +63,14 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
     }
   }
 
-  MatterAdapter? _adapter;
-
   @override
   void dispose() {
     // Leaving while a device is being added gives up on it.
     if (_busy) _adapter?.cancelPair().ignore();
     _name.dispose();
     _code.dispose();
+    _ssid.dispose();
+    _password.dispose();
     super.dispose();
   }
 
@@ -63,6 +90,49 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
     }
   }
 
+  Future<void> _scan() async {
+    final l = context.l10n;
+    setState(() => _error = null);
+    final String? text;
+    try {
+      text = await ref.read(matterBridgeProvider).scanCode();
+    } on MatterException catch (e) {
+      if (mounted) setState(() => _error = _describe(e));
+      return;
+    }
+    if (!mounted || text == null) return;
+    final MatterSetupCode code;
+    try {
+      code = MatterSetupCode.parse(text);
+    } on MatterSetupCodeException {
+      setState(() => _error = l.matterScanNotMatter);
+      return;
+    }
+    setState(() {
+      _code.text = text!.trim();
+      // The QR code says how the device can be reached.
+      if (code.bluetooth) {
+        _kind = MatterAddKind.newDevice;
+      } else if (code.onNetwork) {
+        _kind = MatterAddKind.shared;
+      }
+    });
+  }
+
+  String _describe(MatterException e) {
+    final l = context.l10n;
+    return switch (e.failure) {
+      MatterFailure.unsupported => l.matterErrUnsupported,
+      MatterFailure.bluetoothOff => l.matterErrBluetoothOff,
+      MatterFailure.bluetoothDenied => l.matterErrBluetoothDenied,
+      MatterFailure.unreachable =>
+        _kind == MatterAddKind.newDevice
+            ? l.matterErrNotFoundNew
+            : l.matterErrNotFound,
+      MatterFailure.failed => l.matterErrFailed(e.detail),
+    };
+  }
+
   Future<void> _add() async {
     final l = context.l10n;
     final home = ref.read(currentHomeProvider);
@@ -73,18 +143,26 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
       _error = null;
     });
     final name = _name.text.trim();
+    final wifi = _kind == MatterAddKind.newDevice
+        ? MatterWifi(ssid: _ssid.text.trim(), password: _password.text)
+        : null;
     // Taken now: a device that joins after this page was left is still
     // saved, or nothing in the app could remove it from the home.
     final adapter = ref.read(matterAdapterProvider);
     final repo = ref.read(homeRepositoryProvider);
+    final preferences = ref.read(ztPreferencesStoreProvider);
     _adapter = adapter;
     try {
+      if (wifi != null) {
+        preferences.write(_wifiNameKey, wifi.ssid).ignore();
+      }
       final devices = await adapter.pair(
         homeId: home.id,
         roomId: _roomId,
         name: name,
         code: _code.text,
         newId: HomeRepository.newId,
+        wifi: wifi,
       );
       for (final device in devices) {
         await repo.saveDevice(device);
@@ -97,13 +175,7 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
       Navigator.of(context).popUntil((route) => pages++ >= 2 || route.isFirst);
     } on MatterException catch (e) {
       if (!mounted) return;
-      setState(() {
-        _error = switch (e.failure) {
-          MatterFailure.unsupported => l.matterErrUnsupported,
-          MatterFailure.unreachable => l.matterErrNotFound,
-          MatterFailure.failed => l.matterErrFailed(e.detail),
-        };
-      });
+      setState(() => _error = _describe(e));
     } on MatterFabricNeedsSync {
       if (!mounted) return;
       setState(() => _error = l.matterErrNeedsSync);
@@ -124,6 +196,9 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
     final rooms = ref.watch(currentRoomsProvider);
+    final isNew = _kind == MatterAddKind.newDevice;
+    String? required(String? v) =>
+        (v ?? '').trim().isEmpty ? l.fieldRequired : null;
 
     return Scaffold(
       appBar: AppBar(title: Text(l.matterAddTitle)),
@@ -132,7 +207,29 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Text(l.matterIntro),
+            SegmentedButton<MatterAddKind>(
+              segments: [
+                ButtonSegment(
+                  value: MatterAddKind.newDevice,
+                  label: Text(l.matterKindNew),
+                  icon: const Icon(Icons.bluetooth_searching),
+                ),
+                ButtonSegment(
+                  value: MatterAddKind.shared,
+                  label: Text(l.matterKindShared),
+                  icon: const Icon(Icons.share_outlined),
+                ),
+              ],
+              selected: {_kind},
+              onSelectionChanged: _busy
+                  ? null
+                  : (picked) => setState(() {
+                      _kind = picked.single;
+                      _error = null;
+                    }),
+            ),
+            const SizedBox(height: 16),
+            Text(isNew ? l.matterIntroNew : l.matterIntro),
             const SizedBox(height: 16),
             TextFormField(
               controller: _code,
@@ -141,6 +238,11 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
                 hintText: '1234-567-8901',
                 helperText: l.matterCodeHint,
                 helperMaxLines: 3,
+                suffixIcon: IconButton(
+                  tooltip: l.matterScan,
+                  icon: const Icon(Icons.qr_code_scanner),
+                  onPressed: _busy ? null : _scan,
+                ),
               ),
               // Codes are digits or the Latin text of a QR code, in any
               // language of the app.
@@ -149,13 +251,48 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
               enableSuggestions: false,
               validator: _checkCode,
             ),
+            if (isNew) ...[
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _ssid,
+                decoration: InputDecoration(
+                  labelText: l.matterWifiName,
+                  helperText: l.matterWifiHint,
+                  helperMaxLines: 3,
+                ),
+                autocorrect: false,
+                enableSuggestions: false,
+                validator: required,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _password,
+                decoration: InputDecoration(
+                  labelText: l.matterWifiPassword,
+                  suffixIcon: IconButton(
+                    tooltip: _showPassword
+                        ? l.matterHidePassword
+                        : l.matterShowPassword,
+                    icon: Icon(
+                      _showPassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                    ),
+                    onPressed: () =>
+                        setState(() => _showPassword = !_showPassword),
+                  ),
+                ),
+                obscureText: !_showPassword,
+                autocorrect: false,
+                enableSuggestions: false,
+              ),
+            ],
             const SizedBox(height: 12),
             TextFormField(
               controller: _name,
               decoration: InputDecoration(labelText: l.name),
               textCapitalization: TextCapitalization.sentences,
-              validator: (v) =>
-                  (v ?? '').trim().isEmpty ? l.fieldRequired : null,
+              validator: required,
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String?>(
@@ -172,7 +309,10 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
             if (_busy)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: Text(l.matterAdding, style: text.bodySmall),
+                child: Text(
+                  isNew ? l.matterAddingNew : l.matterAdding,
+                  style: text.bodySmall,
+                ),
               ),
             if (_error != null)
               Padding(

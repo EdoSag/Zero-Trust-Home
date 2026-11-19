@@ -245,11 +245,12 @@ class MatterAdapter implements DeviceAdapter {
     required String name,
     required String code,
     required String Function() newId,
+    MatterWifi? wifi,
   }) => _serial(() async {
     _adding = true;
     _abandoned = false;
     try {
-      return await _pair(homeId, roomId, name, code, newId);
+      return await _pair(homeId, roomId, name, code, newId, wifi);
     } finally {
       _adding = false;
     }
@@ -261,6 +262,7 @@ class MatterAdapter implements DeviceAdapter {
     String name,
     String code,
     String Function() newId,
+    MatterWifi? wifi,
   ) async {
     void checkAbandoned() {
       if (_abandoned) {
@@ -275,7 +277,11 @@ class MatterAdapter implements DeviceAdapter {
     final nodeId = matterNewNodeId();
     _pairing = nodeId;
     try {
-      await bridge.pair(nodeId: nodeId, code: MatterSetupCode.normalize(code));
+      await bridge.pair(
+        nodeId: nodeId,
+        code: MatterSetupCode.normalize(code),
+        wifi: wifi,
+      );
     } finally {
       _pairing = null;
     }

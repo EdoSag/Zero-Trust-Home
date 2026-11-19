@@ -1,5 +1,6 @@
 package dev.sagron.zerotrusthome
 
+import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -10,6 +11,7 @@ import chip.devicecontroller.ControllerParams
 import chip.devicecontroller.GetConnectedDeviceCallbackJni.GetConnectedDeviceCallback
 import chip.devicecontroller.ICDDeviceInfo
 import chip.devicecontroller.InvokeCallback
+import chip.devicecontroller.NetworkCredentials
 import chip.devicecontroller.ReportCallback
 import chip.devicecontroller.UnpairDeviceCallback
 import chip.devicecontroller.model.ChipAttributePath
@@ -43,8 +45,11 @@ import io.flutter.plugin.common.MethodChannel
  * Errors: `unsupported` (the library can't run on this phone: it is built
  * for 64-bit ARM), `unreachable` (no answer from the device), `failed`.
  */
-class MatterPlugin(context: Context, messenger: BinaryMessenger) :
-    MethodChannel.MethodCallHandler {
+class MatterPlugin(
+    context: Context,
+    messenger: BinaryMessenger,
+    private val host: MatterHost,
+) : MethodChannel.MethodCallHandler {
     private val context = context.applicationContext
     private val channel = MethodChannel(messenger, CHANNEL)
     private val main = Handler(Looper.getMainLooper())
@@ -65,6 +70,7 @@ class MatterPlugin(context: Context, messenger: BinaryMessenger) :
                 "phoneKey" -> result.success(MatterPhoneKey.publicKey(call.argument("fabricId")!!))
                 "start" -> start(call, result)
                 "pair" -> pair(call, result)
+                "scanCode" -> host.scanQrCode { text -> result.success(text) }
                 "cancelPair" -> {
                     failPairing("failed", "Cancelled")
                     result.success(null)
@@ -169,15 +175,55 @@ class MatterPlugin(context: Context, messenger: BinaryMessenger) :
         val on = controller ?: return result.error("failed", "No fabric started", null)
         if (pairing != null) return result.error("failed", "Already adding a device", null)
         val nodeId = id(call.argument("nodeId")!!)
+        val code: String = call.argument("code")!!
+        val ssid: String? = call.argument("ssid")
+        val password: String = call.argument("password") ?: ""
         val timeout = Runnable { failPairing("unreachable", "No device answered") }
-        pairing = Pairing(nodeId, result, timeout)
-        main.postDelayed(timeout, PAIR_TIMEOUT_MS)
-        try {
-            // Found on the network only: the device is on Wi-Fi already.
-            @Suppress("DEPRECATION")
-            on.pairDeviceWithCode(nodeId, call.argument<String>("code")!!, false, true, null, null)
-        } catch (e: Exception) {
-            failPairing(codeOf(e), describe(e))
+        val adding = Pairing(nodeId, result, timeout)
+        pairing = adding
+
+        fun start() {
+            // Cancelled, or another home taken, while Bluetooth was asked for.
+            if (pairing !== adding || controller !== on) return
+            main.postDelayed(timeout, if (ssid == null) PAIR_TIMEOUT_MS else PAIR_NEW_TIMEOUT_MS)
+            try {
+                if (ssid == null) {
+                    // Found on the network only: the device is on Wi-Fi already.
+                    @Suppress("DEPRECATION")
+                    on.pairDeviceWithCode(nodeId, code, false, true, null, null)
+                } else {
+                    // Over Bluetooth (the SDK scans for the code's
+                    // discriminator) or on the network, whichever answers;
+                    // a new device is given the Wi-Fi.
+                    @Suppress("DEPRECATION")
+                    on.pairDeviceWithCode(
+                        nodeId,
+                        code,
+                        false,
+                        false,
+                        null,
+                        NetworkCredentials.forWiFi(
+                            NetworkCredentials.WiFiCredentials(ssid, password),
+                        ),
+                    )
+                }
+            } catch (e: Exception) {
+                failPairing(codeOf(e), describe(e))
+            }
+        }
+
+        if (ssid == null) return start()
+        host.allowBluetooth { allowed ->
+            if (pairing !== adding) return@allowBluetooth
+            if (!allowed) return@allowBluetooth failPairing("bluetoothDenied", "Not allowed")
+            val adapter = (context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager)
+                ?.adapter
+                ?: return@allowBluetooth failPairing("bluetoothOff", "No Bluetooth")
+            if (adapter.isEnabled) return@allowBluetooth start()
+            host.turnOnBluetooth { enabled ->
+                if (pairing !== adding) return@turnOnBluetooth
+                if (enabled && adapter.isEnabled) start() else failPairing("bluetoothOff", "Bluetooth is off")
+            }
         }
     }
 
@@ -521,6 +567,9 @@ class MatterPlugin(context: Context, messenger: BinaryMessenger) :
         // as the name of this controller's maker.
         private const val VENDOR_ID = 0xFFF4
         private const val PAIR_TIMEOUT_MS = 90_000L
+
+        // Bluetooth, the device joining the Wi-Fi, then the network.
+        private const val PAIR_NEW_TIMEOUT_MS = 180_000L
         private const val MIN_INTERVAL_S = 0
         private const val MAX_INTERVAL_S = 60
 
