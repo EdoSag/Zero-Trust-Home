@@ -99,6 +99,7 @@ class MainActivity : FlutterFragmentActivity(), MatterHost {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         matter = MatterPlugin(this, flutterEngine.dartExecutor.binaryMessenger, this)
+        QuickVault.serve(this, flutterEngine.dartExecutor.binaryMessenger)
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             "dev.sagron.zerotrusthome/network",

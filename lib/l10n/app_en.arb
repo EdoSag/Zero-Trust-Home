@@ -392,5 +392,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "quickControls": "Controls without opening the app",
+  "quickControlsBody": "Switch lights, plugs and scenes from the phone's device controls. A copy of your devices and their keys stays on this phone only, sealed by Android."
 }

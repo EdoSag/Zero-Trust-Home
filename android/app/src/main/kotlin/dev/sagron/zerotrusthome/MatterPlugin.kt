@@ -57,14 +57,23 @@ class MatterPlugin(
     private val channel = MethodChannel(messenger, CHANNEL)
     private val main = Handler(Looper.getMainLooper())
 
+    /**
+     * The devices this engine follows. The app and the controls panel's
+     * background engine each have their own; reports go to the one that
+     * asked.
+     */
+    private val subscriptions = HashMap<Int, Following>()
+
     init {
         channel.setMethodCallHandler(this)
-        current = this
+        live.add(this)
     }
 
     fun dispose() {
         channel.setMethodCallHandler(null)
-        if (current === this) current = null
+        for (following in subscriptions.values.toList()) close(following)
+        subscriptions.clear()
+        live.remove(this)
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -107,6 +116,10 @@ class MatterPlugin(
         val adminSubject = id(call.argument("adminSubject")!!)
 
         ensurePlatform(context)
+        // The same home, as the other engine already started it: both use
+        // it as it is, rather than one ending the other's connections.
+        val key = fabricId + ":" + certificate.contentHashCode() + ":" + ipk.contentHashCode()
+        if (controller != null && controllerKey == key) return result.success(null)
         stopController()
         val made = ChipDeviceController(
             ControllerParams.newBuilder()
@@ -127,6 +140,7 @@ class MatterPlugin(
             main.post { issue(made, request, rootCert, ipk, adminSubject) }
         }
         controller = made
+        controllerKey = key
         result.success(null)
     }
 
@@ -138,7 +152,9 @@ class MatterPlugin(
         adminSubject: Long,
     ) {
         if (controller !== on) return
-        val plugin = current ?: return failPairing("failed", "The app closed")
+        // The engine that is adding the device issues its certificate.
+        val plugin = pairing?.owner?.takeIf { live.contains(it) }
+            ?: return failPairing("failed", "The app closed")
         plugin.channel.invokeMethod(
             "issueDevice",
             mapOf("csr" to csr),
@@ -182,7 +198,7 @@ class MatterPlugin(
         val ssid: String? = call.argument("ssid")
         val password: String = call.argument("password") ?: ""
         val timeout = Runnable { failPairing("unreachable", "No device answered") }
-        val adding = Pairing(nodeId, result, timeout)
+        val adding = Pairing(nodeId, result, timeout, this)
         pairing = adding
 
         fun start() {
@@ -514,7 +530,7 @@ class MatterPlugin(
 
     private fun tell(following: Following, method: String, values: Map<String, Any>) {
         if (subscriptions[following.key] !== following) return
-        current?.channel?.invokeMethod(method, values + ("subscription" to following.key))
+        channel.invokeMethod(method, values + ("subscription" to following.key))
     }
 
     /** The library gave up on the subscription, or never got one. */
@@ -523,7 +539,7 @@ class MatterPlugin(
         subscriptions.remove(following.key)
         release(following.on, following.device)
         following.device = 0
-        current?.channel?.invokeMethod(
+        channel.invokeMethod(
             "subscriptionFailed",
             mapOf("subscription" to following.key, "message" to message),
         )
@@ -561,6 +577,7 @@ class MatterPlugin(
         val nodeId: Long,
         val result: MethodChannel.Result,
         val timeout: Runnable,
+        val owner: MatterPlugin,
     )
 
     private class Following(val key: Int, val nodeId: Long) {
@@ -591,8 +608,8 @@ class MatterPlugin(
         private var platform: AndroidChipPlatform? = null
         private var controller: ChipDeviceController? = null
         private var pairing: Pairing? = null
-        private val subscriptions = HashMap<Int, Following>()
-        private var current: MatterPlugin? = null
+        private var controllerKey: String? = null
+        private val live = mutableListOf<MatterPlugin>()
 
         private fun ensurePlatform(context: Context) {
             if (platform != null) return
@@ -620,8 +637,9 @@ class MatterPlugin(
                 Handler(Looper.getMainLooper()).removeCallbacks(it.timeout)
                 it.result.error("failed", "Another home is in use", null)
             }
-            subscriptions.clear()
+            for (plugin in live) plugin.subscriptions.clear()
             controller = null
+            controllerKey = null
             try {
                 old.shutdownSubscriptions()
             } catch (e: Exception) {

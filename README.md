@@ -51,12 +51,20 @@ Phase H0 (the foundation) and the first part of H1 (real devices) are in:
   door locked, blinds closed). Pick what each device does, or copy how
   things are now. Scenes lock doors but never unlock them. Saved as
   encrypted `scene` items and synced.
+- **Device Controls panel (Android 11+):** every device and scene in the
+  phone's controls panel, switched without opening the app. A copy of the
+  devices and how to reach them (Home Assistant token, Matter keys) is
+  kept on the phone only, sealed with a key in the Android Keystore
+  (`QuickVault.kt`), and only while "Controls without opening the app" is
+  on in Settings; it is deleted on sign-out. A background Flutter engine
+  (`lib/quick/quick_engine.dart`, `QuickEngine.kt`) runs the app's own
+  adapters from that copy.
 - **The adapter interface:** each way of reaching devices (Matter, Home
   Assistant, Hue, Tuya/Smart Life, Shelly, Switcher) is one adapter behind
   `DeviceAdapter`. The ones not built yet are listed under "Add a device"
   as coming soon.
 
-Next: the Android Device Controls panel and home screen widgets, then
+Next: home screen widgets, then
 Thread devices and checking devices against the official list of Matter
 manufacturers.
 

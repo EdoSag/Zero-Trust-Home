@@ -59,6 +59,18 @@
             </intent-filter>
         </activity>
 
+        <!-- Devices and scenes in the phone's Device Controls panel (Android 11+). -->
+        <service
+            android:name=".HomeControlsService"
+            android:label="ZT Home"
+            android:exported="true"
+            android:permission="android.permission.BIND_CONTROLS"
+            tools:targetApi="r">
+            <intent-filter>
+                <action android:name="android.service.controls.ControlsProviderService"/>
+            </intent-filter>
+        </service>
+
         <!-- The QR scanner, in any orientation. -->
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"

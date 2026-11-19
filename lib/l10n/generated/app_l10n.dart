@@ -1266,6 +1266,18 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Delete {name}?'**
   String deleteSceneTitle(String name);
+
+  /// No description provided for @quickControls.
+  ///
+  /// In en, this message translates to:
+  /// **'Controls without opening the app'**
+  String get quickControls;
+
+  /// No description provided for @quickControlsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch lights, plugs and scenes from the phone\'s device controls. A copy of your devices and their keys stays on this phone only, sealed by Android.'**
+  String get quickControlsBody;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

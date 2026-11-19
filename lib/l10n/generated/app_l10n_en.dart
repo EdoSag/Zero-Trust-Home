@@ -703,4 +703,11 @@ class AppL10nEn extends AppL10n {
   String deleteSceneTitle(String name) {
     return 'Delete $name?';
   }
+
+  @override
+  String get quickControls => 'Controls without opening the app';
+
+  @override
+  String get quickControlsBody =>
+      'Switch lights, plugs and scenes from the phone\'s device controls. A copy of your devices and their keys stays on this phone only, sealed by Android.';
 }
