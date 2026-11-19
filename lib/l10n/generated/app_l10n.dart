@@ -696,6 +696,96 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'{name} added'**
   String deviceAdded(String name);
+
+  /// No description provided for @matterAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a Matter device'**
+  String get matterAddTitle;
+
+  /// No description provided for @matterIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'For now the device has to be on your Wi-Fi already: set it up in its own app, or in Google Home or Apple Home. There, choose to connect it to another app or to turn on pairing mode, and you get a setup code. Brand-new devices, straight out of the box, come in a later version.'**
+  String get matterIntro;
+
+  /// No description provided for @matterCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup code'**
+  String get matterCode;
+
+  /// No description provided for @matterCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The 11 or 21 digits, or the text of the QR code (it starts with MT:). The phone has to be on the same Wi-Fi as the device.'**
+  String get matterCodeHint;
+
+  /// No description provided for @matterCodeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This isn\'t a Matter setup code. It is 11 or 21 digits, or text that starts with MT:'**
+  String get matterCodeInvalid;
+
+  /// No description provided for @matterCodeTypo.
+  ///
+  /// In en, this message translates to:
+  /// **'One of the digits is wrong. Check the code and type it again.'**
+  String get matterCodeTypo;
+
+  /// No description provided for @matterCodeTooNew.
+  ///
+  /// In en, this message translates to:
+  /// **'This code is from a newer kind of Matter device that this version can\'t add yet.'**
+  String get matterCodeTooNew;
+
+  /// No description provided for @matterDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'Matter device'**
+  String get matterDefaultName;
+
+  /// No description provided for @matterAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get matterAdd;
+
+  /// No description provided for @matterAdding.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for the device and adding it to your home. This can take up to a minute.'**
+  String get matterAdding;
+
+  /// No description provided for @matterErrUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone can\'t run Matter. It needs a 64-bit ARM phone, which most phones from recent years are.'**
+  String get matterErrUnsupported;
+
+  /// No description provided for @matterErrNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'The device wasn\'t found. Check that it is in pairing mode, that the code is the one it gave now (codes expire after a few minutes), and that this phone is on the same Wi-Fi.'**
+  String get matterErrNotFound;
+
+  /// No description provided for @matterErrFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The device couldn\'t be added. {detail}'**
+  String matterErrFailed(String detail);
+
+  /// No description provided for @matterErrNeedsSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to the internet and try again. The home\'s Matter keys are saved to your account before the first device is added, so your other phones get the same ones.'**
+  String get matterErrNeedsSync;
+
+  /// No description provided for @matterErrKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'The home\'s Matter keys couldn\'t be read. Sync this phone and try again.'**
+  String get matterErrKeys;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

@@ -125,6 +125,13 @@ class FakeAdapter implements DeviceAdapter {
   final _changes = StreamController<String>.broadcast();
   final sent = <(String, DeviceCommand)>[];
   bool failing = false;
+  final forgotten = <String>[];
+
+  @override
+  Future<void> forget(
+    HomeDevice device, {
+    required List<HomeDevice> others,
+  }) async => forgotten.add(device.id);
 
   DeviceState stateOf(String deviceId) =>
       _states[deviceId] ?? const DeviceState(values: {Capability.onOff: false});

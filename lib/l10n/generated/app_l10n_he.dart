@@ -350,4 +350,61 @@ class AppL10nHe extends AppL10n {
   String deviceAdded(String name) {
     return '$name נוסף';
   }
+
+  @override
+  String get matterAddTitle => 'הוספת מכשיר Matter';
+
+  @override
+  String get matterIntro =>
+      'בינתיים המכשיר צריך להיות כבר מחובר ל-Wi-Fi שלך: מגדירים אותו באפליקציה שלו, או ב-Google Home או ב-Apple Home. שם בוחרים לחבר אותו לאפליקציה נוספת או להפעיל מצב צימוד, ומקבלים קוד הגדרה. מכשירים חדשים, ישר מהקופסה, יגיעו בגרסה מאוחרת יותר.';
+
+  @override
+  String get matterCode => 'קוד הגדרה';
+
+  @override
+  String get matterCodeHint =>
+      '11 או 21 הספרות, או הטקסט של קוד ה-QR (מתחיל ב-MT:). הטלפון צריך להיות באותו Wi-Fi כמו המכשיר.';
+
+  @override
+  String get matterCodeInvalid =>
+      'זה לא קוד הגדרה של Matter. הקוד הוא 11 או 21 ספרות, או טקסט שמתחיל ב-MT:';
+
+  @override
+  String get matterCodeTypo =>
+      'אחת הספרות שגויה. כדאי לבדוק את הקוד ולהקליד אותו שוב.';
+
+  @override
+  String get matterCodeTooNew =>
+      'הקוד שייך לסוג חדש יותר של מכשירי Matter, שהגרסה הזו עדיין לא יודעת להוסיף.';
+
+  @override
+  String get matterDefaultName => 'מכשיר Matter';
+
+  @override
+  String get matterAdd => 'הוספה';
+
+  @override
+  String get matterAdding =>
+      'מחפשים את המכשיר ומוסיפים אותו לבית. זה יכול לקחת עד דקה.';
+
+  @override
+  String get matterErrUnsupported =>
+      'הטלפון הזה לא יכול להריץ Matter. נדרש טלפון ARM של 64 ביט, כמו רוב הטלפונים מהשנים האחרונות.';
+
+  @override
+  String get matterErrNotFound =>
+      'המכשיר לא נמצא. כדאי לבדוק שהוא במצב צימוד, שהקוד הוא זה שהתקבל עכשיו (קודים פגים אחרי כמה דקות), ושהטלפון באותו Wi-Fi.';
+
+  @override
+  String matterErrFailed(String detail) {
+    return 'לא הצלחנו להוסיף את המכשיר. $detail';
+  }
+
+  @override
+  String get matterErrNeedsSync =>
+      'יש להתחבר לאינטרנט ולנסות שוב. מפתחות ה-Matter של הבית נשמרים בחשבון שלך לפני הוספת המכשיר הראשון, כדי שגם הטלפונים האחרים שלך יקבלו אותם.';
+
+  @override
+  String get matterErrKeys =>
+      'לא ניתן לקרוא את מפתחות ה-Matter של הבית. יש לסנכרן את הטלפון ולנסות שוב.';
 }

@@ -41,6 +41,13 @@ class MatterSetupCode {
     return _parseManual(text.replaceAll(RegExp(r'[\s-]'), ''));
   }
 
+  /// The code as the Matter library takes it: a typed code as digits
+  /// only, a QR code's text trimmed.
+  static String normalize(String input) {
+    final text = input.trim();
+    return isQr(text) ? text : text.replaceAll(RegExp(r'[\s-]'), '');
+  }
+
   /// Whether [input] looks like a Matter QR code at all (a camera sees
   /// other QR codes too).
   static bool isQr(String input) =>

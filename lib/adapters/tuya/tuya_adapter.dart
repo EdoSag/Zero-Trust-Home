@@ -264,6 +264,15 @@ class TuyaAdapter implements DeviceAdapter {
   }
 
   @override
+  Future<void> forget(
+    HomeDevice device, {
+    required List<HomeDevice> others,
+  }) async {
+    final address = TuyaAddress.parse(device.address);
+    if (address != null) discovery.forget(address.deviceId);
+  }
+
+  @override
   Future<void> send(HomeDevice device, DeviceCommand command) async {
     final address = TuyaAddress.parse(device.address);
     final dps = address?.write(command);

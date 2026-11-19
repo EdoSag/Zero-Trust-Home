@@ -349,4 +349,61 @@ class AppL10nEn extends AppL10n {
   String deviceAdded(String name) {
     return '$name added';
   }
+
+  @override
+  String get matterAddTitle => 'Add a Matter device';
+
+  @override
+  String get matterIntro =>
+      'For now the device has to be on your Wi-Fi already: set it up in its own app, or in Google Home or Apple Home. There, choose to connect it to another app or to turn on pairing mode, and you get a setup code. Brand-new devices, straight out of the box, come in a later version.';
+
+  @override
+  String get matterCode => 'Setup code';
+
+  @override
+  String get matterCodeHint =>
+      'The 11 or 21 digits, or the text of the QR code (it starts with MT:). The phone has to be on the same Wi-Fi as the device.';
+
+  @override
+  String get matterCodeInvalid =>
+      'This isn\'t a Matter setup code. It is 11 or 21 digits, or text that starts with MT:';
+
+  @override
+  String get matterCodeTypo =>
+      'One of the digits is wrong. Check the code and type it again.';
+
+  @override
+  String get matterCodeTooNew =>
+      'This code is from a newer kind of Matter device that this version can\'t add yet.';
+
+  @override
+  String get matterDefaultName => 'Matter device';
+
+  @override
+  String get matterAdd => 'Add';
+
+  @override
+  String get matterAdding =>
+      'Looking for the device and adding it to your home. This can take up to a minute.';
+
+  @override
+  String get matterErrUnsupported =>
+      'This phone can\'t run Matter. It needs a 64-bit ARM phone, which most phones from recent years are.';
+
+  @override
+  String get matterErrNotFound =>
+      'The device wasn\'t found. Check that it is in pairing mode, that the code is the one it gave now (codes expire after a few minutes), and that this phone is on the same Wi-Fi.';
+
+  @override
+  String matterErrFailed(String detail) {
+    return 'The device couldn\'t be added. $detail';
+  }
+
+  @override
+  String get matterErrNeedsSync =>
+      'Connect to the internet and try again. The home\'s Matter keys are saved to your account before the first device is added, so your other phones get the same ones.';
+
+  @override
+  String get matterErrKeys =>
+      'The home\'s Matter keys couldn\'t be read. Sync this phone and try again.';
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../adapters/device_adapter.dart';
 import '../l10n/l10n.dart';
+import 'matter_add_page.dart';
 import 'tuya_add_page.dart';
 
 /// The ways a device can be added. One that this version can't do yet is
@@ -75,6 +76,9 @@ class _ConnectionRow extends StatelessWidget {
           ? const Icon(Icons.chevron_right)
           : Text(l.comingSoon, style: Theme.of(context).textTheme.labelSmall),
       onTap: switch (kind) {
+        ConnectionKind.matter => () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => const MatterAddPage())),
         ConnectionKind.tuya => () => Navigator.of(
           context,
         ).push(MaterialPageRoute<void>(builder: (_) => const TuyaAddPage())),

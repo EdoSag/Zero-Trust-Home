@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/home_store.dart';
 import '../model/device.dart';
+import 'matter/matter_adapter.dart';
+import 'matter/matter_providers.dart';
 import 'tuya/tuya_adapter.dart';
 import 'tuya/tuya_providers.dart';
 
@@ -18,6 +20,11 @@ abstract class DeviceAdapter {
 
   /// Throws when the device didn't take the command.
   Future<void> send(HomeDevice device, DeviceCommand command);
+
+  /// The device is being deleted from the app: drop what is kept about it
+  /// and, where the device itself has to be told, tell it. [others] are
+  /// the remaining devices of this adapter. Never throws.
+  Future<void> forget(HomeDevice device, {required List<HomeDevice> others});
 }
 
 /// How a device is added. Shown on the "Add a device" page, in this order;
@@ -36,7 +43,10 @@ enum ConnectionKind {
 
 /// The adapters this build has, by id. Tests register their own.
 final deviceAdaptersProvider = Provider<Map<String, DeviceAdapter>>(
-  (ref) => {TuyaAdapter.adapterId: ref.watch(tuyaAdapterProvider)},
+  (ref) => {
+    MatterAdapter.adapterId: ref.watch(matterAdapterProvider),
+    TuyaAdapter.adapterId: ref.watch(tuyaAdapterProvider),
+  },
 );
 
 /// The live state of one device, by id. Null while there is no adapter for
@@ -68,5 +78,23 @@ class DeviceControl {
       throw StateError('No adapter "${device.adapter}" on this phone');
     }
     await adapter.send(device, command);
+  }
+
+  /// Call before a device is deleted (see [DeviceAdapter.forget]).
+  Future<void> forget(HomeDevice device) async {
+    final adapter = _ref.read(deviceAdaptersProvider)[device.adapter];
+    if (adapter == null) return;
+    final devices = _ref.read(devicesProvider).value ?? const <HomeDevice>[];
+    try {
+      await adapter.forget(
+        device,
+        others: [
+          for (final d in devices)
+            if (d.adapter == device.adapter && d.id != device.id) d,
+        ],
+      );
+    } on Object {
+      // Deleting from the app never depends on the device answering.
+    }
   }
 }
