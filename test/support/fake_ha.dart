@@ -24,6 +24,9 @@ class FakeHa {
   /// What answers isn't Home Assistant: no greeting.
   bool silent = false;
 
+  /// Signs in, then refuses to list states.
+  bool failStates = false;
+
   int get open => sockets.where((s) => !s.closed).length;
 
   Future<HaSocket> connect(Uri uri) async {
@@ -113,6 +116,13 @@ class FakeHaSocket implements HaSocket {
         }
       case _ when !_signedIn:
         _drop();
+      case 'get_states' when ha.failStates:
+        _out({
+          'id': id,
+          'type': 'result',
+          'success': false,
+          'error': {'code': 'unknown_error', 'message': 'Busy'},
+        });
       case 'get_states':
         ok([...ha.states.values]);
       case 'subscribe_events':

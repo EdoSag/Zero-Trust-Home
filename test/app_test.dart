@@ -5,6 +5,7 @@ import 'package:zerotrust_home/model/device.dart';
 import 'package:zerotrust_home/model/home.dart';
 import 'package:zerotrust_home/ui/add_device_page.dart';
 import 'package:zerotrust_home/ui/home_page.dart';
+import 'package:zerotrust_home/ui/homes_page.dart';
 
 import 'support/app.dart';
 
@@ -324,6 +325,36 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(find.text('Living room'), findsOneWidget);
+  });
+
+  testWidgets('deleting a home: an unplugged device holds up no other', (
+    tester,
+  ) async {
+    final fake = FakeAdapter()..hanging.add('d1');
+    await tester.pumpWidget(
+      app(
+        const HomesPage(),
+        homes: const [flat],
+        devices: [
+          plug(),
+          plug(id: 'd2', name: 'Lamp'),
+        ],
+        adapters: [fake],
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(PopupMenuButton<String>).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pump();
+    // The second one is tried while the home and its keys are still there.
+    await tester.pump(const Duration(seconds: 11));
+    expect(fake.forgotten, ['d1', 'd2']);
+    await tester.pumpAndSettle();
+    expect(repo.homes, isEmpty);
+    expect(repo.devices, isEmpty);
   });
 
   testWidgets('add a device: ways without an adapter are "Coming soon"', (

@@ -96,8 +96,16 @@ class HomeAssistantAdapter implements DeviceAdapter {
     if (server == null || _disposed) return null;
     final old = _sessions[homeId];
     if (old != null && old.server.signature == server.signature) return old;
-    old?.dispose();
-    return _sessions[homeId] = _HaSession(this, server);
+    final next = _sessions[homeId] = _HaSession(this, server);
+    if (old != null) {
+      // New address or token: what is on screen moves to the new
+      // connection rather than staying on the old one.
+      next._listeners.addAll(old._listeners);
+      old._listeners.clear();
+      old.dispose();
+      if (next._watched) next._start();
+    }
+    return next;
   }
 
   @override
@@ -117,6 +125,8 @@ class HomeAssistantAdapter implements DeviceAdapter {
         session!.listen(address.entityId, out);
       },
       onCancel: () {
+        // The session may have been replaced since (a new token).
+        _sessions[device.homeId]?.leave(address.entityId, out);
         session?.leave(address.entityId, out);
         return out.close();
       },
@@ -215,14 +225,14 @@ class _HaSession {
     final client = _client;
     if (client != null && !client.isClosed) return Future.value(client);
     return _connecting ??= () async {
+      HaClient? attempt;
       try {
-        final client = await HaClient.connect(
+        final client = attempt = await HaClient.connect(
           adapter.connect,
           server.socketUri,
           server.token,
         );
         if (_disposed) {
-          await client.close();
           throw const HaException(HaFailure.unreachable, 'closed');
         }
         final changes = await client.changes();
@@ -243,6 +253,10 @@ class _HaSession {
         _emitAll();
         return client;
       } on Object {
+        // Signed in but not set up: this connection is closed, not left
+        // open beside the next attempt.
+        attempt?.close().ignore();
+        _states.clear();
         _failures++;
         _emitAll(); // As unreachable: there is no state now.
         _scheduleRetry();
