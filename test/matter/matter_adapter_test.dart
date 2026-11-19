@@ -88,6 +88,55 @@ void main() {
     }, hasLength(1));
   });
 
+  test('a bridge gives its devices with the names they have there', () async {
+    bridge = FakeMatterBridge(
+      parts: {
+        1: FakePart(deviceType: 0x0101, dims: true, bridgedName: 'Desk lamp'),
+        2: FakePart(bridgedName: ' Heater '),
+        // No name on the bridge: numbered like the parts of a power strip.
+        3: FakePart(bridgedName: ''),
+      },
+    );
+    final devices = await pair(adapterOn(bridge));
+    expect(
+      [for (final d in devices) d.name],
+      ['Desk lamp', 'Heater', 'Lamp 3'],
+    );
+    expect(devices[0].type, DeviceType.light);
+  });
+
+  test('a device its bridge has lost is not reachable; the rest are', () async {
+    bridge = FakeMatterBridge(
+      parts: {
+        1: FakePart(bridgedName: 'Desk lamp'),
+        2: FakePart(bridgedName: 'Heater'),
+      },
+    );
+    final adapter = adapterOn(bridge);
+    final devices = await pair(adapter);
+    final nodeId = MatterAddress.parse(devices[0].address)!.nodeId;
+    final desk = <DeviceState>[];
+    final heater = <DeviceState>[];
+    final a = adapter.watch(devices[0]).listen(desk.add);
+    final b = adapter.watch(devices[1]).listen(heater.add);
+    await pumpEventQueue();
+    expect(desk.last.reachable, isTrue);
+    expect(heater.last.reachable, isTrue);
+
+    bridge.parts[1]!.bridgedReachable = false;
+    bridge.report(nodeId);
+    await pumpEventQueue();
+    expect(desk.last.reachable, isFalse);
+    expect(heater.last.reachable, isTrue);
+
+    bridge.parts[1]!.bridgedReachable = true;
+    bridge.report(nodeId);
+    await pumpEventQueue();
+    expect(desk.last.reachable, isTrue);
+    await a.cancel();
+    await b.cancel();
+  });
+
   test('a wrong code adds nothing', () async {
     final adapter = adapterOn(bridge);
     await expectLater(
