@@ -1,0 +1,446 @@
+{
+  "@@locale": "en",
+  "appTitle": "ZT Home",
+  "settings": "Settings",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "rename": "Rename",
+  "add": "Add",
+  "name": "Name",
+  "setupTitle": "Set up your home",
+  "setupBody": "Name your home and pick its rooms. You can change both later.",
+  "setupStart": "Set up my home",
+  "homeName": "Home name",
+  "defaultHomeName": "My home",
+  "pickRooms": "Which rooms does it have?",
+  "createHome": "Create home",
+  "roomLiving": "Living room",
+  "roomKitchen": "Kitchen",
+  "roomBedroom": "Bedroom",
+  "roomBathroom": "Bathroom",
+  "roomOffice": "Office",
+  "roomKids": "Kids' room",
+  "roomHallway": "Hallway",
+  "roomBalcony": "Balcony",
+  "roomGarden": "Garden",
+  "roomGarage": "Garage",
+  "roomOther": "Other room",
+  "addDevice": "Add a device",
+  "addRoom": "Add a room",
+  "roomName": "Room name",
+  "roomType": "Type of room",
+  "noDevicesTitle": "No devices yet",
+  "noDevicesBody": "Add your lights, plugs and sensors to control them from here.",
+  "favourites": "Favourites",
+  "noRoom": "Not in a room",
+  "stateOn": "On",
+  "stateOff": "Off",
+  "stateUnreachable": "Not responding",
+  "stateUnsupported": "Needs a newer ZT Home",
+  "deviceRoom": "Room",
+  "deviceFavourite": "Show in Favourites",
+  "removeDevice": "Remove device",
+  "deleteRoom": "Delete room",
+  "renameRoom": "Rename room",
+  "roomEmptyTitle": "Nothing in this room yet",
+  "roomEmptyBody": "Add a device, or move one here from its details.",
+  "homes": "Homes",
+  "manageHomes": "Manage homes",
+  "addHome": "Add a home",
+  "renameHome": "Rename home",
+  "deleteHome": "Delete home",
+  "addDeviceIntro": "Pick how the device connects. ZT Home talks to devices directly over your home network wherever the device allows it.",
+  "connMatter": "Matter",
+  "connMatterBody": "Devices with the Matter logo, from any brand, including ones already in Google Home or Apple Home.",
+  "connHa": "Home Assistant",
+  "connHaBody": "Everything your Home Assistant already controls: Zigbee, Z-Wave and more.",
+  "connHue": "Philips Hue",
+  "connHueBody": "Lights and sensors on a Hue Bridge.",
+  "connTuya": "Tuya / Smart Life",
+  "connTuyaBody": "Plugs, lights and switches set up with the Smart Life or Tuya app.",
+  "connShelly": "Shelly",
+  "connShellyBody": "Shelly relays, plugs and sensors.",
+  "connSwitcher": "Switcher",
+  "connSwitcherBody": "Switcher water heater switches and plugs.",
+  "comingSoon": "Coming soon",
+  "deviceCount": "{n, plural, =0{No devices} =1{1 device} other{{n} devices}}",
+  "@deviceCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "commandFailed": "{name} didn't respond. Try again.",
+  "@commandFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "removeDeviceBody": "{name} is removed from this home. The device itself isn't reset.",
+  "@removeDeviceBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteRoomBody": "{name} is deleted. Its devices stay in the home, without a room.",
+  "@deleteRoomBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteHomeBody": "{name} is deleted with its rooms and devices, on all your phones. Matter devices are let go so they can be added again; other devices aren't reset.",
+  "@deleteHomeBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "copy": "Copy",
+  "copied": "Copied",
+  "powerNow": "Power now",
+  "tuyaIntro": "Devices that are set up in the Smart Life or Tuya app. ZT Home then talks to them directly over your Wi-Fi, without Tuya's servers.",
+  "tuyaSearching": "Looking for devices on your Wi-Fi…",
+  "tuyaSearchHint": "The phone has to be on the same Wi-Fi as the device. A device can take up to 10 seconds to show up.",
+  "tuyaAlreadyAdded": "Already added",
+  "tuyaManual": "Enter the address by hand",
+  "tuyaPairTitle": "Connect the device",
+  "tuyaDefaultName": "Smart plug",
+  "tuyaIp": "IP address",
+  "tuyaDeviceId": "Device ID",
+  "tuyaVersion": "Protocol version",
+  "tuyaLocalKey": "Local key",
+  "tuyaLocalKeyHelp": "Where do I find the local key?",
+  "tuyaKeyLength": "A local key has 16 characters.",
+  "fieldRequired": "Required",
+  "tuyaConnect": "Connect",
+  "tuyaErrKey": "The device didn't accept this key. Check the key, and the protocol version if you entered it by hand. The key changes when a device is removed and set up again in Smart Life.",
+  "tuyaKeyHelpTitle": "Finding the local key",
+  "tuyaKeyHelpBody": "Each device has a secret local key, given to it when it is set up in the Smart Life app. ZT Home needs it once, to talk to the device directly. Tuya only shows it on its developer site:\n\n1. Sign up for free at iot.tuya.com and create a cloud project.\n2. In the project, open Devices, choose Link App Account and scan the code with the Smart Life app.\n3. In API Explorer, run \"Query Device Details\" with the Device ID below, and copy \"local_key\" from the answer.\n\nThe key is saved encrypted in your ZT account. It never leaves your devices unencrypted.",
+  "close": "Close",
+  "showKey": "Show the key",
+  "hideKey": "Hide the key",
+  "stateWithPower": "{state} · {watts} W",
+  "@stateWithPower": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      },
+      "watts": {
+        "type": "String"
+      }
+    }
+  },
+  "watts": "{watts} W",
+  "@watts": {
+    "placeholders": {
+      "watts": {
+        "type": "String"
+      }
+    }
+  },
+  "tuyaFound": "Device at {ip}",
+  "@tuyaFound": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "tuyaFoundDetails": "ID ending in {tail} · protocol {version}",
+  "@tuyaFoundDetails": {
+    "placeholders": {
+      "tail": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "tuyaTooOld": "Protocol {version} isn't supported yet",
+  "@tuyaTooOld": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "tuyaErrUnreachable": "No answer from {ip}. Check that the device is plugged in and on the same Wi-Fi as this phone.",
+  "@tuyaErrUnreachable": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceAdded": "{name} added",
+  "@deviceAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "matterAddTitle": "Add a Matter device",
+  "matterIntro": "A device already set up in another app (its own app, Google Home or Apple Home): there, choose to share it with another app or to turn on pairing mode, and enter the code you get. The phone has to be on the same Wi-Fi as the device.",
+  "matterCode": "Setup code",
+  "matterCodeHint": "The 11 or 21 digits, or the text of the QR code (it starts with MT:).",
+  "matterCodeInvalid": "This isn't a Matter setup code. It is 11 or 21 digits, or text that starts with MT:",
+  "matterCodeTypo": "One of the digits is wrong. Check the code and type it again.",
+  "matterCodeTooNew": "This code is from a newer kind of Matter device that this version can't add yet.",
+  "matterDefaultName": "Matter device",
+  "matterAdd": "Add",
+  "matterAdding": "Looking for the device and adding it to your home. This can take up to a minute.",
+  "matterErrUnsupported": "This phone can't run Matter. It needs a 64-bit ARM phone, which most phones from recent years are.",
+  "matterErrNotFound": "The device wasn't found. Check that it is in pairing mode, that the code is the one it gave now (codes expire after a few minutes), and that this phone is on the same Wi-Fi.",
+  "matterErrFailed": "The device couldn't be added. {detail}",
+  "@matterErrFailed": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "matterErrNeedsSync": "Connect to the internet and try again. The home's Matter keys are saved to your account before the first device is added, so your other phones get the same ones.",
+  "matterErrKeys": "The home's Matter keys couldn't be read. Sync this phone and try again.",
+  "matterKindNew": "New device",
+  "matterKindShared": "Already set up",
+  "matterIntroNew": "A new device, or one that was reset: plug it in so it is in pairing mode, keep the phone close to it, and scan the QR code on the device or its box. The phone finds it over Bluetooth and gives it your Wi-Fi. Devices that use Thread instead of Wi-Fi can't be added yet.",
+  "matterScan": "Scan the QR code",
+  "matterScanNotMatter": "That QR code isn't a Matter code. The Matter one is usually next to the Matter logo, on the device or its box.",
+  "matterWifiName": "Wi-Fi name",
+  "matterWifiHint": "The device joins this Wi-Fi. Most devices need a 2.4 GHz network. The password is only given to the device, never saved.",
+  "matterWifiPassword": "Wi-Fi password",
+  "matterShowPassword": "Show the password",
+  "matterHidePassword": "Hide the password",
+  "matterAddingNew": "Looking for the device, giving it the Wi-Fi and adding it to your home. This can take up to two minutes. Keep the phone close to it.",
+  "matterErrBluetoothOff": "Turn on Bluetooth to add a new device, then try again.",
+  "matterErrBluetoothDenied": "ZT Home needs the Nearby devices permission to find a new device over Bluetooth. Allow it in the app's settings, then try again.",
+  "matterErrLocationOff": "Turn on Location to add a new device. On this version of Android, phones can only find Bluetooth devices while Location is on.",
+  "matterErrNotFoundNew": "The device wasn't found. Check that it is in pairing mode (often: just plugged in, or its button held until it blinks), keep the phone close to it, and check the Wi-Fi name and password.",
+  "tryAgain": "Try again",
+  "haIntro": "Connect your Home Assistant once, and pick which of its devices to show here. The app talks to it on your home network; the token is encrypted with the rest of your home.",
+  "haAddress": "Home Assistant address",
+  "haAddressHint": "Use its IP address if homeassistant.local doesn't work on this phone.",
+  "haAddressBad": "Enter an address like http://192.168.1.10:8123",
+  "haToken": "Long-lived access token",
+  "haTokenHint": "In Home Assistant, open your profile, then Security, and create a long-lived access token at the bottom of the page. Paste it here.",
+  "haConnect": "Connect",
+  "haChangeServer": "Change address or token",
+  "haConnectedTo": "Connected to {url}. Pick the devices to show in this home.",
+  "@haConnectedTo": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "haNothing": "Home Assistant has no lights, switches, sensors or other devices this app can show yet.",
+  "haAlreadyAdded": "Already in this home",
+  "haAdd": "{n, plural, =0{Add devices} =1{Add 1 device} other{Add {n} devices}}",
+  "@haAdd": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "haAdded": "{n, plural, =1{1 device added} other{{n} devices added}}",
+  "@haAdded": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "haErrUnreachable": "Home Assistant didn't answer at that address. Check that this phone is on your home Wi-Fi and the address is right.",
+  "haErrToken": "Home Assistant didn't accept the token. Create a new one and paste all of it.",
+  "haErrNotHa": "Something answered at that address, but it isn't Home Assistant. Check the address and port (usually 8123).",
+  "haErrFailed": "Home Assistant refused: {detail}",
+  "@haErrFailed": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "stateLocked": "Locked",
+  "stateUnlocked": "Unlocked",
+  "stateOpen": "Open",
+  "stateClosed": "Closed",
+  "stateOpenPercent": "Open {n}%",
+  "@stateOpenPercent": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "stateMotion": "Motion",
+  "stateNoMotion": "No motion",
+  "degrees": "{value}°C",
+  "@degrees": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "setTo": "set to {value}",
+  "@setTo": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "percent": "{n}%",
+  "@percent": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "batteryLevel": "Battery {n}%",
+  "@batteryLevel": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "brightness": "Brightness",
+  "fanSpeed": "Speed",
+  "position": "Position",
+  "open": "Open",
+  "lock": "Lock",
+  "unlock": "Unlock",
+  "unlockTitle": "Unlock {name}?",
+  "@unlockTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "unlockBody": "The door can then be opened by anyone who is there.",
+  "targetTemperature": "Set to",
+  "colder": "Colder",
+  "warmer": "Warmer",
+  "temperatureNow": "Temperature",
+  "humidity": "Humidity",
+  "contact": "Door or window",
+  "motion": "Motion",
+  "energy": "Energy used",
+  "kwh": "{value} kWh",
+  "@kwh": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "battery": "Battery",
+  "scenes": "Scenes",
+  "addScene": "Add scene",
+  "newScene": "New scene",
+  "editScene": "Edit scene",
+  "sceneName": "Scene name",
+  "sceneNameHint": "Like Good night or Movie",
+  "sceneCopyNow": "Copy how things are now",
+  "sceneDontChange": "Don't change",
+  "scenePartOpen": "Part open",
+  "sceneSetTemperature": "Set temperature",
+  "sceneNeedsName": "Give the scene a name.",
+  "sceneNeedsDevice": "Pick at least one device to change.",
+  "sceneNoUnlock": "A scene can lock a door but never unlocks one.",
+  "sceneEditHint": "Touch and hold a scene to change it.",
+  "deleteSceneBody": "Your devices stay as they are.",
+  "sceneDone": "{name} is set.",
+  "@sceneDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sceneFailed": "{name}: no answer from {devices}.",
+  "@sceneFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "devices": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteSceneTitle": "Delete {name}?",
+  "@deleteSceneTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickControls": "Show devices outside the app",
+  "quickControlsBody": "Off: the phone's controls panel only opens ZT Home. On: the names of your homes, rooms, devices and scenes are kept on this phone, sealed by Android, so the panel can list them. A tap there opens ZT Home and is carried out once you unlock. How to reach your devices never leaves the app.",
+  "quickTurnedOn": "{name} is on.",
+  "@quickTurnedOn": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickTurnedOff": "{name} is off.",
+  "@quickTurnedOff": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickLocked": "{name} is locked.",
+  "@quickLocked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickOpened": "{name} is open.",
+  "@quickOpened": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickClosed": "{name} is closed.",
+  "@quickClosed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickNoAnswer": "{name} didn't answer.",
+  "@quickNoAnswer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
+}

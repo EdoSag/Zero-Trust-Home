@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Texts of ZT Home in the phone's Device Controls panel. -->
+<resources>
+    <string name="quick_scene">Scene</string>
+    <string name="quick_tap_to_open">Opens ZT Home</string>
+</resources>
