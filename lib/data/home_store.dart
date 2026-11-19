@@ -8,6 +8,7 @@ import '../adapters/homeassistant/ha_server.dart';
 import '../adapters/matter/matter_fabric.dart';
 import '../model/device.dart';
 import '../model/home.dart';
+import '../model/scene.dart';
 
 /// Homes, rooms and devices are items of the Home app, sealed with its own
 /// key (`app = 'home'`): `kind` home, room and device. No database change.
@@ -44,6 +45,14 @@ final fabricsCollection = ZtCollection<MatterFabric>(
 final haServersCollection = ZtCollection<HaServer>(
   kind: 'ha-server',
   fromJson: (id, json, _) => HaServer.fromJson(json),
+  toJson: (s) => s.toJson(),
+  idOf: (s) => s.id,
+);
+
+/// Scenes: several devices set with one tap.
+final scenesCollection = ZtCollection<Scene>(
+  kind: 'scene',
+  fromJson: (id, json, _) => Scene.fromJson(id, json),
   toJson: (s) => s.toJson(),
   idOf: (s) => s.id,
 );
@@ -134,6 +143,21 @@ final currentDevicesProvider = Provider<List<HomeDevice>>((ref) {
   return devices.where((d) => d.homeId == home?.id).toList()..sort((a, b) {
     final byName = a.name.toLowerCase().compareTo(b.name.toLowerCase());
     return byName != 0 ? byName : a.id.compareTo(b.id);
+  });
+});
+
+/// Every scene of every home.
+final scenesProvider = StreamProvider<List<Scene>>(
+  (ref) => _watch(ref, scenesCollection),
+);
+
+/// The current home's scenes, in order.
+final currentScenesProvider = Provider<List<Scene>>((ref) {
+  final home = ref.watch(currentHomeProvider);
+  final scenes = ref.watch(scenesProvider).value ?? const <Scene>[];
+  return scenes.where((s) => s.homeId == home?.id).toList()..sort((a, b) {
+    final byOrder = a.order.compareTo(b.order);
+    return byOrder != 0 ? byOrder : a.id.compareTo(b.id);
   });
 });
 
@@ -255,6 +279,31 @@ class HomeRepository {
     return usable((await loadFabric(homeId))!);
   }
 
+  Future<List<Scene>> allScenes() async => scenesCollection.list(await _store);
+  Future<void> saveScene(Scene s) async =>
+      scenesCollection.save(_sync, await _store, s);
+  Future<void> removeScene(String id) => scenesCollection.delete(_sync, id);
+
+  /// A new scene at the end of its home's.
+  Future<Scene> addScene(
+    String homeId,
+    String name,
+    List<SceneAction> actions,
+  ) async {
+    final last = (await allScenes())
+        .where((s) => s.homeId == homeId)
+        .fold(-1, (max, s) => s.order > max ? s.order : max);
+    final scene = Scene(
+      id: newId(),
+      homeId: homeId,
+      name: name,
+      actions: actions,
+      order: last + 1,
+    );
+    await saveScene(scene);
+    return scene;
+  }
+
   Future<void> removeHome(String id) => homesCollection.delete(_sync, id);
   Future<void> removeRoom(String id) => roomsCollection.delete(_sync, id);
   Future<void> deleteDevice(String id) => devicesCollection.delete(_sync, id);
@@ -308,8 +357,11 @@ class HomeRepository {
     await removeRoom(id);
   }
 
-  /// Deletes a home with its rooms and devices.
+  /// Deletes a home with its rooms, devices and scenes.
   Future<void> deleteHome(String id) async {
+    for (final s in await allScenes()) {
+      if (s.homeId == id) await removeScene(s.id);
+    }
     for (final d in await allDevices()) {
       if (d.homeId == id) await deleteDevice(d.id);
     }

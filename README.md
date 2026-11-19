@@ -43,13 +43,22 @@ Phase H0 (the foundation) and the first part of H1 (real devices) are in:
   connection per home, on the home network, open while its devices are on
   screen; live state follows Home Assistant's `state_changed` events. The
   token is saved in the home's encrypted `ha-server` item.
+- **Controls for every kind of device:** tiles say what each device is
+  doing ("Locked", "Open 40%", "On · 19.5°C · set to 21°C"); the details
+  sheet dims lights, sets fan speed, moves blinds, locks (unlocking asks
+  first) and sets thermostats, and shows sensor readings.
+- **Scenes:** one tap sets several devices ("Good night": lights off,
+  door locked, blinds closed). Pick what each device does, or copy how
+  things are now. Scenes lock doors but never unlock them. Saved as
+  encrypted `scene` items and synced.
 - **The adapter interface:** each way of reaching devices (Matter, Home
   Assistant, Hue, Tuya/Smart Life, Shelly, Switcher) is one adapter behind
   `DeviceAdapter`. The ones not built yet are listed under "Add a device"
   as coming soon.
 
-Next: Thread devices, and checking devices against the official list of
-Matter manufacturers.
+Next: the Android Device Controls panel and home screen widgets, then
+Thread devices and checking devices against the official list of Matter
+manufacturers.
 
 ## How it is built
 

@@ -350,5 +350,47 @@
       }
     }
   },
-  "battery": "Battery"
+  "battery": "Battery",
+  "scenes": "Scenes",
+  "addScene": "Add scene",
+  "newScene": "New scene",
+  "editScene": "Edit scene",
+  "sceneName": "Scene name",
+  "sceneNameHint": "Like Good night or Movie",
+  "sceneCopyNow": "Copy how things are now",
+  "sceneDontChange": "Don't change",
+  "scenePartOpen": "Part open",
+  "sceneSetTemperature": "Set temperature",
+  "sceneNeedsName": "Give the scene a name.",
+  "sceneNeedsDevice": "Pick at least one device to change.",
+  "sceneNoUnlock": "A scene can lock a door but never unlocks one.",
+  "sceneEditHint": "Touch and hold a scene to change it.",
+  "deleteSceneBody": "Your devices stay as they are.",
+  "sceneDone": "{name} is set.",
+  "@sceneDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sceneFailed": "{name}: no answer from {devices}.",
+  "@sceneFailed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "devices": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteSceneTitle": "Delete {name}?",
+  "@deleteSceneTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }
