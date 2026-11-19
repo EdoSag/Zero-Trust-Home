@@ -279,12 +279,27 @@ class TuyaAdapter implements DeviceAdapter {
     // Not on screen (a widget, an automation): one short connection.
     final key = tuyaParseLocalKey(address.localKey);
     if (key == null) throw const TuyaException(TuyaFailure.keyRejected);
-    final once = await _open(
-      host: discovery.found[address.deviceId]?.ip ?? address.ip,
+    Future<TuyaLink> open(String host) => _open(
+      host: host,
       deviceId: address.deviceId,
       localKey: key,
       version: address.version,
     );
+    final heard = discovery.found[address.deviceId]?.ip;
+    TuyaLink once;
+    try {
+      once = await open(heard ?? address.ip);
+    } on TuyaException catch (e) {
+      // What was heard earlier can be stale while the saved address is
+      // newer (another phone followed the device): try that one too.
+      if (heard == null ||
+          heard == address.ip ||
+          e.failure != TuyaFailure.unreachable) {
+        rethrow;
+      }
+      discovery.forget(address.deviceId);
+      once = await open(address.ip);
+    }
     try {
       await once.set(dps);
     } finally {
@@ -365,7 +380,8 @@ class _Session {
     final key = tuyaParseLocalKey(address.localKey);
     if (key == null) return;
     _connecting = true;
-    // The address the device announced last wins over the saved one.
+    // The address the device announced last wins over the saved one, until
+    // nothing answers there.
     final host = adapter.discovery.found[address.deviceId]?.ip ?? address.ip;
     TuyaLink? opened;
     try {
@@ -394,6 +410,11 @@ class _Session {
       _poll = Timer.periodic(adapter.pollEvery, (_) => _tick(current));
       _refreshPower(current);
     } on Object {
+      // Nothing answered where the device was last heard: that can be
+      // stale, so the next attempt goes to the saved address.
+      if (opened == null && host != address.ip) {
+        adapter.discovery.forget(address.deviceId);
+      }
       // When the link closed by itself, _onClosed already handled it.
       if (opened == null || link == opened) {
         link = null;
