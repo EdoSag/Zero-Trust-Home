@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
 import 'package:zerotrust_home/adapters/device_adapter.dart';
-import 'package:zerotrust_home/data/home_store.dart';
 import 'package:zerotrust_home/model/device.dart';
 import 'package:zerotrust_home/model/scene.dart';
 import 'package:zerotrust_home/ui/home_page.dart';
