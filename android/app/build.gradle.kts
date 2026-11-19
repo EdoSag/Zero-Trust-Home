@@ -175,5 +175,7 @@ dependencies {
     // scanner is ZXing (open source), not Google's ML Kit.
     implementation("androidx.activity:activity:1.9.3")
     implementation("androidx.core:core:1.13.1")
+    // Scrolling grid in the home screen widget (widget kit rule).
+    implementation("androidx.core:core-remoteviews:1.1.0")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 }

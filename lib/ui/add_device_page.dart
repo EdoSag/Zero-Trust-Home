@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../adapters/device_adapter.dart';
 import '../l10n/l10n.dart';
 import 'ha_add_page.dart';
+import 'hue_add_page.dart';
 import 'matter_add_page.dart';
 import 'tuya_add_page.dart';
 
@@ -83,6 +84,9 @@ class _ConnectionRow extends StatelessWidget {
         ConnectionKind.homeAssistant => () => Navigator.of(
           context,
         ).push(MaterialPageRoute<void>(builder: (_) => const HaAddPage())),
+        ConnectionKind.hue => () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => const HueAddPage())),
         ConnectionKind.tuya => () => Navigator.of(
           context,
         ).push(MaterialPageRoute<void>(builder: (_) => const TuyaAddPage())),

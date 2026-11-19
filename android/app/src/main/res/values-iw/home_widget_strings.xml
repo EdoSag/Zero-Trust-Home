@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Texts of the ZT Home home screen widget. -->
+<resources>
+    <string name="home_widget_description">המכשירים והתרחישים שלך. הקשה פותחת את ZT Home ומפעילה אחרי ביטול הנעילה.</string>
+    <string name="home_widget_locked">יש להפעיל את \"הצגת מכשירים מחוץ לאפליקציה\" ב-ZT Home</string>
+    <string name="home_widget_empty">יש להוסיף מכשיר ב-ZT Home</string>
+    <string name="home_widget_sample_lamp">מנורה</string>
+    <string name="home_widget_sample_living">סלון</string>
+    <string name="home_widget_sample_night">לילה טוב</string>
+    <string name="home_widget_sample_door">דלת כניסה</string>
+    <string name="home_widget_sample_hall">מסדרון</string>
+    <string name="home_widget_sample_blind">תריס</string>
+    <string name="home_widget_sample_bedroom">חדר שינה</string>
+</resources>

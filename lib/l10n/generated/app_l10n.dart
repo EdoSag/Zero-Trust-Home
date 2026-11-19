@@ -436,7 +436,7 @@ abstract class AppL10n {
   /// No description provided for @connHueBody.
   ///
   /// In en, this message translates to:
-  /// **'Lights and sensors on a Hue Bridge.'**
+  /// **'Lights and plugs on a Hue Bridge, with no Hue account.'**
   String get connHueBody;
 
   /// No description provided for @connTuya.
@@ -1276,7 +1276,7 @@ abstract class AppL10n {
   /// No description provided for @quickControlsBody.
   ///
   /// In en, this message translates to:
-  /// **'Off: the phone\'s controls panel only opens ZT Home. On: the names of your homes, rooms, devices and scenes are kept on this phone, sealed by Android, so the panel can list them. A tap there opens ZT Home and is carried out once you unlock. How to reach your devices never leaves the app.'**
+  /// **'Off: the phone\'s controls panel and the home screen widget only open ZT Home. On: the names of your homes, rooms, devices and scenes are kept on this phone, sealed by Android, so the panel and the widget can list them. A tap there opens ZT Home and is carried out once you unlock. How to reach your devices never leaves the app.'**
   String get quickControlsBody;
 
   /// No description provided for @quickTurnedOn.
@@ -1314,6 +1314,90 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'{name} didn\'t answer.'**
   String quickNoAnswer(String name);
+
+  /// No description provided for @hueIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your Hue Bridge once, and pick which of its lights to show here. The app talks to the bridge on your home network, with no Hue account. The key the bridge gives is encrypted with the rest of your home.'**
+  String get hueIntro;
+
+  /// No description provided for @hueAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Bridge address'**
+  String get hueAddress;
+
+  /// No description provided for @hueAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'In the Hue app: Settings, My Hue system, your bridge, then IP address. Your router\'s list of devices shows it too.'**
+  String get hueAddressHint;
+
+  /// No description provided for @hueAddressBad.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an address like 192.168.1.20'**
+  String get hueAddressBad;
+
+  /// No description provided for @huePressButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Press the round button on top of the bridge, then tap Connect within 30 seconds.'**
+  String get huePressButton;
+
+  /// No description provided for @huePairAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect the bridge again'**
+  String get huePairAgain;
+
+  /// No description provided for @hueConnectedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to the bridge at {host}. Pick the lights to show in this home.'**
+  String hueConnectedTo(String host);
+
+  /// No description provided for @hueNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'This bridge has no lights or plugs yet.'**
+  String get hueNothing;
+
+  /// No description provided for @hueErrUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'The bridge didn\'t answer at that address. Check that this phone is on your home Wi-Fi and the address is right.'**
+  String get hueErrUnreachable;
+
+  /// No description provided for @hueErrButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Press the round button on top of the bridge, then tap Connect again.'**
+  String get hueErrButton;
+
+  /// No description provided for @hueErrKey.
+  ///
+  /// In en, this message translates to:
+  /// **'The bridge no longer accepts this app. Connect it again with its button.'**
+  String get hueErrKey;
+
+  /// No description provided for @hueErrNotHue.
+  ///
+  /// In en, this message translates to:
+  /// **'Something answered at that address, but it isn\'t a Hue Bridge.'**
+  String get hueErrNotHue;
+
+  /// No description provided for @hueErrChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'What answers at that address isn\'t the bridge you connected. If you replaced or reset your bridge, connect it again with its button.'**
+  String get hueErrChanged;
+
+  /// No description provided for @hueErrFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The bridge refused: {detail}'**
+  String hueErrFailed(String detail);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {
