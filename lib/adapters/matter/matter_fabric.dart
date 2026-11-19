@@ -65,6 +65,34 @@ class MatterFabric {
   /// What devices are told to trust as administrator.
   String get adminSubject => 'FFFFFFFD$adminCat';
 
+  /// The fabric for [homeId] that every phone of the account makes alike:
+  /// its keys and ids come from [accountKey] (the account's data key for
+  /// this app, the same on every phone) and the home id. Two phones that
+  /// add a home's first Matter device in the same moment so make the very
+  /// same fabric, and either copy reaching the account is the right one.
+  ///
+  /// This gives nothing away: the fabric is kept encrypted under that same
+  /// key anyway.
+  factory MatterFabric.derive(String homeId, List<int> accountKey) {
+    final seed = Uint8List(32);
+    HKDFKeyDerivator(SHA256Digest())
+      ..init(
+        HkdfParameters(
+          Uint8List.fromList(accountKey),
+          32,
+          Uint8List.fromList(utf8.encode('zerotrust-home')),
+          Uint8List.fromList(utf8.encode('matter-fabric:v1:$homeId')),
+        ),
+      )
+      ..deriveKey(null, 0, seed, 0);
+    // A fixed date, so the certificate is the same on every phone.
+    return MatterFabric.create(
+      homeId,
+      random: _SeededRandom(seed),
+      now: DateTime.utc(2026, 1, 2),
+    );
+  }
+
   /// A new fabric with fresh keys.
   factory MatterFabric.create(String homeId, {Random? random, DateTime? now}) {
     final rng = random ?? Random.secure();
@@ -403,6 +431,47 @@ class _CertInfo {
     final key = tbs[6].children[1].content.sublist(1);
     return _CertInfo(tbs[5].whole, _keyId(key));
   }
+}
+
+/// Bytes from HMAC-SHA256 of [_seed] over a counter: the same seed gives
+/// the same numbers on every phone, and they can't be told from random
+/// without the seed.
+class _SeededRandom implements Random {
+  _SeededRandom(this._seed);
+  final Uint8List _seed;
+  var _counter = 0;
+  final _buffer = <int>[];
+
+  int _byte() {
+    if (_buffer.isEmpty) {
+      final mac = HMac(SHA256Digest(), 64)..init(KeyParameter(_seed));
+      final block = Uint8List(4)..buffer.asByteData().setUint32(0, _counter++);
+      _buffer.addAll(mac.process(block));
+    }
+    return _buffer.removeAt(0);
+  }
+
+  int _uint32() => (_byte() << 24) | (_byte() << 16) | (_byte() << 8) | _byte();
+
+  @override
+  int nextInt(int max) {
+    if (max <= 0 || max > 0x100000000) {
+      throw RangeError.range(max, 1, 0x100000000, 'max');
+    }
+    // Rejection sampling: no bias towards small numbers.
+    final limit = 0x100000000 - (0x100000000 % max);
+    while (true) {
+      final value = _uint32();
+      if (value < limit) return value % max;
+    }
+  }
+
+  @override
+  bool nextBool() => _byte() & 1 == 1;
+
+  @override
+  double nextDouble() =>
+      ((_uint32() >> 5) * 67108864.0 + (_uint32() >> 6)) / 9007199254740992.0;
 }
 
 Uint8List _randomBytes(Random rng, int count) =>

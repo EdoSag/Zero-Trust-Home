@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +23,6 @@ class MemoryRepository extends HomeRepository {
     List<Room> rooms = const [],
     List<HomeDevice> devices = const [],
   }) {
-    fabricSettle = Duration.zero;
     for (final h in homes) {
       _homes[h.id] = h;
     }
@@ -77,6 +77,12 @@ class MemoryRepository extends HomeRepository {
   }
 
   final fabrics = <String, MatterFabric>{};
+
+  /// The account's key on this "phone"; null as if the vault were locked.
+  Uint8List? key = Uint8List.fromList(List.filled(32, 7));
+
+  @override
+  Uint8List? accountKey() => key;
 
   /// What "syncing" does in a test: nothing, fail, or bring another
   /// phone's items.

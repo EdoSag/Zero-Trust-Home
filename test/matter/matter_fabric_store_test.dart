@@ -56,14 +56,25 @@ void main() {
     expect(ours.caKey, theirs.caKey);
   });
 
-  test('one that arrives a moment after ours was sent still wins', () async {
-    final theirs = MatterFabric.create('h1');
-    // The other phone's write lands after ours was sent and confirmed.
-    repo.onSync = () async {
-      if (repo.syncs == 3) repo.fabrics['h1'] = theirs;
-    };
-    final ours = await repo.fabricFor('h1');
-    expect(ours.caKey, theirs.caKey);
+  test(
+    'two phones adding a first device at once make the same fabric',
+    () async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      final other = container.read(Provider((ref) => MemoryRepository(ref)));
+      // Neither sees the other's before making its own.
+      final both = await Future.wait([
+        repo.fabricFor('h1'),
+        other.fabricFor('h1'),
+      ]);
+      expect(both[0].toJson(), both[1].toJson());
+      expect(both[0].isUsable, isTrue);
+    },
+  );
+
+  test('without the account key a fabric is still made', () async {
+    repo.key = null;
+    expect((await repo.fabricFor('h1')).isUsable, isTrue);
   });
 
   test('the account is asked again before each device is added', () async {

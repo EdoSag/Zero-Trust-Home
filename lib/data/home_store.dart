@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
@@ -173,27 +175,26 @@ class HomeRepository {
 
   final _fabrics = <String, Future<MatterFabric>>{};
 
-  /// How long a fabric this phone just made waits before it is used, so
-  /// one made on another phone in the same moment has time to arrive.
-  Duration fabricSettle = const Duration(seconds: 4);
+  /// The account's data key for this app, the same on every phone; null
+  /// while the vault is locked.
+  Uint8List? accountKey() {
+    final vault = _ref.read(vaultControllerProvider);
+    return vault is VaultUnlocked ? vault.appKey : null;
+  }
 
   /// The home's Matter fabric, made the first time a Matter device is
   /// added. Call it before each device is added.
   ///
   /// A home must have exactly one: devices only trust the key of the fabric
-  /// they were added with. So calls on this phone share one answer while
-  /// it is being worked out, the account is asked each time (when it can
-  /// be reached) for the one it holds, and a fabric is only made after
-  /// syncing shows the account has none (another phone may have made it).
-  /// A new one is sent at once and used only after the account still holds
-  /// it a moment later. Throws [MatterFabricNeedsSync] when a new one
-  /// can't be checked, and [MatterFabricUnreadable] rather than replace
-  /// one this version can't read.
-  ///
-  /// The account keeps the later of two fabrics written for one home, so
-  /// two phones that both add their first device within the same moment
-  /// and with a slow connection can still disagree for a short while; a
-  /// create-only write on the server would close that fully.
+  /// they were added with. Every phone of the account makes the same one
+  /// for a home ([MatterFabric.derive]), so two phones adding a first
+  /// device at once agree. A fabric that is already saved is used as it
+  /// is: homes from before that, made with random keys, keep theirs. Calls
+  /// on this phone share one answer while it is worked out, and the
+  /// account is asked for its copy each time it can be reached. Throws
+  /// [MatterFabricNeedsSync] when a new one can't be checked, and
+  /// [MatterFabricUnreadable] rather than replace one this version can't
+  /// read.
   Future<MatterFabric> fabricFor(String homeId) {
     final running = _fabrics[homeId];
     if (running != null) return running;
@@ -224,13 +225,16 @@ class HomeRepository {
     await syncFabrics();
     saved = await loadFabric(homeId);
     if (saved != null) return usable(saved);
+    final key = accountKey();
     // Refuses to overwrite an item a newer version of the app wrote.
-    await saveFabric(MatterFabric.create(homeId));
+    await saveFabric(
+      key == null
+          ? MatterFabric.create(homeId)
+          : MatterFabric.derive(homeId, key),
+    );
     await syncFabrics();
-    // Another phone may have made one in the same moment: give its write
-    // time to reach the account, then take what the account holds.
-    await Future<void>.delayed(fabricSettle);
-    await syncFabrics();
+    // What the account holds now: one from an older version on another
+    // phone, made in the same moment, may have won.
     return usable((await loadFabric(homeId))!);
   }
 

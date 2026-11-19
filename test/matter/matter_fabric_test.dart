@@ -237,4 +237,28 @@ void main() {
       }
     });
   });
+
+  test('a derived fabric is the same for the account, and only for it', () {
+    final key = List.filled(32, 1);
+    final a = MatterFabric.derive('h1', key);
+    final b = MatterFabric.derive('h1', key);
+    expect(a.toJson(), b.toJson());
+    expect(a.isUsable, isTrue);
+    // It works like any other: phones and devices get certificates.
+    final phone = matterNewKey();
+    final node = a.issueController(phone.publicKey);
+    expect(node.cert, isNotEmpty);
+    final device = matterNewKey();
+    expect(
+      a.issueDevice(matterBuildCsr(device.privateKey, device.publicKey)).cert,
+      isNotEmpty,
+    );
+    // Another home, or another account, gets other keys.
+    expect(MatterFabric.derive('h2', key).caKey, isNot(a.caKey));
+    expect(MatterFabric.derive('h1', List.filled(32, 2)).caKey, isNot(a.caKey));
+    expect(
+      MatterFabric.derive('h1', key).fabricId,
+      isNot(MatterFabric.derive('h2', key).fabricId),
+    );
+  });
 }
