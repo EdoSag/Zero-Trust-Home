@@ -355,14 +355,14 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get matterIntro =>
-      'For now the device has to be on your Wi-Fi already: set it up in its own app, or in Google Home or Apple Home. There, choose to connect it to another app or to turn on pairing mode, and you get a setup code. Brand-new devices, straight out of the box, come in a later version.';
+      'A device already set up in another app (its own app, Google Home or Apple Home): there, choose to share it with another app or to turn on pairing mode, and enter the code you get. The phone has to be on the same Wi-Fi as the device.';
 
   @override
   String get matterCode => 'Setup code';
 
   @override
   String get matterCodeHint =>
-      'The 11 or 21 digits, or the text of the QR code (it starts with MT:). The phone has to be on the same Wi-Fi as the device.';
+      'The 11 or 21 digits, or the text of the QR code (it starts with MT:).';
 
   @override
   String get matterCodeInvalid =>
@@ -406,4 +406,53 @@ class AppL10nEn extends AppL10n {
   @override
   String get matterErrKeys =>
       'The home\'s Matter keys couldn\'t be read. Sync this phone and try again.';
+
+  @override
+  String get matterKindNew => 'New device';
+
+  @override
+  String get matterKindShared => 'Already set up';
+
+  @override
+  String get matterIntroNew =>
+      'A new device, or one that was reset: plug it in so it is in pairing mode, keep the phone close to it, and scan the QR code on the device or its box. The phone finds it over Bluetooth and gives it your Wi-Fi. Devices that use Thread instead of Wi-Fi can\'t be added yet.';
+
+  @override
+  String get matterScan => 'Scan the QR code';
+
+  @override
+  String get matterScanNotMatter =>
+      'That QR code isn\'t a Matter code. The Matter one is usually next to the Matter logo, on the device or its box.';
+
+  @override
+  String get matterWifiName => 'Wi-Fi name';
+
+  @override
+  String get matterWifiHint =>
+      'The device joins this Wi-Fi. Most devices need a 2.4 GHz network. The password is only given to the device, never saved.';
+
+  @override
+  String get matterWifiPassword => 'Wi-Fi password';
+
+  @override
+  String get matterShowPassword => 'Show the password';
+
+  @override
+  String get matterHidePassword => 'Hide the password';
+
+  @override
+  String get matterAddingNew =>
+      'Looking for the device, giving it the Wi-Fi and adding it to your home. This can take up to two minutes. Keep the phone close to it.';
+
+  @override
+  String get matterErrBluetoothOff =>
+      'Turn on Bluetooth to add a new device, then try again.';
+
+  @override
+  String get matterErrBluetoothDenied =>
+      'ZT Home needs the Nearby devices permission to find a new device over Bluetooth. Allow it in the app\'s settings, then try again.';
+
+  @override
+  String get matterErrNotFoundNew =>
+      'The device wasn\'t found. Check that it is in pairing mode (often: just plugged in, or its button held until it blinks), keep the phone close to it, and check the Wi-Fi name and password.';
 }

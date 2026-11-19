@@ -356,14 +356,14 @@ class AppL10nHe extends AppL10n {
 
   @override
   String get matterIntro =>
-      'בינתיים המכשיר צריך להיות כבר מחובר ל-Wi-Fi שלך: מגדירים אותו באפליקציה שלו, או ב-Google Home או ב-Apple Home. שם בוחרים לחבר אותו לאפליקציה נוספת או להפעיל מצב צימוד, ומקבלים קוד הגדרה. מכשירים חדשים, ישר מהקופסה, יגיעו בגרסה מאוחרת יותר.';
+      'מכשיר שכבר מוגדר באפליקציה אחרת (האפליקציה שלו, Google Home או Apple Home): שם בוחרים לשתף אותו עם אפליקציה נוספת או להפעיל מצב צימוד, ומזינים את הקוד שמתקבל. הטלפון צריך להיות באותו Wi-Fi כמו המכשיר.';
 
   @override
   String get matterCode => 'קוד הגדרה';
 
   @override
   String get matterCodeHint =>
-      '11 או 21 הספרות, או הטקסט של קוד ה-QR (מתחיל ב-MT:). הטלפון צריך להיות באותו Wi-Fi כמו המכשיר.';
+      '11 או 21 הספרות, או הטקסט של קוד ה-QR (מתחיל ב-MT:).';
 
   @override
   String get matterCodeInvalid =>
@@ -407,4 +407,53 @@ class AppL10nHe extends AppL10n {
   @override
   String get matterErrKeys =>
       'לא ניתן לקרוא את מפתחות ה-Matter של הבית. יש לסנכרן את הטלפון ולנסות שוב.';
+
+  @override
+  String get matterKindNew => 'מכשיר חדש';
+
+  @override
+  String get matterKindShared => 'כבר מוגדר';
+
+  @override
+  String get matterIntroNew =>
+      'מכשיר חדש, או כזה שאופס: מחברים אותו לחשמל כדי שיהיה במצב צימוד, מקרבים אליו את הטלפון וסורקים את קוד ה-QR שעל המכשיר או על הקופסה. הטלפון מוצא אותו ב-Bluetooth ומעביר לו את ה-Wi-Fi שלך. עדיין אי אפשר להוסיף מכשירים שעובדים עם Thread במקום Wi-Fi.';
+
+  @override
+  String get matterScan => 'סריקת קוד ה-QR';
+
+  @override
+  String get matterScanNotMatter =>
+      'קוד ה-QR הזה אינו קוד Matter. קוד ה-Matter נמצא בדרך כלל ליד הסמל של Matter, על המכשיר או על הקופסה.';
+
+  @override
+  String get matterWifiName => 'שם ה-Wi-Fi';
+
+  @override
+  String get matterWifiHint =>
+      'המכשיר יתחבר ל-Wi-Fi הזה. רוב המכשירים צריכים רשת 2.4GHz. הסיסמה מועברת רק למכשיר ולא נשמרת.';
+
+  @override
+  String get matterWifiPassword => 'סיסמת ה-Wi-Fi';
+
+  @override
+  String get matterShowPassword => 'הצגת הסיסמה';
+
+  @override
+  String get matterHidePassword => 'הסתרת הסיסמה';
+
+  @override
+  String get matterAddingNew =>
+      'מחפשים את המכשיר, מעבירים לו את ה-Wi-Fi ומוסיפים אותו לבית. זה יכול לקחת עד שתי דקות. כדאי להשאיר את הטלפון קרוב אליו.';
+
+  @override
+  String get matterErrBluetoothOff =>
+      'יש להפעיל Bluetooth כדי להוסיף מכשיר חדש, ולנסות שוב.';
+
+  @override
+  String get matterErrBluetoothDenied =>
+      'ZT Home צריכה את ההרשאה למכשירים בקרבת מקום כדי למצוא מכשיר חדש ב-Bluetooth. יש לאשר אותה בהגדרות האפליקציה ולנסות שוב.';
+
+  @override
+  String get matterErrNotFoundNew =>
+      'המכשיר לא נמצא. כדאי לבדוק שהוא במצב צימוד (לרוב: מיד אחרי חיבור לחשמל, או אחרי לחיצה ארוכה על הכפתור עד שהוא מהבהב), לקרב אליו את הטלפון ולבדוק את שם ה-Wi-Fi והסיסמה.';
 }

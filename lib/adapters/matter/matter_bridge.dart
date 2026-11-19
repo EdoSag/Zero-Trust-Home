@@ -52,6 +52,12 @@ enum MatterFailure {
   /// This phone can't run the Matter library (not a 64-bit ARM phone).
   unsupported,
 
+  /// Bluetooth is off, or the phone has none.
+  bluetoothOff,
+
+  /// The person didn't allow the app to use Bluetooth.
+  bluetoothDenied,
+
   /// The device didn't answer, or wasn't found on the network.
   unreachable,
 
@@ -65,6 +71,14 @@ class MatterException implements Exception {
   final String detail;
   @override
   String toString() => 'MatterException(${failure.name}) $detail';
+}
+
+/// The home's Wi-Fi, given to a new device so it can join it.
+@immutable
+class MatterWifi {
+  const MatterWifi({required this.ssid, required this.password});
+  final String ssid;
+  final String password;
 }
 
 /// The Matter library, which is native code. Node and fabric ids are 16
@@ -87,9 +101,18 @@ abstract interface class MatterBridge {
   });
 
   /// Adds the device in pairing mode that [code] belongs to (a QR code's
-  /// text or the typed code) to the fabric, as node [nodeId]. The device
-  /// must already be on the home network.
-  Future<void> pair({required String nodeId, required String code});
+  /// text or the typed code) to the fabric, as node [nodeId]. Without
+  /// [wifi] the device must already be on the home network. With it, a
+  /// new device is also looked for over Bluetooth and given the Wi-Fi.
+  Future<void> pair({
+    required String nodeId,
+    required String code,
+    MatterWifi? wifi,
+  });
+
+  /// Opens the camera to scan a QR code; its text, or null when the
+  /// person went back.
+  Future<String?> scanCode();
 
   /// Gives up a [pair] that is still running.
   Future<void> cancelPair();
@@ -135,6 +158,8 @@ class MatterChannelBridge implements MatterBridge {
       throw MatterException(switch (e.code) {
         'unsupported' => MatterFailure.unsupported,
         'unreachable' => MatterFailure.unreachable,
+        'bluetoothOff' => MatterFailure.bluetoothOff,
+        'bluetoothDenied' => MatterFailure.bluetoothDenied,
         _ => MatterFailure.failed,
       }, e.message ?? e.code);
     }
@@ -217,8 +242,19 @@ class MatterChannelBridge implements MatterBridge {
   }
 
   @override
-  Future<void> pair({required String nodeId, required String code}) =>
-      _call<void>('pair', {'nodeId': nodeId, 'code': code});
+  Future<void> pair({
+    required String nodeId,
+    required String code,
+    MatterWifi? wifi,
+  }) => _call<void>('pair', {
+    'nodeId': nodeId,
+    'code': code,
+    if (wifi != null) 'ssid': wifi.ssid,
+    if (wifi != null) 'password': wifi.password,
+  });
+
+  @override
+  Future<String?> scanCode() => _call<String>('scanCode');
 
   @override
   Future<void> cancelPair() => _call<void>('cancelPair');

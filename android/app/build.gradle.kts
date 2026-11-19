@@ -170,4 +170,10 @@ dependencies {
     implementation("com.google.code.findbugs:jsr305:3.0.2")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.google.protobuf:protobuf-java:3.22.0")
+
+    // Asking for permissions and scanning QR codes from MainActivity. The
+    // scanner is ZXing (open source), not Google's ML Kit.
+    implementation("androidx.activity:activity:1.9.3")
+    implementation("androidx.core:core:1.13.1")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 }
