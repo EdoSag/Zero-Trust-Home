@@ -1,4 +1,5 @@
 import java.util.Properties
+import java.io.File
 import java.io.FileInputStream
 import java.net.HttpURLConnection
 import java.net.URI
