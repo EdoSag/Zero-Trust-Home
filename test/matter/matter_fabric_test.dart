@@ -169,6 +169,12 @@ void main() {
         bytesHex(tbs[6].children[1].content.sublist(1)),
         bytesHex(phone.publicKey),
       );
+      // The same phone with a new key stays the node it was.
+      final renewed = fabric.issueController(
+        matterNewKey(Random(9)).publicKey,
+        nodeId: node.nodeId,
+      );
+      expect(_subject(renewed.cert).first, node.nodeId);
       // Another phone is another node.
       final second = fabric.issueController(phone.publicKey, random: Random(3));
       expect(second.nodeId, isNot(node.nodeId));
@@ -179,6 +185,14 @@ void main() {
       final csr = matterBuildCsr(device.privateKey, device.publicKey);
       final node = fabric.issueDevice(csr, random: Random(5));
       expect(_subject(node.cert), [node.nodeId, fabric.fabricId]);
+      // Under the id it is being added with.
+      final id = matterNewNodeId(Random(8));
+      expect(id, matches(RegExp(r'^[0-7][0-9A-F]{15}$')));
+      expect(fabric.issueDevice(csr, nodeId: id).nodeId, id);
+      expect(
+        () => fabric.issueDevice(csr, nodeId: 'nope'),
+        throwsA(isA<MatterCertException>()),
+      );
       final cert = _parts(node.cert);
       expect(matterVerify(rootKey, cert.tbs, cert.signature), isTrue);
     });
