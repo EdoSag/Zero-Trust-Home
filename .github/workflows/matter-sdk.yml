@@ -66,6 +66,10 @@ jobs:
     needs: plan
     runs-on: ubuntu-latest
     timeout-minutes: 240
+    # In a container the default is sh, which has no pipefail.
+    defaults:
+      run:
+        shell: bash
     container:
       image: ${{ needs.plan.outputs.image }}
       volumes:
@@ -109,13 +113,15 @@ jobs:
           cp LICENSE sdk/LICENSE
           {
             echo "Matter SDK (project-chip/connectedhomeip) $TAG"
-            echo "Commit $(git rev-parse HEAD)"
+            echo "Commit $(git -c safe.directory='*' rev-parse HEAD)"
             echo "Built by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
             echo
             (cd sdk && find libs jniLibs -type f | sort | xargs sha256sum)
           } > sdk/BUILD.txt
           cat sdk/BUILD.txt
-          (cd sdk && zip -r -9 "../matter-android-sdk-$TAG.zip" .)
+          # The build image has no zip.
+          python3 -c 'import shutil, sys; shutil.make_archive(sys.argv[1], "zip", "sdk")' \
+            "matter-android-sdk-$TAG"
           ls -la "matter-android-sdk-$TAG.zip"
 
       - uses: actions/upload-artifact@v4
