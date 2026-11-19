@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
 
 import '../adapters/homeassistant/ha_server.dart';
+import '../adapters/hue/hue_bridge.dart';
 import '../adapters/matter/matter_fabric.dart';
 import '../model/device.dart';
 import '../model/home.dart';
@@ -47,6 +48,14 @@ final haServersCollection = ZtCollection<HaServer>(
   fromJson: (id, json, _) => HaServer.fromJson(json),
   toJson: (s) => s.toJson(),
   idOf: (s) => s.id,
+);
+
+/// Each home's Hue Bridge: address, key and certificate.
+final hueBridgesCollection = ZtCollection<HueBridge>(
+  kind: 'hue-bridge',
+  fromJson: (id, json, _) => HueBridge.fromJson(json),
+  toJson: (b) => b.toJson(),
+  idOf: (b) => b.id,
 );
 
 /// Scenes: several devices set with one tap.
@@ -203,6 +212,14 @@ class HomeRepository {
       haServersCollection.save(_sync, await _store, s);
   Future<void> removeHaServer(String homeId) =>
       haServersCollection.delete(_sync, HaServer.itemId(homeId));
+
+  /// The home's Hue Bridge, or null when it has none.
+  Future<HueBridge?> loadHueBridge(String homeId) async =>
+      hueBridgesCollection.get(await _store, HueBridge.itemId(homeId));
+  Future<void> saveHueBridge(HueBridge b) async =>
+      hueBridgesCollection.save(_sync, await _store, b);
+  Future<void> removeHueBridge(String homeId) =>
+      hueBridgesCollection.delete(_sync, HueBridge.itemId(homeId));
 
   /// Brings this phone up to date with the account and sends what it has
   /// saved. Throws [MatterFabricNeedsSync] when the account can't be
@@ -371,6 +388,7 @@ class HomeRepository {
     _fabrics.remove(id);
     if (await loadFabric(id) != null) await removeFabric(id);
     if (await loadHaServer(id) != null) await removeHaServer(id);
+    if (await loadHueBridge(id) != null) await removeHueBridge(id);
     await removeHome(id);
   }
 }

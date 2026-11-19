@@ -183,7 +183,8 @@ class AppL10nHe extends AppL10n {
   String get connHue => 'Philips Hue';
 
   @override
-  String get connHueBody => 'תאורה וחיישנים שמחוברים ל-Hue Bridge.';
+  String get connHueBody =>
+      'מנורות ושקעים שמחוברים ל-Hue Bridge, בלי חשבון Hue.';
 
   @override
   String get connTuya => 'Tuya / Smart Life';
@@ -739,5 +740,58 @@ class AppL10nHe extends AppL10n {
   @override
   String quickNoAnswer(String name) {
     return '$name לא ענה.';
+  }
+
+  @override
+  String get hueIntro =>
+      'מחברים את ה-Hue Bridge פעם אחת, ובוחרים אילו מהמנורות שלו להציג כאן. האפליקציה מדברת עם ה-Bridge ברשת הביתית, בלי חשבון Hue. המפתח שה-Bridge נותן מוצפן יחד עם שאר פרטי הבית.';
+
+  @override
+  String get hueAddress => 'כתובת ה-Bridge';
+
+  @override
+  String get hueAddressHint =>
+      'באפליקציית Hue: הגדרות, My Hue system, ה-Bridge שלך, ואז כתובת IP. היא מופיעה גם ברשימת המכשירים של הנתב.';
+
+  @override
+  String get hueAddressBad => 'יש להזין כתובת כמו 192.168.1.20';
+
+  @override
+  String get huePressButton =>
+      'לוחצים על הכפתור העגול שעל ה-Bridge, ואז על \"התחברות\" בתוך 30 שניות.';
+
+  @override
+  String get huePairAgain => 'חיבור ה-Bridge מחדש';
+
+  @override
+  String hueConnectedTo(String host) {
+    return 'מחובר ל-Bridge בכתובת $host. בוחרים את המנורות שיוצגו בבית הזה.';
+  }
+
+  @override
+  String get hueNothing => 'ל-Bridge הזה אין עדיין מנורות או שקעים.';
+
+  @override
+  String get hueErrUnreachable =>
+      'ה-Bridge לא ענה בכתובת הזאת. כדאי לבדוק שהטלפון מחובר ל-Wi-Fi הביתי ושהכתובת נכונה.';
+
+  @override
+  String get hueErrButton =>
+      'יש ללחוץ על הכפתור העגול שעל ה-Bridge, ואז שוב על \"התחברות\".';
+
+  @override
+  String get hueErrKey =>
+      'ה-Bridge כבר לא מקבל את האפליקציה הזאת. יש לחבר אותו מחדש עם הכפתור שלו.';
+
+  @override
+  String get hueErrNotHue => 'משהו ענה בכתובת הזאת, אבל זה לא Hue Bridge.';
+
+  @override
+  String get hueErrChanged =>
+      'מה שעונה בכתובת הזאת הוא לא ה-Bridge שחיברת. אם החלפת או איפסת את ה-Bridge, יש לחבר אותו מחדש עם הכפתור שלו.';
+
+  @override
+  String hueErrFailed(String detail) {
+    return 'ה-Bridge סירב: $detail';
   }
 }

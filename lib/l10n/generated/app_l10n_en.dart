@@ -183,7 +183,8 @@ class AppL10nEn extends AppL10n {
   String get connHue => 'Philips Hue';
 
   @override
-  String get connHueBody => 'Lights and sensors on a Hue Bridge.';
+  String get connHueBody =>
+      'Lights and plugs on a Hue Bridge, with no Hue account.';
 
   @override
   String get connTuya => 'Tuya / Smart Life';
@@ -739,5 +740,59 @@ class AppL10nEn extends AppL10n {
   @override
   String quickNoAnswer(String name) {
     return '$name didn\'t answer.';
+  }
+
+  @override
+  String get hueIntro =>
+      'Connect your Hue Bridge once, and pick which of its lights to show here. The app talks to the bridge on your home network, with no Hue account. The key the bridge gives is encrypted with the rest of your home.';
+
+  @override
+  String get hueAddress => 'Bridge address';
+
+  @override
+  String get hueAddressHint =>
+      'In the Hue app: Settings, My Hue system, your bridge, then IP address. Your router\'s list of devices shows it too.';
+
+  @override
+  String get hueAddressBad => 'Enter an address like 192.168.1.20';
+
+  @override
+  String get huePressButton =>
+      'Press the round button on top of the bridge, then tap Connect within 30 seconds.';
+
+  @override
+  String get huePairAgain => 'Connect the bridge again';
+
+  @override
+  String hueConnectedTo(String host) {
+    return 'Connected to the bridge at $host. Pick the lights to show in this home.';
+  }
+
+  @override
+  String get hueNothing => 'This bridge has no lights or plugs yet.';
+
+  @override
+  String get hueErrUnreachable =>
+      'The bridge didn\'t answer at that address. Check that this phone is on your home Wi-Fi and the address is right.';
+
+  @override
+  String get hueErrButton =>
+      'Press the round button on top of the bridge, then tap Connect again.';
+
+  @override
+  String get hueErrKey =>
+      'The bridge no longer accepts this app. Connect it again with its button.';
+
+  @override
+  String get hueErrNotHue =>
+      'Something answered at that address, but it isn\'t a Hue Bridge.';
+
+  @override
+  String get hueErrChanged =>
+      'What answers at that address isn\'t the bridge you connected. If you replaced or reset your bridge, connect it again with its button.';
+
+  @override
+  String hueErrFailed(String detail) {
+    return 'The bridge refused: $detail';
   }
 }

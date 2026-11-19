@@ -64,6 +64,12 @@ Phase H0 (the foundation) and the first part of H1 (real devices) are in:
   scenes, then the other devices), built on the suite's widget kit
   (`HomeWidget.kt`). Same rule as the panel: a tile opens ZT Home with the
   tap. With the switch off it shows no names, only how to turn it on.
+- **Philips Hue (`lib/adapters/hue`):** lights and smart plugs on a Hue
+  Bridge through its local API (CLIP v2) on the home network, with no Hue
+  account. Paired once per home with the bridge's button; the key is saved
+  as an encrypted `hue-bridge` item. A bridge signs its own certificate,
+  so the app remembers the one it saw when pairing and talks to no other.
+  State comes live from the bridge's event stream.
 - **The adapter interface:** each way of reaching devices (Matter, Home
   Assistant, Hue, Tuya/Smart Life, Shelly, Switcher) is one adapter behind
   `DeviceAdapter`. The ones not built yet are listed under "Add a device"

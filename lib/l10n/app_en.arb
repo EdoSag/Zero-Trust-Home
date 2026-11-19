@@ -56,7 +56,7 @@
   "connHa": "Home Assistant",
   "connHaBody": "Everything your Home Assistant already controls: Zigbee, Z-Wave and more.",
   "connHue": "Philips Hue",
-  "connHueBody": "Lights and sensors on a Hue Bridge.",
+  "connHueBody": "Lights and plugs on a Hue Bridge, with no Hue account.",
   "connTuya": "Tuya / Smart Life",
   "connTuyaBody": "Plugs, lights and switches set up with the Smart Life or Tuya app.",
   "connShelly": "Shelly",
@@ -439,6 +439,34 @@
   "@quickNoAnswer": {
     "placeholders": {
       "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hueIntro": "Connect your Hue Bridge once, and pick which of its lights to show here. The app talks to the bridge on your home network, with no Hue account. The key the bridge gives is encrypted with the rest of your home.",
+  "hueAddress": "Bridge address",
+  "hueAddressHint": "In the Hue app: Settings, My Hue system, your bridge, then IP address. Your router's list of devices shows it too.",
+  "hueAddressBad": "Enter an address like 192.168.1.20",
+  "huePressButton": "Press the round button on top of the bridge, then tap Connect within 30 seconds.",
+  "huePairAgain": "Connect the bridge again",
+  "hueConnectedTo": "Connected to the bridge at {host}. Pick the lights to show in this home.",
+  "@hueConnectedTo": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "hueNothing": "This bridge has no lights or plugs yet.",
+  "hueErrUnreachable": "The bridge didn't answer at that address. Check that this phone is on your home Wi-Fi and the address is right.",
+  "hueErrButton": "Press the round button on top of the bridge, then tap Connect again.",
+  "hueErrKey": "The bridge no longer accepts this app. Connect it again with its button.",
+  "hueErrNotHue": "Something answered at that address, but it isn't a Hue Bridge.",
+  "hueErrChanged": "What answers at that address isn't the bridge you connected. If you replaced or reset your bridge, connect it again with its button.",
+  "hueErrFailed": "The bridge refused: {detail}",
+  "@hueErrFailed": {
+    "placeholders": {
+      "detail": {
         "type": "String"
       }
     }
