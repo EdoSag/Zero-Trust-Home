@@ -92,7 +92,13 @@ Future<ProviderContainer> open(WidgetTester tester) async {
       devices: [lamp, door, blind, sensor],
       scenes: const [night],
       adapters: [fake],
-      overrides: [quickVaultProvider.overrideWithValue(vault)],
+      overrides: [
+        quickVaultProvider.overrideWithValue(vault),
+        quickTapsProvider.overrideWith(
+          (ref) =>
+              QuickTaps(ref, firstState: const Duration(milliseconds: 400)),
+        ),
+      ],
     ),
   );
   await tester.pumpAndSettle();
@@ -235,6 +241,21 @@ void main() {
       );
       expect(said, 'Lamp didn\'t answer.');
       expect(fake.sent, isEmpty);
+    });
+
+    testWidgets('waits for a device that is still connecting', (tester) async {
+      final container = await open(tester);
+      fake.set('lamp', const DeviceState.unreachable());
+      await tester.pumpAndSettle();
+      late String? said;
+      await tester.runAsync(() async {
+        final answer = tap(container, 'toggle', 'lamp');
+        await Future<void>.delayed(const Duration(milliseconds: 100));
+        fake.set('lamp', const DeviceState(values: {Capability.onOff: false}));
+        said = await answer;
+      });
+      expect(said, 'Lamp is on.');
+      expect(fake.sent.single.$2.value, true);
     });
 
     testWidgets('a sensor or a deleted device does nothing', (tester) async {

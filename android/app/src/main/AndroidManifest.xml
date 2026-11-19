@@ -59,6 +59,16 @@
             </intent-filter>
         </activity>
 
+        <!-- Tiles in the controls panel open this. Not exported: only this
+             app's own tiles can hand ZT Home a tap. -->
+        <activity
+            android:name=".QuickTapActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.NoDisplay"/>
+
         <!-- Devices and scenes in the phone's Device Controls panel (Android 11+). -->
         <service
             android:name=".HomeControlsService"

@@ -92,28 +92,33 @@ object QuickVault {
     private const val TAPS = "zt-home.quick-tap"
     private const val TAP_MAX_AGE_MS = 2 * 60_000L
 
-    /** What a tile in the panel or on the widget opens: the app, with this tap. */
+    /**
+     * What a tile in the panel or on the widget opens: [QuickTapActivity],
+     * which no other app can start, so a tap can only come from a tile this
+     * app made.
+     */
     fun tapIntent(context: Context, action: String, id: String): Intent =
-        Intent(context, MainActivity::class.java)
+        Intent(context, QuickTapActivity::class.java)
             .setAction(Intent.ACTION_VIEW)
             // Unique per tile, so each keeps its own PendingIntent.
             .setData(Uri.parse("zthome-quick://$action/${Uri.encode(id)}"))
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-    /** Keeps the tap [intent] carries, if any; true when it carried one. */
+    /** Keeps the tap [intent] carries, if any; true when it carried one.
+     *  Only for [QuickTapActivity]: anything another app can reach must
+     *  never call this. */
     fun keepTap(context: Context, intent: Intent?): Boolean {
         val data = intent?.data ?: return false
         if (data.scheme != "zthome-quick") return false
         val action = data.host ?: return false
         val id = data.pathSegments.firstOrNull() ?: return false
         if (action != "toggle" && action != "scene") return false
+        // commit, not apply: the app reads it as soon as it comes forward.
         context.getSharedPreferences(TAPS, Context.MODE_PRIVATE).edit()
             .putString("action", action)
             .putString("id", id)
             .putLong("at", System.currentTimeMillis())
-            .apply()
-        // Handled: not opened again when the activity is made again.
-        intent.data = null
+            .commit()
         return true
     }
 

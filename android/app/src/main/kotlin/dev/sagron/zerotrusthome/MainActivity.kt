@@ -103,9 +103,6 @@ class MainActivity : FlutterFragmentActivity(), MatterHost {
         super.configureFlutterEngine(flutterEngine)
         matter = MatterPlugin(this, flutterEngine.dartExecutor.binaryMessenger, this)
         quick = QuickVault.serve(this, flutterEngine.dartExecutor.binaryMessenger)
-        // Opened from a tile in the controls panel: the app carries the tap
-        // out once unlocked.
-        QuickVault.keepTap(this, intent)
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             "dev.sagron.zerotrusthome/network",
@@ -134,10 +131,12 @@ class MainActivity : FlutterFragmentActivity(), MatterHost {
         }
     }
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        // A tile tapped while the app is open: Dart takes it now.
-        if (QuickVault.keepTap(this, intent)) quick?.invokeMethod("tapped", null)
+    override fun onResume() {
+        super.onResume()
+        // Coming forward, perhaps from a tile in the controls panel: Dart
+        // looks for a waiting tap. Intents sent to this activity are never
+        // read as taps, since any app can send one.
+        quick?.invokeMethod("tapped", null)
     }
 
     private fun releaseMulticastLock() {

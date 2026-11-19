@@ -56,7 +56,7 @@ Phase H0 (the foundation) and the first part of H1 (real devices) are in:
   every device and scene. Only names and kinds are kept for it, on the
   phone, sealed with a key in the Android Keystore (`QuickVault.kt`);
   addresses, local keys, tokens and Matter keys stay in the vault. A tile
-  opens ZT Home with the tap, which is carried out once the app is
+  opens ZT Home (through an activity no other app can start) with the tap, which is carried out once the app is
   unlocked (within two minutes): a device switches the other way, a door
   only locks, a scene runs.
 - **The adapter interface:** each way of reaching devices (Matter, Home
