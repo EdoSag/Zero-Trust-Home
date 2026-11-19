@@ -31,6 +31,7 @@ Future<TuyaLink> openTo(
 TuyaAdapter adapterFor(
   FakeTuyaDevice device, {
   List<String>? hosts,
+  Set<String> dead = const {},
   void Function(HomeDevice, String)? onMoved,
 }) => TuyaAdapter(
   pollEvery: const Duration(milliseconds: 150),
@@ -44,6 +45,9 @@ TuyaAdapter adapterFor(
         required version,
       }) {
         hosts?.add(host);
+        if (dead.contains(host)) {
+          throw const TuyaException(TuyaFailure.unreachable);
+        }
         return TuyaLink.open(
           host: device.host,
           port: device.port,
@@ -327,6 +331,56 @@ void main() {
       }
       expect(hosts, ['192.168.1.77']);
       expect(moved, ['192.168.1.77']);
+    });
+
+    group('an address heard earlier that no longer answers', () {
+      Uint8List announce(String ip) => tuyaPack6699(
+        sequence: 0,
+        command: 19,
+        returnCode: 0,
+        payload: utf8.encode(
+          jsonEncode({'ip': ip, 'gwId': device.deviceId, 'version': '3.4'}),
+        ),
+        key: tuyaBroadcastKey,
+      );
+
+      test('watching goes back to the saved address', () async {
+        final hosts = <String>[];
+        final moved = <String>[];
+        final adapter = adapterFor(
+          device,
+          hosts: hosts,
+          dead: {'192.168.1.77'},
+          onMoved: (_, ip) => moved.add(ip),
+        );
+        addTearDown(adapter.dispose);
+        final saved = await pair(adapter);
+        hosts.clear();
+        adapter.discovery.handle(announce('192.168.1.77'));
+        final states = <DeviceState>[];
+        final sub = adapter.watch(saved).listen(states.add);
+        addTearDown(sub.cancel);
+        await eventually(() => states.isNotEmpty && states.last.reachable);
+        expect(hosts, ['192.168.1.77', '192.168.1.50']);
+        expect(moved, isEmpty);
+        expect(adapter.discovery.found, isEmpty);
+      });
+
+      test('a command goes to the saved address too', () async {
+        final hosts = <String>[];
+        final adapter = adapterFor(
+          device,
+          hosts: hosts,
+          dead: {'192.168.1.77'},
+        );
+        addTearDown(adapter.dispose);
+        final saved = await pair(adapter);
+        hosts.clear();
+        adapter.discovery.handle(announce('192.168.1.77'));
+        await adapter.send(saved, const DeviceCommand.turn(false));
+        expect(device.dps['1'], false);
+        expect(hosts, ['192.168.1.77', '192.168.1.50']);
+      });
     });
   });
 

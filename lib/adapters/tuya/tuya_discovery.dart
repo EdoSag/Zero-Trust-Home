@@ -40,6 +40,10 @@ class TuyaDiscovery {
     yield* _controller.stream;
   }
 
+  /// Drops what was heard about a device: nothing answered at that address,
+  /// so the saved one is tried again until the device announces itself anew.
+  void forget(String deviceId) => _found.remove(deviceId);
+
   /// Takes one datagram; public so tests can feed it.
   void handle(List<int> datagram) {
     final a = tuyaParseAnnouncement(Uint8List.fromList(datagram));

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
 
+import '../adapters/matter/matter_fabric.dart';
 import '../model/device.dart';
 import '../model/home.dart';
 
@@ -26,6 +27,14 @@ final devicesCollection = ZtCollection<HomeDevice>(
   fromJson: (id, json, _) => HomeDevice.fromJson(id, json),
   toJson: (d) => d.toJson(),
   idOf: (d) => d.id,
+);
+
+/// Each home's Matter fabric: the keys its Matter devices trust.
+final fabricsCollection = ZtCollection<MatterFabric>(
+  kind: 'fabric',
+  fromJson: (id, json, _) => MatterFabric.fromJson(json),
+  toJson: (f) => f.toJson(),
+  idOf: (f) => f.id,
 );
 
 Stream<List<T>> _watch<T>(Ref ref, ZtCollection<T> c) async* {
@@ -144,6 +153,29 @@ class HomeRepository {
   Future<void> saveDevice(HomeDevice d) async =>
       devicesCollection.save(_sync, await _store, d);
 
+  /// The home's saved Matter fabric, or null when it has none yet.
+  Future<MatterFabric?> loadFabric(String homeId) async =>
+      fabricsCollection.get(await _store, MatterFabric.itemId(homeId));
+  Future<void> saveFabric(MatterFabric f) async =>
+      fabricsCollection.save(_sync, await _store, f);
+  Future<void> removeFabric(String homeId) =>
+      fabricsCollection.delete(_sync, MatterFabric.itemId(homeId));
+
+  /// The home's Matter fabric, made the first time a Matter device is
+  /// added. Throws [MatterFabricUnreadable] rather than replace one this
+  /// version can't read: the home's devices only trust the saved key.
+  Future<MatterFabric> fabricFor(String homeId) async {
+    final saved = await loadFabric(homeId);
+    if (saved != null) {
+      if (!saved.isUsable) throw const MatterFabricUnreadable();
+      return saved;
+    }
+    final fabric = MatterFabric.create(homeId);
+    // Refuses to overwrite an item a newer version of the app wrote.
+    await saveFabric(fabric);
+    return fabric;
+  }
+
   Future<void> removeHome(String id) => homesCollection.delete(_sync, id);
   Future<void> removeRoom(String id) => roomsCollection.delete(_sync, id);
   Future<void> deleteDevice(String id) => devicesCollection.delete(_sync, id);
@@ -205,6 +237,15 @@ class HomeRepository {
     for (final r in await allRooms()) {
       if (r.homeId == id) await removeRoom(r.id);
     }
+    if (await loadFabric(id) != null) await removeFabric(id);
     await removeHome(id);
   }
+}
+
+/// The home's Matter keys are saved but this version of the app can't read
+/// them.
+class MatterFabricUnreadable implements Exception {
+  const MatterFabricUnreadable();
+  @override
+  String toString() => 'MatterFabricUnreadable';
 }

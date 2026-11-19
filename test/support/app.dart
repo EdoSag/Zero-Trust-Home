@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
 import 'package:zerotrust_home/adapters/device_adapter.dart';
 import 'package:zerotrust_home/app/home_config.dart';
+import 'package:zerotrust_home/adapters/matter/matter_fabric.dart';
 import 'package:zerotrust_home/data/home_store.dart';
 import 'package:zerotrust_home/l10n/l10n.dart';
 import 'package:zerotrust_home/model/device.dart';
@@ -73,6 +74,15 @@ class MemoryRepository extends HomeRepository {
     _devices[d.id] = d;
     _changes.add(null);
   }
+
+  final fabrics = <String, MatterFabric>{};
+
+  @override
+  Future<MatterFabric?> loadFabric(String homeId) async => fabrics[homeId];
+  @override
+  Future<void> saveFabric(MatterFabric f) async => fabrics[f.homeId] = f;
+  @override
+  Future<void> removeFabric(String homeId) async => fabrics.remove(homeId);
 
   @override
   Future<void> removeHome(String id) async {
