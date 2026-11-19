@@ -876,6 +876,114 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'The device wasn\'t found. Check that it is in pairing mode (often: just plugged in, or its button held until it blinks), keep the phone close to it, and check the Wi-Fi name and password.'**
   String get matterErrNotFoundNew;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get tryAgain;
+
+  /// No description provided for @haIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your Home Assistant once, and pick which of its devices to show here. The app talks to it on your home network; the token is encrypted with the rest of your home.'**
+  String get haIntro;
+
+  /// No description provided for @haAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant address'**
+  String get haAddress;
+
+  /// No description provided for @haAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use its IP address if homeassistant.local doesn\'t work on this phone.'**
+  String get haAddressHint;
+
+  /// No description provided for @haAddressBad.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an address like http://192.168.1.10:8123'**
+  String get haAddressBad;
+
+  /// No description provided for @haToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-lived access token'**
+  String get haToken;
+
+  /// No description provided for @haTokenHint.
+  ///
+  /// In en, this message translates to:
+  /// **'In Home Assistant, open your profile, then Security, and create a long-lived access token at the bottom of the page. Paste it here.'**
+  String get haTokenHint;
+
+  /// No description provided for @haConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get haConnect;
+
+  /// No description provided for @haChangeServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Change address or token'**
+  String get haChangeServer;
+
+  /// No description provided for @haConnectedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to {url}. Pick the devices to show in this home.'**
+  String haConnectedTo(String url);
+
+  /// No description provided for @haNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant has no lights, switches, sensors or other devices this app can show yet.'**
+  String get haNothing;
+
+  /// No description provided for @haAlreadyAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Already in this home'**
+  String get haAlreadyAdded;
+
+  /// No description provided for @haAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =0{Add devices} =1{Add 1 device} other{Add {n} devices}}'**
+  String haAdd(int n);
+
+  /// No description provided for @haAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 device added} other{{n} devices added}}'**
+  String haAdded(int n);
+
+  /// No description provided for @haErrUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant didn\'t answer at that address. Check that this phone is on your home Wi-Fi and the address is right.'**
+  String get haErrUnreachable;
+
+  /// No description provided for @haErrToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant didn\'t accept the token. Create a new one and paste all of it.'**
+  String get haErrToken;
+
+  /// No description provided for @haErrNotHa.
+  ///
+  /// In en, this message translates to:
+  /// **'Something answered at that address, but it isn\'t Home Assistant. Check the address and port (usually 8123).'**
+  String get haErrNotHa;
+
+  /// No description provided for @haErrFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Assistant refused: {detail}'**
+  String haErrFailed(String detail);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

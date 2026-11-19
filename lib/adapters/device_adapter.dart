@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/home_store.dart';
 import '../model/device.dart';
+import 'homeassistant/ha_adapter.dart';
+import 'homeassistant/ha_providers.dart';
 import 'matter/matter_adapter.dart';
 import 'matter/matter_providers.dart';
 import 'tuya/tuya_adapter.dart';
@@ -45,6 +47,7 @@ enum ConnectionKind {
 final deviceAdaptersProvider = Provider<Map<String, DeviceAdapter>>(
   (ref) => {
     MatterAdapter.adapterId: ref.watch(matterAdapterProvider),
+    HomeAssistantAdapter.adapterId: ref.watch(haAdapterProvider),
     TuyaAdapter.adapterId: ref.watch(tuyaAdapterProvider),
   },
 );

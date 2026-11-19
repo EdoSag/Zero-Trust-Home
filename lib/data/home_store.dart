@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
 
+import '../adapters/homeassistant/ha_server.dart';
 import '../adapters/matter/matter_fabric.dart';
 import '../model/device.dart';
 import '../model/home.dart';
@@ -37,6 +38,14 @@ final fabricsCollection = ZtCollection<MatterFabric>(
   fromJson: (id, json, _) => MatterFabric.fromJson(json),
   toJson: (f) => f.toJson(),
   idOf: (f) => f.id,
+);
+
+/// Each home's Home Assistant address and token.
+final haServersCollection = ZtCollection<HaServer>(
+  kind: 'ha-server',
+  fromJson: (id, json, _) => HaServer.fromJson(json),
+  toJson: (s) => s.toJson(),
+  idOf: (s) => s.id,
 );
 
 Stream<List<T>> _watch<T>(Ref ref, ZtCollection<T> c) async* {
@@ -162,6 +171,14 @@ class HomeRepository {
       fabricsCollection.save(_sync, await _store, f);
   Future<void> removeFabric(String homeId) =>
       fabricsCollection.delete(_sync, MatterFabric.itemId(homeId));
+
+  /// The home's Home Assistant, or null when it has none.
+  Future<HaServer?> loadHaServer(String homeId) async =>
+      haServersCollection.get(await _store, HaServer.itemId(homeId));
+  Future<void> saveHaServer(HaServer s) async =>
+      haServersCollection.save(_sync, await _store, s);
+  Future<void> removeHaServer(String homeId) =>
+      haServersCollection.delete(_sync, HaServer.itemId(homeId));
 
   /// Brings this phone up to date with the account and sends what it has
   /// saved. Throws [MatterFabricNeedsSync] when the account can't be
@@ -301,6 +318,7 @@ class HomeRepository {
     }
     _fabrics.remove(id);
     if (await loadFabric(id) != null) await removeFabric(id);
+    if (await loadHaServer(id) != null) await removeHaServer(id);
     await removeHome(id);
   }
 }

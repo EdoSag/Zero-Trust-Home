@@ -1,7 +1,7 @@
 name: zerotrust_home
 description: "Zero-Trust Home: private, local-first smart home control. End-to-end encrypted."
 publish_to: none
-version: 0.4.1+8
+version: 0.5.0+9
 
 environment:
   sdk: ^3.9.0
