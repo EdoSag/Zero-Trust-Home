@@ -430,8 +430,9 @@ void main() {
       },
     );
 
-    test('a new token is used from the next connection', () async {
-      final sub = adapter.watch(entityDevice('switch.tv')).listen((_) {});
+    test('a new token moves what is on screen to the new connection', () async {
+      final states = <DeviceState>[];
+      final sub = adapter.watch(entityDevice('switch.tv')).listen(states.add);
       await settle();
       ha.token = 'new-token';
       saved = const HaServer(
@@ -444,6 +445,31 @@ void main() {
         const DeviceCommand.turn(false),
       );
       expect(ha.calls.single.$2, 'turn_off');
+      // The tile already on screen keeps following the device.
+      ha.change('switch.tv', 'off');
+      await settle();
+      expect(states.last.reachable, isTrue);
+      expect(states.last.on, isFalse);
+      expect(ha.open, 1);
+      await sub.cancel();
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      expect(ha.open, 0);
+    });
+
+    test('a connection that signs in but fails to start is closed', () async {
+      ha.failStates = true;
+      final states = <DeviceState>[];
+      final sub = adapter.watch(entityDevice('switch.tv')).listen(states.add);
+      await Future<void>.delayed(const Duration(milliseconds: 35));
+      await settle();
+      expect(ha.sockets.length, greaterThan(1)); // It kept trying...
+      expect(ha.open, 0); // ...without leaving any open.
+      expect(states.last.reachable, isFalse);
+      ha.failStates = false;
+      await Future<void>.delayed(const Duration(milliseconds: 30));
+      await settle();
+      expect(states.last.on, isTrue);
+      expect(ha.open, 1);
       await sub.cancel();
     });
 
