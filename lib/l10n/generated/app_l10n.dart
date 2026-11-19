@@ -984,6 +984,180 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'Home Assistant refused: {detail}'**
   String haErrFailed(String detail);
+
+  /// No description provided for @stateLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get stateLocked;
+
+  /// No description provided for @stateUnlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlocked'**
+  String get stateUnlocked;
+
+  /// No description provided for @stateOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get stateOpen;
+
+  /// No description provided for @stateClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get stateClosed;
+
+  /// No description provided for @stateOpenPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Open {n}%'**
+  String stateOpenPercent(int n);
+
+  /// No description provided for @stateMotion.
+  ///
+  /// In en, this message translates to:
+  /// **'Motion'**
+  String get stateMotion;
+
+  /// No description provided for @stateNoMotion.
+  ///
+  /// In en, this message translates to:
+  /// **'No motion'**
+  String get stateNoMotion;
+
+  /// No description provided for @degrees.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}°C'**
+  String degrees(String value);
+
+  /// No description provided for @setTo.
+  ///
+  /// In en, this message translates to:
+  /// **'set to {value}'**
+  String setTo(String value);
+
+  /// No description provided for @percent.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}%'**
+  String percent(int n);
+
+  /// No description provided for @batteryLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery {n}%'**
+  String batteryLevel(int n);
+
+  /// No description provided for @brightness.
+  ///
+  /// In en, this message translates to:
+  /// **'Brightness'**
+  String get brightness;
+
+  /// No description provided for @fanSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed'**
+  String get fanSpeed;
+
+  /// No description provided for @position.
+  ///
+  /// In en, this message translates to:
+  /// **'Position'**
+  String get position;
+
+  /// No description provided for @open.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get open;
+
+  /// No description provided for @lock.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock'**
+  String get lock;
+
+  /// No description provided for @unlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get unlock;
+
+  /// No description provided for @unlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock {name}?'**
+  String unlockTitle(String name);
+
+  /// No description provided for @unlockBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The door can then be opened by anyone who is there.'**
+  String get unlockBody;
+
+  /// No description provided for @targetTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Set to'**
+  String get targetTemperature;
+
+  /// No description provided for @colder.
+  ///
+  /// In en, this message translates to:
+  /// **'Colder'**
+  String get colder;
+
+  /// No description provided for @warmer.
+  ///
+  /// In en, this message translates to:
+  /// **'Warmer'**
+  String get warmer;
+
+  /// No description provided for @temperatureNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature'**
+  String get temperatureNow;
+
+  /// No description provided for @humidity.
+  ///
+  /// In en, this message translates to:
+  /// **'Humidity'**
+  String get humidity;
+
+  /// No description provided for @contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Door or window'**
+  String get contact;
+
+  /// No description provided for @motion.
+  ///
+  /// In en, this message translates to:
+  /// **'Motion'**
+  String get motion;
+
+  /// No description provided for @energy.
+  ///
+  /// In en, this message translates to:
+  /// **'Energy used'**
+  String get energy;
+
+  /// No description provided for @kwh.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} kWh'**
+  String kwh(String value);
+
+  /// No description provided for @battery.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery'**
+  String get battery;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

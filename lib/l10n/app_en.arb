@@ -272,5 +272,83 @@
         "type": "String"
       }
     }
-  }
+  },
+  "stateLocked": "Locked",
+  "stateUnlocked": "Unlocked",
+  "stateOpen": "Open",
+  "stateClosed": "Closed",
+  "stateOpenPercent": "Open {n}%",
+  "@stateOpenPercent": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "stateMotion": "Motion",
+  "stateNoMotion": "No motion",
+  "degrees": "{value}°C",
+  "@degrees": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "setTo": "set to {value}",
+  "@setTo": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "percent": "{n}%",
+  "@percent": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "batteryLevel": "Battery {n}%",
+  "@batteryLevel": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "brightness": "Brightness",
+  "fanSpeed": "Speed",
+  "position": "Position",
+  "open": "Open",
+  "lock": "Lock",
+  "unlock": "Unlock",
+  "unlockTitle": "Unlock {name}?",
+  "@unlockTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "unlockBody": "The door can then be opened by anyone who is there.",
+  "targetTemperature": "Set to",
+  "colder": "Colder",
+  "warmer": "Warmer",
+  "temperatureNow": "Temperature",
+  "humidity": "Humidity",
+  "contact": "Door or window",
+  "motion": "Motion",
+  "energy": "Energy used",
+  "kwh": "{value} kWh",
+  "@kwh": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "battery": "Battery"
 }

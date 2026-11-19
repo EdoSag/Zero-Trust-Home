@@ -542,4 +542,105 @@ class AppL10nHe extends AppL10n {
   String haErrFailed(String detail) {
     return 'Home Assistant סירב: $detail';
   }
+
+  @override
+  String get stateLocked => 'נעול';
+
+  @override
+  String get stateUnlocked => 'לא נעול';
+
+  @override
+  String get stateOpen => 'פתוח';
+
+  @override
+  String get stateClosed => 'סגור';
+
+  @override
+  String stateOpenPercent(int n) {
+    return 'פתוח $n%';
+  }
+
+  @override
+  String get stateMotion => 'יש תנועה';
+
+  @override
+  String get stateNoMotion => 'אין תנועה';
+
+  @override
+  String degrees(String value) {
+    return '$value°C';
+  }
+
+  @override
+  String setTo(String value) {
+    return 'מכוון ל-$value';
+  }
+
+  @override
+  String percent(int n) {
+    return '$n%';
+  }
+
+  @override
+  String batteryLevel(int n) {
+    return 'סוללה $n%';
+  }
+
+  @override
+  String get brightness => 'בהירות';
+
+  @override
+  String get fanSpeed => 'מהירות';
+
+  @override
+  String get position => 'מיקום';
+
+  @override
+  String get open => 'פתיחה';
+
+  @override
+  String get lock => 'נעילה';
+
+  @override
+  String get unlock => 'פתיחת נעילה';
+
+  @override
+  String unlockTitle(String name) {
+    return 'לפתוח את הנעילה של $name?';
+  }
+
+  @override
+  String get unlockBody => 'אחר כך כל מי שנמצא שם יוכל לפתוח את הדלת.';
+
+  @override
+  String get targetTemperature => 'מכוון ל';
+
+  @override
+  String get colder => 'קר יותר';
+
+  @override
+  String get warmer => 'חם יותר';
+
+  @override
+  String get temperatureNow => 'טמפרטורה';
+
+  @override
+  String get humidity => 'לחות';
+
+  @override
+  String get contact => 'דלת או חלון';
+
+  @override
+  String get motion => 'תנועה';
+
+  @override
+  String get energy => 'צריכת אנרגיה';
+
+  @override
+  String kwh(String value) {
+    return '$value קוט\"ש';
+  }
+
+  @override
+  String get battery => 'סוללה';
 }
