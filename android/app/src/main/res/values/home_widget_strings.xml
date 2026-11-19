@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Texts of the ZT Home home screen widget. -->
+<resources>
+    <string name="home_widget_name" translatable="false">ZT Home</string>
+    <string name="home_widget_description">Your devices and scenes. A tap opens ZT Home and switches it once you unlock.</string>
+    <string name="home_widget_locked">Turn on \"Show devices outside the app\" in ZT Home</string>
+    <string name="home_widget_empty">Add a device in ZT Home</string>
+    <string name="home_widget_sample_lamp">Lamp</string>
+    <string name="home_widget_sample_living">Living room</string>
+    <string name="home_widget_sample_night">Good night</string>
+    <string name="home_widget_sample_door">Front door</string>
+    <string name="home_widget_sample_hall">Hall</string>
+    <string name="home_widget_sample_blind">Blind</string>
+    <string name="home_widget_sample_bedroom">Bedroom</string>
+</resources>
