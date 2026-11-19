@@ -1,0 +1,164 @@
+# Builds the Matter SDK's Android controller libraries and publishes them
+# as a release of this repository (see matter/README.md).
+#
+# The SDK (project-chip/connectedhomeip) has no published Android package.
+# This runs the SDK project's own Android build, in its own build image,
+# for the release named in matter/sdk.env.
+name: Matter SDK for Android
+
+on:
+  pull_request:
+    paths:
+      - matter/sdk.env
+      - .github/workflows/matter-sdk.yml
+  push:
+    branches: [Dev]
+    paths:
+      - matter/sdk.env
+      - .github/workflows/matter-sdk.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: matter-sdk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    name: Read the SDK release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      tag: ${{ steps.sdk.outputs.tag }}
+      image: ${{ steps.sdk.outputs.image }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: SDK release and its build image
+        id: sdk
+        run: |
+          set -euo pipefail
+          . matter/sdk.env
+          case "$MATTER_SDK_TAG" in
+            v[0-9]*) ;;
+            *) echo "::error::MATTER_SDK_TAG in matter/sdk.env is not a release tag"; exit 1 ;;
+          esac
+          # The image the SDK's own Android CI uses at that release.
+          raw="https://raw.githubusercontent.com/project-chip/connectedhomeip/$MATTER_SDK_TAG/.github/workflows"
+          image=""
+          for file in smoketest-android.yaml full-android.yaml; do
+            image=$(curl -fsSL "$raw/$file" \
+              | grep -m1 -oE 'ghcr\.io/project-chip/chip-build-android:[0-9]+' || true)
+            [ -n "$image" ] && break
+          done
+          if [ -z "$image" ]; then
+            echo "::error::No Android build image found for $MATTER_SDK_TAG"
+            exit 1
+          fi
+          echo "Matter SDK $MATTER_SDK_TAG, build image $image"
+          echo "tag=$MATTER_SDK_TAG" >> "$GITHUB_OUTPUT"
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build the controller libraries (arm64)
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    # In a container the default is sh, which has no pipefail.
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: ${{ needs.plan.outputs.image }}
+      volumes:
+        - "/:/runner-root-volume"
+    steps:
+      # The workspace is the SDK itself, so its own CI actions run as they
+      # do upstream.
+      - name: Check out the Matter SDK
+        uses: actions/checkout@v4
+        with:
+          repository: project-chip/connectedhomeip
+          ref: ${{ needs.plan.outputs.tag }}
+
+      - name: Check out submodules and bootstrap
+        uses: ./.github/actions/checkout-submodules-and-bootstrap
+        with:
+          platform: android
+
+      - name: Free disk space
+        # As upstream: Android builds use the NDK, not this cross compiler.
+        continue-on-error: true
+        run: rm -rf .environment/cipd/packages/arm
+
+      - name: Build
+        run: |
+          ./scripts/run_in_build_env.sh \
+            "./scripts/build/build_examples.py --target android-arm64-chip-tool build"
+
+      - name: Collect the libraries
+        env:
+          TAG: ${{ needs.plan.outputs.tag }}
+        run: |
+          set -euo pipefail
+          libs=examples/android/CHIPTool/app/libs
+          ls -la "$libs" "$libs/jniLibs"/* || true
+          mkdir -p sdk/libs sdk/jniLibs
+          cp "$libs"/*.jar sdk/libs/
+          cp -r "$libs"/jniLibs/* sdk/jniLibs/
+          test -s sdk/libs/CHIPController.jar
+          test -s sdk/jniLibs/arm64-v8a/libCHIPController.so
+          cp LICENSE sdk/LICENSE
+          {
+            echo "Matter SDK (project-chip/connectedhomeip) $TAG"
+            echo "Commit $(git -c safe.directory='*' rev-parse HEAD)"
+            echo "Built by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo
+            (cd sdk && find libs jniLibs -type f | sort | xargs sha256sum)
+          } > sdk/BUILD.txt
+          cat sdk/BUILD.txt
+          # The build image has no zip.
+          python3 -c 'import shutil, sys; shutil.make_archive(sys.argv[1], "zip", "sdk")' \
+            "matter-android-sdk-$TAG"
+          ls -la "matter-android-sdk-$TAG.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: matter-android-sdk
+          path: matter-android-sdk-*.zip
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    name: Publish as a release
+    needs: [plan, build]
+    # Pull requests only prove that the release builds.
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: matter-android-sdk
+
+      - name: Create or update the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.plan.outputs.tag }}
+        run: |
+          set -euo pipefail
+          release="matter-sdk-$TAG"
+          notes="Android controller libraries of the Matter SDK (project-chip/connectedhomeip) $TAG, Apache 2.0, built by this repository's Matter SDK workflow. Used by the ZT Home Android build. Not an app release."
+          if gh release view "$release" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$release" matter-android-sdk-*.zip \
+              --repo "$GITHUB_REPOSITORY" --clobber
+          else
+            gh release create "$release" matter-android-sdk-*.zip \
+              --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+              --title "Matter SDK $TAG for Android" --notes "$notes" \
+              --latest=false
+          fi
