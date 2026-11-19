@@ -303,6 +303,31 @@ void main() {
     );
   });
 
+  testWidgets('copy works for devices not on screen', (tester) async {
+    tester.view.physicalSize = const Size(360, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    fake = FakeAdapter()
+      ..set('blind', const DeviceState(values: {Capability.position: 100}));
+    // Only the editor: nothing else is watching the devices.
+    await tester.pumpWidget(
+      app(
+        const ScenePage(),
+        homes: const [flat],
+        rooms: const [living],
+        devices: [blind, lamp],
+        adapters: [fake],
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Copy how things are now'));
+    await tester.pumpAndSettle();
+    final choice = tester.widget<DropdownButton<SceneChoice>>(
+      find.byKey(const ValueKey('choice-blind')),
+    );
+    expect(choice.value, SceneChoice.open);
+  });
+
   testWidgets('touch and hold to change or delete a scene', (tester) async {
     await open(tester, scenes: [night]);
     await tester.longPress(find.widgetWithText(ActionChip, 'Good night'));

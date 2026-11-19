@@ -40,9 +40,19 @@ class _ScenePageState extends ConsumerState<ScenePage> {
 
   ScenePick _pick(HomeDevice d) => _picks[d.id] ?? ScenePick.skip;
 
-  void _copyNow() {
+  Future<void> _copyNow() async {
+    final devices = _devices();
+    // Each device's first reading, for devices not on screen before.
+    await Future.wait([
+      for (final d in devices)
+        ref
+            .read(deviceStateProvider(d.id).future)
+            .timeout(const Duration(seconds: 5))
+            .then<void>((_) {}, onError: (Object _) {}),
+    ]);
+    if (!mounted) return;
     setState(() {
-      for (final d in _devices()) {
+      for (final d in devices) {
         final state = ref.read(deviceStateProvider(d.id)).value;
         _picks[d.id] = state == null || !state.reachable
             ? ScenePick.skip
@@ -92,6 +102,10 @@ class _ScenePageState extends ConsumerState<ScenePage> {
     // Keeps the device list current while the page is open.
     ref.watch(currentDevicesProvider);
     final devices = _devices();
+    // Live states while the editor is open, for "Copy how things are now".
+    for (final d in devices) {
+      ref.watch(deviceStateProvider(d.id));
+    }
     final scene = widget.scene;
     if (!_filled && scene != null) {
       _filled = true;
