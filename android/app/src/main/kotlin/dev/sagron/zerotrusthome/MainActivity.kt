@@ -26,6 +26,9 @@ class MainActivity : FlutterFragmentActivity(), MatterHost {
      */
     private var multicastLock: WifiManager.MulticastLock? = null
 
+    /** Names for the controls panel, and taps from it. */
+    private var quick: MethodChannel? = null
+
     /** The Matter library, for the Dart side. */
     private var matter: MatterPlugin? = null
 
@@ -99,7 +102,10 @@ class MainActivity : FlutterFragmentActivity(), MatterHost {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         matter = MatterPlugin(this, flutterEngine.dartExecutor.binaryMessenger, this)
-        QuickVault.serve(this, flutterEngine.dartExecutor.binaryMessenger)
+        quick = QuickVault.serve(this, flutterEngine.dartExecutor.binaryMessenger)
+        // Opened from a tile in the controls panel: the app carries the tap
+        // out once unlocked.
+        QuickVault.keepTap(this, intent)
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             "dev.sagron.zerotrusthome/network",
@@ -126,6 +132,12 @@ class MainActivity : FlutterFragmentActivity(), MatterHost {
                 else -> result.notImplemented()
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        // A tile tapped while the app is open: Dart takes it now.
+        if (QuickVault.keepTap(this, intent)) quick?.invokeMethod("tapped", null)
     }
 
     private fun releaseMulticastLock() {

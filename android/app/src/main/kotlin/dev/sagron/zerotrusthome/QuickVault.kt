@@ -1,6 +1,8 @@
 package dev.sagron.zerotrusthome
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Log
@@ -14,11 +16,11 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
 /**
- * The quick controls' copy of the account's devices (see
- * `lib/quick/quick_snapshot.dart`): one file, sealed with AES-GCM under a
- * key that lives in the Android Keystore and never leaves it. Only this app
- * on this phone can open it. It sits in the no-backup folder, so it is
- * never backed up, and is deleted on sign-out or when quick controls are
+ * The names the controls panel shows (see `lib/quick/quick_snapshot.dart`;
+ * never addresses or keys): one file, sealed with AES-GCM under a key that
+ * lives in the Android Keystore and never leaves it. Only this app on this
+ * phone can open it. It sits in the no-backup folder, so it is never backed
+ * up, and is deleted on sign-out or when "Show devices outside the app" is
  * turned off.
  */
 object QuickVault {
@@ -85,28 +87,72 @@ object QuickVault {
         file(context).delete()
     }
 
+    // --- Taps waiting for the app to be unlocked --------------------------
+
+    private const val TAPS = "zt-home.quick-tap"
+    private const val TAP_MAX_AGE_MS = 2 * 60_000L
+
+    /** What a tile in the panel or on the widget opens: the app, with this tap. */
+    fun tapIntent(context: Context, action: String, id: String): Intent =
+        Intent(context, MainActivity::class.java)
+            .setAction(Intent.ACTION_VIEW)
+            // Unique per tile, so each keeps its own PendingIntent.
+            .setData(Uri.parse("zthome-quick://$action/${Uri.encode(id)}"))
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+
+    /** Keeps the tap [intent] carries, if any; true when it carried one. */
+    fun keepTap(context: Context, intent: Intent?): Boolean {
+        val data = intent?.data ?: return false
+        if (data.scheme != "zthome-quick") return false
+        val action = data.host ?: return false
+        val id = data.pathSegments.firstOrNull() ?: return false
+        if (action != "toggle" && action != "scene") return false
+        context.getSharedPreferences(TAPS, Context.MODE_PRIVATE).edit()
+            .putString("action", action)
+            .putString("id", id)
+            .putLong("at", System.currentTimeMillis())
+            .apply()
+        // Handled: not opened again when the activity is made again.
+        intent.data = null
+        return true
+    }
+
+    /** The waiting tap, once. One left too long is dropped: a light that
+     *  switches minutes after the tap would be a surprise. */
+    private fun takeTap(context: Context): Map<String, String>? {
+        val prefs = context.getSharedPreferences(TAPS, Context.MODE_PRIVATE)
+        val action = prefs.getString("action", null)
+        val id = prefs.getString("id", null)
+        val at = prefs.getLong("at", 0)
+        prefs.edit().clear().apply()
+        if (action == null || id == null) return null
+        if (System.currentTimeMillis() - at > TAP_MAX_AGE_MS) return null
+        return mapOf("action" to action, "id" to id)
+    }
+
     /** The channel `dev.sagron.zerotrusthome/quick`, for the Dart side. */
-    fun serve(context: Context, messenger: BinaryMessenger) {
+    fun serve(context: Context, messenger: BinaryMessenger): MethodChannel {
         val app = context.applicationContext
-        MethodChannel(messenger, "dev.sagron.zerotrusthome/quick").setMethodCallHandler { call, result ->
+        val channel = MethodChannel(messenger, "dev.sagron.zerotrusthome/quick")
+        channel.setMethodCallHandler { call, result ->
             try {
                 when (call.method) {
                     "save" -> {
                         save(app, call.argument<String>("text")!!)
-                        QuickEngine.refresh()
                         result.success(null)
                     }
                     "load" -> result.success(load(app))
                     "clear" -> {
                         clear(app)
-                        QuickEngine.refresh()
                         result.success(null)
                     }
+                    "takeTap" -> result.success(takeTap(app))
                     else -> result.notImplemented()
                 }
             } catch (e: Exception) {
                 result.error("failed", e.message, null)
             }
         }
+        return channel
     }
 }

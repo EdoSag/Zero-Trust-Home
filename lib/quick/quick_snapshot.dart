@@ -1,54 +1,56 @@
 import 'dart:convert';
 
-import '../adapters/homeassistant/ha_server.dart';
-import '../adapters/matter/matter_fabric.dart';
 import '../model/device.dart';
 import '../model/home.dart';
 import '../model/scene.dart';
 
-/// What the quick controls (the Android Device Controls panel) need to
-/// show and switch devices without the app open: the account's devices and
-/// scenes, and how to reach them (Home Assistant tokens, Matter keys).
+/// What the phone's controls panel and the home screen widget may show
+/// while ZT Home is locked: the names of homes, rooms, devices and scenes,
+/// and what kind of device each is. Never how to reach a device (no
+/// addresses, local keys, tokens or Matter keys): those stay in the vault,
+/// so a tap there opens the app, which carries it out once unlocked.
 ///
-/// It is kept only on this phone, sealed with a key in the Android
-/// Keystore, and only while the person has quick controls on. It is never
-/// sent anywhere.
+/// Kept only on this phone, sealed with a key in the Android Keystore,
+/// and only while "Show devices outside the app" is on.
 class QuickSnapshot {
   const QuickSnapshot({
     this.homes = const [],
     this.rooms = const [],
     this.devices = const [],
     this.scenes = const [],
-    this.haServers = const [],
-    this.fabrics = const [],
   });
 
   final List<Home> homes;
   final List<Room> rooms;
   final List<HomeDevice> devices;
   final List<Scene> scenes;
-  final List<HaServer> haServers;
-  final List<MatterFabric> fabrics;
 
-  /// Version of the layout below; a newer one is read as empty.
-  static const version = 1;
+  /// Version of the layout below; any other is read as empty.
+  static const version = 2;
 
   String encode() => jsonEncode({
     'version': version,
     'homes': [
-      for (final h in homes) {'id': h.id, ...h.toJson()},
+      for (final h in homes) {'id': h.id, 'name': h.name},
     ],
     'rooms': [
-      for (final r in rooms) {'id': r.id, ...r.toJson()},
+      for (final r in rooms) {'id': r.id, 'homeId': r.homeId, 'name': r.name},
     ],
     'devices': [
-      for (final d in devices) {'id': d.id, ...d.toJson()},
+      for (final d in devices)
+        {
+          'id': d.id,
+          'homeId': d.homeId,
+          if (d.roomId != null) 'roomId': d.roomId,
+          'name': d.name,
+          'type': d.type.name,
+          'capabilities': [for (final c in d.capabilities) c.name],
+          'favourite': d.favourite,
+        },
     ],
     'scenes': [
-      for (final s in scenes) {'id': s.id, ...s.toJson()},
+      for (final s in scenes) {'id': s.id, 'homeId': s.homeId, 'name': s.name},
     ],
-    'haServers': [for (final s in haServers) s.toJson()],
-    'fabrics': [for (final f in fabrics) f.toJson()],
   });
 
   /// Never throws: anything unreadable comes back empty.
@@ -67,8 +69,6 @@ class QuickSnapshot {
         rooms: each('rooms', Room.fromJson),
         devices: each('devices', HomeDevice.fromJson),
         scenes: each('scenes', Scene.fromJson),
-        haServers: each('haServers', (_, j) => HaServer.fromJson(j)),
-        fabrics: each('fabrics', (_, j) => MatterFabric.fromJson(j)),
       );
     } on Object {
       return const QuickSnapshot();

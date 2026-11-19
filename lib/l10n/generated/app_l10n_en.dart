@@ -705,9 +705,39 @@ class AppL10nEn extends AppL10n {
   }
 
   @override
-  String get quickControls => 'Controls without opening the app';
+  String get quickControls => 'Show devices outside the app';
 
   @override
   String get quickControlsBody =>
-      'Switch lights, plugs and scenes from the phone\'s device controls. A copy of your devices and their keys stays on this phone only, sealed by Android.';
+      'Off: the phone\'s controls panel only opens ZT Home. On: the names of your homes, rooms, devices and scenes are kept on this phone, sealed by Android, so the panel can list them. A tap there opens ZT Home and is carried out once you unlock. How to reach your devices never leaves the app.';
+
+  @override
+  String quickTurnedOn(String name) {
+    return '$name is on.';
+  }
+
+  @override
+  String quickTurnedOff(String name) {
+    return '$name is off.';
+  }
+
+  @override
+  String quickLocked(String name) {
+    return '$name is locked.';
+  }
+
+  @override
+  String quickOpened(String name) {
+    return '$name is open.';
+  }
+
+  @override
+  String quickClosed(String name) {
+    return '$name is closed.';
+  }
+
+  @override
+  String quickNoAnswer(String name) {
+    return '$name didn\'t answer.';
+  }
 }
