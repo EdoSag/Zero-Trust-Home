@@ -541,4 +541,106 @@ class AppL10nEn extends AppL10n {
   String haErrFailed(String detail) {
     return 'Home Assistant refused: $detail';
   }
+
+  @override
+  String get stateLocked => 'Locked';
+
+  @override
+  String get stateUnlocked => 'Unlocked';
+
+  @override
+  String get stateOpen => 'Open';
+
+  @override
+  String get stateClosed => 'Closed';
+
+  @override
+  String stateOpenPercent(int n) {
+    return 'Open $n%';
+  }
+
+  @override
+  String get stateMotion => 'Motion';
+
+  @override
+  String get stateNoMotion => 'No motion';
+
+  @override
+  String degrees(String value) {
+    return '$value°C';
+  }
+
+  @override
+  String setTo(String value) {
+    return 'set to $value';
+  }
+
+  @override
+  String percent(int n) {
+    return '$n%';
+  }
+
+  @override
+  String batteryLevel(int n) {
+    return 'Battery $n%';
+  }
+
+  @override
+  String get brightness => 'Brightness';
+
+  @override
+  String get fanSpeed => 'Speed';
+
+  @override
+  String get position => 'Position';
+
+  @override
+  String get open => 'Open';
+
+  @override
+  String get lock => 'Lock';
+
+  @override
+  String get unlock => 'Unlock';
+
+  @override
+  String unlockTitle(String name) {
+    return 'Unlock $name?';
+  }
+
+  @override
+  String get unlockBody =>
+      'The door can then be opened by anyone who is there.';
+
+  @override
+  String get targetTemperature => 'Set to';
+
+  @override
+  String get colder => 'Colder';
+
+  @override
+  String get warmer => 'Warmer';
+
+  @override
+  String get temperatureNow => 'Temperature';
+
+  @override
+  String get humidity => 'Humidity';
+
+  @override
+  String get contact => 'Door or window';
+
+  @override
+  String get motion => 'Motion';
+
+  @override
+  String get energy => 'Energy used';
+
+  @override
+  String kwh(String value) {
+    return '$value kWh';
+  }
+
+  @override
+  String get battery => 'Battery';
 }
