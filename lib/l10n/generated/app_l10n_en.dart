@@ -453,6 +453,10 @@ class AppL10nEn extends AppL10n {
       'ZT Home needs the Nearby devices permission to find a new device over Bluetooth. Allow it in the app\'s settings, then try again.';
 
   @override
+  String get matterErrLocationOff =>
+      'Turn on Location to add a new device. On this version of Android, phones can only find Bluetooth devices while Location is on.';
+
+  @override
   String get matterErrNotFoundNew =>
       'The device wasn\'t found. Check that it is in pairing mode (often: just plugged in, or its button held until it blinks), keep the phone close to it, and check the Wi-Fi name and password.';
 }

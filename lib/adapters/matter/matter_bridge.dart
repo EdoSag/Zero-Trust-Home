@@ -58,6 +58,9 @@ enum MatterFailure {
   /// The person didn't allow the app to use Bluetooth.
   bluetoothDenied,
 
+  /// Location is off: up to Android 11, Bluetooth scans need it on.
+  locationOff,
+
   /// The device didn't answer, or wasn't found on the network.
   unreachable,
 
@@ -160,6 +163,7 @@ class MatterChannelBridge implements MatterBridge {
         'unreachable' => MatterFailure.unreachable,
         'bluetoothOff' => MatterFailure.bluetoothOff,
         'bluetoothDenied' => MatterFailure.bluetoothDenied,
+        'locationOff' => MatterFailure.locationOff,
         _ => MatterFailure.failed,
       }, e.message ?? e.code);
     }

@@ -865,6 +865,12 @@ abstract class AppL10n {
   /// **'ZT Home needs the Nearby devices permission to find a new device over Bluetooth. Allow it in the app\'s settings, then try again.'**
   String get matterErrBluetoothDenied;
 
+  /// No description provided for @matterErrLocationOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Location to add a new device. On this version of Android, phones can only find Bluetooth devices while Location is on.'**
+  String get matterErrLocationOff;
+
   /// No description provided for @matterErrNotFoundNew.
   ///
   /// In en, this message translates to:
