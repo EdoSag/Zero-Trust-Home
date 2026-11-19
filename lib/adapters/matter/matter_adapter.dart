@@ -161,6 +161,8 @@ class MatterAdapter implements DeviceAdapter {
   Future<void> _lock = Future.value();
   String? _activeFabric;
   String? _pairing;
+  var _adding = false;
+  var _abandoned = false;
   var _disposed = false;
 
   @override
@@ -244,8 +246,32 @@ class MatterAdapter implements DeviceAdapter {
     required String code,
     required String Function() newId,
   }) => _serial(() async {
+    _adding = true;
+    _abandoned = false;
+    try {
+      return await _pair(homeId, roomId, name, code, newId);
+    } finally {
+      _adding = false;
+    }
+  });
+
+  Future<List<HomeDevice>> _pair(
+    String homeId,
+    String? roomId,
+    String name,
+    String code,
+    String Function() newId,
+  ) async {
+    void checkAbandoned() {
+      if (_abandoned) {
+        throw const MatterException(MatterFailure.failed, 'Cancelled');
+      }
+    }
+
     final fabric = await makeFabric(homeId);
+    checkAbandoned();
     await _use(fabric);
+    checkAbandoned();
     final nodeId = matterNewNodeId();
     _pairing = nodeId;
     try {
@@ -284,7 +310,7 @@ class MatterAdapter implements DeviceAdapter {
           createdAt: now + i,
         ),
     ];
-  });
+  }
 
   /// A device that just joined can take a moment to answer.
   Future<List<MatterAttribute>> _describe(String nodeId) async {
@@ -300,8 +326,11 @@ class MatterAdapter implements DeviceAdapter {
     }
   }
 
-  /// Gives up adding a device (the user went back).
+  /// Gives up adding a device (the user went back). A device that has
+  /// already joined by then is still returned by [pair], to be saved.
   Future<void> cancelPair() async {
+    if (!_adding) return;
+    _abandoned = true;
     if (_pairing == null) return;
     try {
       await bridge.cancelPair();

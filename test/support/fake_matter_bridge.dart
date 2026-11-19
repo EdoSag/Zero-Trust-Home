@@ -32,6 +32,7 @@ class FakeMatterBridge implements MatterBridge {
   /// The device joins, and then can't be read.
   bool unreadable = false;
   Completer<void>? holdPairing;
+  bool ignoresCancel = false;
 
   /// Fabric ids, in the order they were started.
   final started = <String>[];
@@ -86,6 +87,9 @@ class FakeMatterBridge implements MatterBridge {
   Future<void> pair({required String nodeId, required String code}) async {
     _check();
     await holdPairing?.future;
+    if (cancelled > 0 && !ignoresCancel) {
+      throw const MatterException(MatterFailure.failed, 'Cancelled');
+    }
     if (code != this.code) {
       throw const MatterException(MatterFailure.unreachable, 'not found');
     }

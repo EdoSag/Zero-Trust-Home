@@ -22,6 +22,7 @@ class MemoryRepository extends HomeRepository {
     List<Room> rooms = const [],
     List<HomeDevice> devices = const [],
   }) {
+    fabricSettle = Duration.zero;
     for (final h in homes) {
       _homes[h.id] = h;
     }

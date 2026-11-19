@@ -56,6 +56,26 @@ void main() {
     expect(ours.caKey, theirs.caKey);
   });
 
+  test('one that arrives a moment after ours was sent still wins', () async {
+    final theirs = MatterFabric.create('h1');
+    // The other phone's write lands after ours was sent and confirmed.
+    repo.onSync = () async {
+      if (repo.syncs == 3) repo.fabrics['h1'] = theirs;
+    };
+    final ours = await repo.fabricFor('h1');
+    expect(ours.caKey, theirs.caKey);
+  });
+
+  test('the account is asked again before each device is added', () async {
+    final first = await repo.fabricFor('h1');
+    // The account's copy was replaced since (a write that arrived late).
+    final theirs = MatterFabric.create('h1');
+    repo.onSync = () async => repo.fabrics['h1'] = theirs;
+    final now = await repo.fabricFor('h1');
+    expect(now.caKey, theirs.caKey);
+    expect(now.caKey, isNot(first.caKey));
+  });
+
   test('without a connection no fabric is made', () async {
     repo.onSync = () async => throw const MatterFabricNeedsSync();
     await expectLater(

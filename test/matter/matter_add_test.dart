@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
@@ -95,6 +97,36 @@ void main() {
     expect(device.homeId, flat.id);
     expect(bridge.joined, hasLength(1));
     expect(find.text('Matter device added'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a device that joins after the page was left is saved', (
+    tester,
+  ) async {
+    phone(tester);
+    await tester.pumpWidget(matterApp(const AddDevicePage()));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Matter'));
+    await tester.pumpAndSettle();
+    bridge.holdPairing = Completer();
+    bridge.ignoresCancel = true;
+    await tester.enterText(find.byType(TextFormField).first, '34970112332');
+    await tester.scrollUntilVisible(
+      find.byType(FilledButton),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.byType(FilledButton));
+    await tester.pump(const Duration(milliseconds: 100));
+    // Back, while the device is still being looked for.
+    await tester.pageBack();
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byType(MatterAddPage), findsNothing);
+    bridge.holdPairing!.complete();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(repo.devices, hasLength(1));
+    expect(bridge.joined, hasLength(1));
     expect(tester.takeException(), isNull);
   });
 

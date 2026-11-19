@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../adapters/matter/matter_adapter.dart';
 import '../adapters/matter/matter_bridge.dart';
 import '../adapters/matter/matter_providers.dart';
 import '../adapters/matter/matter_setup_code.dart';
@@ -35,10 +36,12 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
     }
   }
 
+  MatterAdapter? _adapter;
+
   @override
   void dispose() {
     // Leaving while a device is being added gives up on it.
-    if (_busy) ref.read(matterAdapterProvider).cancelPair().ignore();
+    if (_busy) _adapter?.cancelPair().ignore();
     _name.dispose();
     _code.dispose();
     super.dispose();
@@ -70,17 +73,19 @@ class _MatterAddPageState extends ConsumerState<MatterAddPage> {
       _error = null;
     });
     final name = _name.text.trim();
+    // Taken now: a device that joins after this page was left is still
+    // saved, or nothing in the app could remove it from the home.
+    final adapter = ref.read(matterAdapterProvider);
+    final repo = ref.read(homeRepositoryProvider);
+    _adapter = adapter;
     try {
-      final devices = await ref
-          .read(matterAdapterProvider)
-          .pair(
-            homeId: home.id,
-            roomId: _roomId,
-            name: name,
-            code: _code.text,
-            newId: HomeRepository.newId,
-          );
-      final repo = ref.read(homeRepositoryProvider);
+      final devices = await adapter.pair(
+        homeId: home.id,
+        roomId: _roomId,
+        name: name,
+        code: _code.text,
+        newId: HomeRepository.newId,
+      );
       for (final device in devices) {
         await repo.saveDevice(device);
       }

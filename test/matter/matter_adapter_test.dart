@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
 import 'package:zerotrust_home/adapters/matter/matter_adapter.dart';
@@ -109,6 +111,43 @@ void main() {
     await expectLater(pair(adapter), throwsA(isA<MatterException>()));
     expect(bridge.joined, isEmpty);
   }, timeout: const Timeout(Duration(seconds: 20)));
+
+  test('leaving before the device is looked for adds nothing', () async {
+    final hold = Completer<void>();
+    final adapter = MatterAdapter(
+      bridge: bridge,
+      loadFabric: (homeId) async => fabrics[homeId],
+      makeFabric: (homeId) async {
+        await hold.future;
+        return fabrics.putIfAbsent(homeId, () => MatterFabric.create(homeId));
+      },
+      preferences: preferences,
+    );
+    addTearDown(adapter.dispose);
+    final adding = pair(adapter);
+    await pumpEventQueue();
+    await adapter.cancelPair();
+    hold.complete();
+    await expectLater(adding, throwsA(isA<MatterException>()));
+    expect(bridge.started, isEmpty);
+    expect(bridge.joined, isEmpty);
+    // Cancelling when nothing is being added does nothing.
+    await adapter.cancelPair();
+    expect(await pair(adapter), hasLength(1));
+  });
+
+  test('a device that joined as the page was left is still returned', () async {
+    final adapter = adapterOn(bridge);
+    bridge.holdPairing = Completer();
+    final adding = pair(adapter);
+    await pumpEventQueue();
+    // Too late to stop: the device answers and joins.
+    bridge.ignoresCancel = true;
+    await adapter.cancelPair();
+    bridge.holdPairing!.complete();
+    expect(await adding, hasLength(1));
+    expect(bridge.joined, hasLength(1));
+  });
 
   test('the phone stays the same node across restarts', () async {
     await pair(adapterOn(bridge));
