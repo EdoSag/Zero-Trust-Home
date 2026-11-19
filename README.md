@@ -37,6 +37,12 @@ Phase H0 (the foundation) and the first part of H1 (real devices) are in:
   Plugs, switches and lights switch and dim, with live state; a power
   strip shows one device per socket. This uses the open Matter SDK (see
   `matter/README.md`), not Google Play services. 64-bit ARM phones only.
+- **Home Assistant:** connect a home's Home Assistant once with its
+  address and a long-lived access token, then pick its lights, switches,
+  plugs, fans, blinds, locks, thermostats and sensors. One WebSocket
+  connection per home, on the home network, open while its devices are on
+  screen; live state follows Home Assistant's `state_changed` events. The
+  token is saved in the home's encrypted `ha-server` item.
 - **The adapter interface:** each way of reaching devices (Matter, Home
   Assistant, Hue, Tuya/Smart Life, Shelly, Switcher) is one adapter behind
   `DeviceAdapter`. The ones not built yet are listed under "Add a device"
@@ -59,9 +65,14 @@ Matter manufacturers.
   `tuya_discovery.dart` the UDP announcements, `tuya_adapter.dart` the
   `DeviceAdapter` (pairing, reconnecting, following a device to a new
   address).
+- `lib/adapters/homeassistant/`: `ha_client.dart` the WebSocket API
+  (sign-in, states, events, service calls), `ha_entities.dart` what each
+  entity becomes (type, capabilities, values, service calls),
+  `ha_adapter.dart` the shared connection per home with reconnecting.
 - `lib/data/home_store.dart`: items in the shared `vault_items` table,
-  sealed with the Home app key (`app = 'home'`): kinds `home`, `room` and
-  `device`. No database change was needed. A device's address (node id, IP,
+  sealed with the Home app key (`app = 'home'`): kinds `home`, `room`,
+  `device`, `fabric` (Matter keys) and `ha-server` (Home Assistant address
+  and token). No database change was needed. A device's address (node id, IP,
   local key) is inside the encrypted item.
 - The home picked on a phone is kept on that phone, not synced.
 - A device saved by a newer version (an adapter, type or capability this

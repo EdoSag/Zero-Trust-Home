@@ -459,4 +459,86 @@ class AppL10nEn extends AppL10n {
   @override
   String get matterErrNotFoundNew =>
       'The device wasn\'t found. Check that it is in pairing mode (often: just plugged in, or its button held until it blinks), keep the phone close to it, and check the Wi-Fi name and password.';
+
+  @override
+  String get tryAgain => 'Try again';
+
+  @override
+  String get haIntro =>
+      'Connect your Home Assistant once, and pick which of its devices to show here. The app talks to it on your home network; the token is encrypted with the rest of your home.';
+
+  @override
+  String get haAddress => 'Home Assistant address';
+
+  @override
+  String get haAddressHint =>
+      'Use its IP address if homeassistant.local doesn\'t work on this phone.';
+
+  @override
+  String get haAddressBad => 'Enter an address like http://192.168.1.10:8123';
+
+  @override
+  String get haToken => 'Long-lived access token';
+
+  @override
+  String get haTokenHint =>
+      'In Home Assistant, open your profile, then Security, and create a long-lived access token at the bottom of the page. Paste it here.';
+
+  @override
+  String get haConnect => 'Connect';
+
+  @override
+  String get haChangeServer => 'Change address or token';
+
+  @override
+  String haConnectedTo(String url) {
+    return 'Connected to $url. Pick the devices to show in this home.';
+  }
+
+  @override
+  String get haNothing =>
+      'Home Assistant has no lights, switches, sensors or other devices this app can show yet.';
+
+  @override
+  String get haAlreadyAdded => 'Already in this home';
+
+  @override
+  String haAdd(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Add $n devices',
+      one: 'Add 1 device',
+      zero: 'Add devices',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String haAdded(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n devices added',
+      one: '1 device added',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get haErrUnreachable =>
+      'Home Assistant didn\'t answer at that address. Check that this phone is on your home Wi-Fi and the address is right.';
+
+  @override
+  String get haErrToken =>
+      'Home Assistant didn\'t accept the token. Create a new one and paste all of it.';
+
+  @override
+  String get haErrNotHa =>
+      'Something answered at that address, but it isn\'t Home Assistant. Check the address and port (usually 8123).';
+
+  @override
+  String haErrFailed(String detail) {
+    return 'Home Assistant refused: $detail';
+  }
 }

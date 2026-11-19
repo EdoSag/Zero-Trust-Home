@@ -226,5 +226,51 @@
   "matterErrBluetoothOff": "Turn on Bluetooth to add a new device, then try again.",
   "matterErrBluetoothDenied": "ZT Home needs the Nearby devices permission to find a new device over Bluetooth. Allow it in the app's settings, then try again.",
   "matterErrLocationOff": "Turn on Location to add a new device. On this version of Android, phones can only find Bluetooth devices while Location is on.",
-  "matterErrNotFoundNew": "The device wasn't found. Check that it is in pairing mode (often: just plugged in, or its button held until it blinks), keep the phone close to it, and check the Wi-Fi name and password."
+  "matterErrNotFoundNew": "The device wasn't found. Check that it is in pairing mode (often: just plugged in, or its button held until it blinks), keep the phone close to it, and check the Wi-Fi name and password.",
+  "tryAgain": "Try again",
+  "haIntro": "Connect your Home Assistant once, and pick which of its devices to show here. The app talks to it on your home network; the token is encrypted with the rest of your home.",
+  "haAddress": "Home Assistant address",
+  "haAddressHint": "Use its IP address if homeassistant.local doesn't work on this phone.",
+  "haAddressBad": "Enter an address like http://192.168.1.10:8123",
+  "haToken": "Long-lived access token",
+  "haTokenHint": "In Home Assistant, open your profile, then Security, and create a long-lived access token at the bottom of the page. Paste it here.",
+  "haConnect": "Connect",
+  "haChangeServer": "Change address or token",
+  "haConnectedTo": "Connected to {url}. Pick the devices to show in this home.",
+  "@haConnectedTo": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "haNothing": "Home Assistant has no lights, switches, sensors or other devices this app can show yet.",
+  "haAlreadyAdded": "Already in this home",
+  "haAdd": "{n, plural, =0{Add devices} =1{Add 1 device} other{Add {n} devices}}",
+  "@haAdd": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "haAdded": "{n, plural, =1{1 device added} other{{n} devices added}}",
+  "@haAdded": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "haErrUnreachable": "Home Assistant didn't answer at that address. Check that this phone is on your home Wi-Fi and the address is right.",
+  "haErrToken": "Home Assistant didn't accept the token. Create a new one and paste all of it.",
+  "haErrNotHa": "Something answered at that address, but it isn't Home Assistant. Check the address and port (usually 8123).",
+  "haErrFailed": "Home Assistant refused: {detail}",
+  "@haErrFailed": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -460,4 +460,86 @@ class AppL10nHe extends AppL10n {
   @override
   String get matterErrNotFoundNew =>
       'המכשיר לא נמצא. כדאי לבדוק שהוא במצב צימוד (לרוב: מיד אחרי חיבור לחשמל, או אחרי לחיצה ארוכה על הכפתור עד שהוא מהבהב), לקרב אליו את הטלפון ולבדוק את שם ה-Wi-Fi והסיסמה.';
+
+  @override
+  String get tryAgain => 'לנסות שוב';
+
+  @override
+  String get haIntro =>
+      'מחברים את Home Assistant פעם אחת, ובוחרים אילו מהמכשירים שלו להציג כאן. האפליקציה מדברת איתו ברשת הביתית; הטוקן מוצפן יחד עם שאר פרטי הבית.';
+
+  @override
+  String get haAddress => 'כתובת Home Assistant';
+
+  @override
+  String get haAddressHint =>
+      'אפשר להשתמש בכתובת ה-IP שלו אם homeassistant.local לא עובד בטלפון הזה.';
+
+  @override
+  String get haAddressBad => 'יש להזין כתובת כמו http://192.168.1.10:8123';
+
+  @override
+  String get haToken => 'טוקן גישה לטווח ארוך';
+
+  @override
+  String get haTokenHint =>
+      'ב-Home Assistant פותחים את הפרופיל, אחר כך אבטחה, ויוצרים טוקן גישה לטווח ארוך בתחתית העמוד. מדביקים אותו כאן.';
+
+  @override
+  String get haConnect => 'התחברות';
+
+  @override
+  String get haChangeServer => 'שינוי כתובת או טוקן';
+
+  @override
+  String haConnectedTo(String url) {
+    return 'מחובר ל-$url. בוחרים את המכשירים שיוצגו בבית הזה.';
+  }
+
+  @override
+  String get haNothing =>
+      'ב-Home Assistant עדיין אין תאורה, מתגים, חיישנים או מכשירים אחרים שהאפליקציה יכולה להציג.';
+
+  @override
+  String get haAlreadyAdded => 'כבר בבית הזה';
+
+  @override
+  String haAdd(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'הוספת $n מכשירים',
+      one: 'הוספת מכשיר אחד',
+      zero: 'הוספת מכשירים',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String haAdded(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'נוספו $n מכשירים',
+      one: 'נוסף מכשיר אחד',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get haErrUnreachable =>
+      'Home Assistant לא ענה בכתובת הזו. כדאי לבדוק שהטלפון מחובר ל-Wi-Fi של הבית ושהכתובת נכונה.';
+
+  @override
+  String get haErrToken =>
+      'Home Assistant לא קיבל את הטוקן. יש ליצור טוקן חדש ולהדביק אותו במלואו.';
+
+  @override
+  String get haErrNotHa =>
+      'משהו ענה בכתובת הזו, אבל זה לא Home Assistant. כדאי לבדוק את הכתובת ואת הפורט (בדרך כלל 8123).';
+
+  @override
+  String haErrFailed(String detail) {
+    return 'Home Assistant סירב: $detail';
+  }
 }

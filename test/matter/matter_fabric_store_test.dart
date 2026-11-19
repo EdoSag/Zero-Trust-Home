@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zerotrust_home/adapters/homeassistant/ha_server.dart';
 import 'package:zerotrust_home/adapters/matter/matter_fabric.dart';
 import 'package:zerotrust_home/data/home_store.dart';
 import 'package:zerotrust_home/model/home.dart';
@@ -122,9 +123,16 @@ void main() {
     await repo.saveHome(const Home(id: 'h1', name: 'Flat', createdAt: 1));
     await repo.fabricFor('h1');
     await repo.fabricFor('h2');
+    for (final home in ['h1', 'h2']) {
+      await repo.saveHaServer(
+        HaServer(homeId: home, url: 'http://ha:8123', token: 't'),
+      );
+    }
     await repo.deleteHome('h1');
     expect(await repo.loadFabric('h1'), isNull);
     expect(await repo.loadFabric('h2'), isNotNull);
+    expect(await repo.loadHaServer('h1'), isNull);
+    expect(await repo.loadHaServer('h2'), isNotNull);
   });
 
   test('the saved item says what it is', () {
