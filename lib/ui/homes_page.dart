@@ -73,13 +73,12 @@ class HomesPage extends ConsumerWidget {
                     // while this phone can still speak to them.
                     final devices =
                         ref.read(devicesProvider).value ?? const <HomeDevice>[];
-                    await ref
-                        .read(deviceControlProvider)
-                        .forgetAll([
-                          for (final d in devices)
-                            if (d.homeId == home.id) d,
-                        ])
-                        .timeout(const Duration(seconds: 30), onTimeout: () {});
+                    // Each device gets its own short wait (see forgetAll),
+                    // so an unplugged one doesn't hold up the rest.
+                    await ref.read(deviceControlProvider).forgetAll([
+                      for (final d in devices)
+                        if (d.homeId == home.id) d,
+                    ]);
                     await repo.deleteHome(home.id);
                   }
                 },
