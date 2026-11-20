@@ -634,7 +634,7 @@ abstract class AppL10n {
   /// No description provided for @tuyaKeyHelpBody.
   ///
   /// In en, this message translates to:
-  /// **'Each device has a secret local key, given to it when it is set up in the Smart Life app. ZT Home needs it once, to talk to the device directly. Tuya only shows it on its developer site:\n\n1. Sign up for free at iot.tuya.com and create a cloud project.\n2. In the project, open Devices, choose Link App Account and scan the code with the Smart Life app.\n3. In API Explorer, run \"Query Device Details\" with the Device ID below, and copy \"local_key\" from the answer.\n\nThe key is saved encrypted in your ZT account. It never leaves your devices unencrypted.'**
+  /// **'Each device has a secret local key, given to it when it is set up in the Smart Life app. ZT Home needs it once, to talk to the device directly.\n\nThe easy way: go back and use \"Link Smart Life\", which reads the keys of all your devices.\n\nBy hand, on Tuya\'s developer site:\n\n1. Sign up for free at iot.tuya.com and create a cloud project.\n2. In the project, open Devices, choose Link App Account and scan the code with the Smart Life app.\n3. In API Explorer, run \"Query Device Details\" with the Device ID below, and copy \"local_key\" from the answer.\n\nThe key is saved encrypted in your ZT account. It never leaves your devices unencrypted.'**
   String get tuyaKeyHelpBody;
 
   /// No description provided for @close.
@@ -1398,6 +1398,126 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'The bridge refused: {detail}'**
   String hueErrFailed(String detail);
+
+  /// No description provided for @tuyaLinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Link Smart Life'**
+  String get tuyaLinkTitle;
+
+  /// No description provided for @tuyaLinkBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Get the keys of all your devices at once, instead of typing them.'**
+  String get tuyaLinkBody;
+
+  /// No description provided for @tuyaLinkLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 key ready} other{{count} keys ready}}. Tap to link again.'**
+  String tuyaLinkLinked(int count);
+
+  /// No description provided for @tuyaLinkIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your devices up in the Smart Life or Tuya Smart app first. Then link the account here once: ZT Home reads the local key of every device, signs out again, and from then on talks to the devices over your Wi-Fi only.'**
+  String get tuyaLinkIntro;
+
+  /// No description provided for @tuyaLinkCloudNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the one moment ZT Home contacts Tuya\'s servers. It uses the sign-in Tuya made for Home Assistant, so Smart Life may show that name when you approve. Nothing from Tuya\'s account is kept except the keys of devices you add.'**
+  String get tuyaLinkCloudNote;
+
+  /// No description provided for @tuyaLinkUserCode.
+  ///
+  /// In en, this message translates to:
+  /// **'User code'**
+  String get tuyaLinkUserCode;
+
+  /// No description provided for @tuyaLinkUserCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'In Smart Life: Me, the gear icon, Account and Security, User Code.'**
+  String get tuyaLinkUserCodeHint;
+
+  /// No description provided for @tuyaLinkShowCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the code to scan'**
+  String get tuyaLinkShowCode;
+
+  /// No description provided for @tuyaLinkScan.
+  ///
+  /// In en, this message translates to:
+  /// **'In the Smart Life app, tap the scan icon on the home screen, scan this code and approve.'**
+  String get tuyaLinkScan;
+
+  /// No description provided for @tuyaLinkSamePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart Life on this same phone? Take a screenshot of this code, then choose it from the album inside Smart Life\'s scanner. Or show this screen to another phone that has Smart Life.'**
+  String get tuyaLinkSamePhone;
+
+  /// No description provided for @tuyaLinkWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you to approve in Smart Life…'**
+  String get tuyaLinkWaiting;
+
+  /// No description provided for @tuyaLinkDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Linked, but the account has no devices} =1{1 device key read} other{{count} device keys read}}'**
+  String tuyaLinkDone(int count);
+
+  /// No description provided for @tuyaLinkDoneUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 device key read} other{{count} device keys read}}, {updated, plural, =1{1 saved device got its new key} other{{updated} saved devices got their new key}}'**
+  String tuyaLinkDoneUpdated(int count, int updated);
+
+  /// No description provided for @tuyaLinkErrOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuya\'s servers can\'t be reached. Check the internet connection and try again.'**
+  String get tuyaLinkErrOffline;
+
+  /// No description provided for @tuyaLinkErrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuya doesn\'t know this user code. Copy it again from Smart Life.'**
+  String get tuyaLinkErrCode;
+
+  /// No description provided for @tuyaLinkErrExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'The code wasn\'t approved in time. Try again.'**
+  String get tuyaLinkErrExpired;
+
+  /// No description provided for @tuyaLinkErrRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuya refused the request. {detail}'**
+  String tuyaLinkErrRefused(String detail);
+
+  /// No description provided for @tuyaFoundLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'At {ip} · key ready'**
+  String tuyaFoundLinked(String ip);
+
+  /// No description provided for @tuyaLinkExperimental.
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental: Tuya may change or close this sign-in. Entering keys by hand keeps working.'**
+  String get tuyaLinkExperimental;
+
+  /// No description provided for @tuyaLinkTitleTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental'**
+  String get tuyaLinkTitleTag;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

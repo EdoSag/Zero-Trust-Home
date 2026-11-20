@@ -6,9 +6,11 @@ import '../adapters/tuya/tuya_adapter.dart';
 import '../adapters/tuya/tuya_codec.dart';
 import '../adapters/tuya/tuya_link.dart';
 import '../adapters/tuya/tuya_providers.dart';
+import '../adapters/tuya/tuya_share.dart';
 import '../data/home_store.dart';
 import '../l10n/l10n.dart';
 import 'common.dart';
+import 'tuya_link_page.dart';
 
 /// Adding a Tuya / Smart Life device: the ones heard on the Wi-Fi are
 /// listed; picking one (or entering an address by hand) opens
@@ -28,9 +30,14 @@ class TuyaAddPage extends ConsumerWidget {
         if (d.adapter == TuyaAdapter.adapterId) d.address['deviceId'],
     };
 
+    final keys = ref.watch(tuyaKeysProvider);
+
     void open(TuyaAnnouncement? device) {
       Navigator.of(context).push(
-        MaterialPageRoute<void>(builder: (_) => TuyaPairPage(found: device)),
+        MaterialPageRoute<void>(
+          builder: (_) =>
+              TuyaPairPage(found: device, linked: keys[device?.deviceId]),
+        ),
       );
     }
 
@@ -42,9 +49,22 @@ class TuyaAddPage extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Text(l.tuyaIntro),
           ),
+          ListTile(
+            leading: const Icon(Icons.link),
+            title: Text('${l.tuyaLinkTitle} · ${l.tuyaLinkTitleTag}'),
+            subtitle: Text(
+              keys.isEmpty ? l.tuyaLinkBody : l.tuyaLinkLinked(keys.length),
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const TuyaLinkPage()),
+            ),
+          ),
+          const Divider(),
           for (final device in found)
             _FoundRow(
               device: device,
+              linked: keys[device.deviceId],
               added: added.contains(device.deviceId),
               onTap: () => open(device),
             ),
@@ -77,8 +97,12 @@ class _FoundRow extends StatelessWidget {
     required this.device,
     required this.added,
     required this.onTap,
+    this.linked,
   });
   final TuyaAnnouncement device;
+
+  /// What "Link Smart Life" knows about this device: its name and key.
+  final TuyaSharedDevice? linked;
   final bool added;
   final VoidCallback onTap;
 
@@ -93,13 +117,16 @@ class _FoundRow extends StatelessWidget {
       details = l.tuyaAlreadyAdded;
     } else if (!supported) {
       details = l.tuyaTooOld(device.versionText);
+    } else if (linked != null) {
+      details = l.tuyaFoundLinked(device.ip);
     } else {
       details = l.tuyaFoundDetails(tail, device.versionText);
     }
+    final name = linked?.name ?? '';
     return ListTile(
       enabled: supported && !added,
       leading: const Icon(Icons.power_outlined),
-      title: Text(l.tuyaFound(device.ip)),
+      title: Text(name.isEmpty ? l.tuyaFound(device.ip) : name),
       subtitle: Text(details),
       trailing: supported && !added ? const Icon(Icons.chevron_right) : null,
       onTap: onTap,
@@ -110,10 +137,13 @@ class _FoundRow extends StatelessWidget {
 /// Name, room and local key of one device, then "Connect": the device is
 /// reached with the key, asked what it can do, and saved.
 class TuyaPairPage extends ConsumerStatefulWidget {
-  const TuyaPairPage({super.key, this.found});
+  const TuyaPairPage({super.key, this.found, this.linked});
 
   /// The device picked from the list. Null to enter everything by hand.
   final TuyaAnnouncement? found;
+
+  /// The device's name and key from "Link Smart Life", when it gave them.
+  final TuyaSharedDevice? linked;
 
   @override
   ConsumerState<TuyaPairPage> createState() => _TuyaPairPageState();
@@ -140,6 +170,14 @@ class _TuyaPairPageState extends ConsumerState<TuyaPairPage> {
       _ip.text = found.ip;
       _deviceId.text = found.deviceId;
       _version = found.version ?? _version;
+    }
+    final linked = widget.linked;
+    if (linked != null) {
+      _key.text = linked.localKey;
+      if (linked.name.isNotEmpty) {
+        _name.text = linked.name;
+        _named = true;
+      }
     }
   }
 
