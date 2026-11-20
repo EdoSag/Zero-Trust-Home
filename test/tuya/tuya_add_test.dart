@@ -273,7 +273,16 @@ void main() {
     expect(find.textContaining("Tuya doesn't know this user code"), findsOne);
     expect(find.byKey(const Key('tuya-link-qr')), findsNothing);
     // The message pushes the button down on a small phone: still reachable.
-    await tester.scrollUntilVisible(find.text('Show the code to scan'), 100);
+    await tester.scrollUntilVisible(
+      find.text('Show the code to scan'),
+      100,
+      scrollable: find
+          .descendant(
+            of: find.byType(TuyaLinkPage),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
     final button = tester.widget<FilledButton>(
       find.widgetWithText(FilledButton, 'Show the code to scan'),
     );
