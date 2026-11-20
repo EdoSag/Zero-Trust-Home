@@ -305,7 +305,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get tuyaKeyHelpBody =>
-      'Each device has a secret local key, given to it when it is set up in the Smart Life app. ZT Home needs it once, to talk to the device directly. Tuya only shows it on its developer site:\n\n1. Sign up for free at iot.tuya.com and create a cloud project.\n2. In the project, open Devices, choose Link App Account and scan the code with the Smart Life app.\n3. In API Explorer, run \"Query Device Details\" with the Device ID below, and copy \"local_key\" from the answer.\n\nThe key is saved encrypted in your ZT account. It never leaves your devices unencrypted.';
+      'Each device has a secret local key, given to it when it is set up in the Smart Life app. ZT Home needs it once, to talk to the device directly.\n\nThe easy way: go back and use \"Link Smart Life\", which reads the keys of all your devices.\n\nBy hand, on Tuya\'s developer site:\n\n1. Sign up for free at iot.tuya.com and create a cloud project.\n2. In the project, open Devices, choose Link App Account and scan the code with the Smart Life app.\n3. In API Explorer, run \"Query Device Details\" with the Device ID below, and copy \"local_key\" from the answer.\n\nThe key is saved encrypted in your ZT account. It never leaves your devices unencrypted.';
 
   @override
   String get close => 'Close';
@@ -794,5 +794,103 @@ class AppL10nEn extends AppL10n {
   @override
   String hueErrFailed(String detail) {
     return 'The bridge refused: $detail';
+  }
+
+  @override
+  String get tuyaLinkTitle => 'Link Smart Life';
+
+  @override
+  String get tuyaLinkBody =>
+      'Get the keys of all your devices at once, instead of typing them.';
+
+  @override
+  String tuyaLinkLinked(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count keys ready',
+      one: '1 key ready',
+    );
+    return '$_temp0. Tap to link again.';
+  }
+
+  @override
+  String get tuyaLinkIntro =>
+      'Set your devices up in the Smart Life or Tuya Smart app first. Then link the account here once: ZT Home reads the local key of every device, signs out again, and from then on talks to the devices over your Wi-Fi only.';
+
+  @override
+  String get tuyaLinkCloudNote =>
+      'This is the one moment ZT Home contacts Tuya\'s servers. It uses the sign-in Tuya made for Home Assistant, so Smart Life may show that name when you approve. Nothing from Tuya\'s account is kept except the keys of devices you add.';
+
+  @override
+  String get tuyaLinkUserCode => 'User code';
+
+  @override
+  String get tuyaLinkUserCodeHint =>
+      'In Smart Life: Me, the gear icon, Account and Security, User Code.';
+
+  @override
+  String get tuyaLinkShowCode => 'Show the code to scan';
+
+  @override
+  String get tuyaLinkScan =>
+      'In the Smart Life app, tap the scan icon on the home screen, scan this code and approve.';
+
+  @override
+  String get tuyaLinkSamePhone =>
+      'Smart Life on this same phone? Take a screenshot of this code, then choose it from the album inside Smart Life\'s scanner. Or show this screen to another phone that has Smart Life.';
+
+  @override
+  String get tuyaLinkWaiting => 'Waiting for you to approve in Smart Life…';
+
+  @override
+  String tuyaLinkDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count device keys read',
+      one: '1 device key read',
+      zero: 'Linked, but the account has no devices',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tuyaLinkDoneUpdated(int count, int updated) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count device keys read',
+      one: '1 device key read',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      updated,
+      locale: localeName,
+      other: '$updated saved devices got their new key',
+      one: '1 saved device got its new key',
+    );
+    return '$_temp0, $_temp1';
+  }
+
+  @override
+  String get tuyaLinkErrOffline =>
+      'Tuya\'s servers can\'t be reached. Check the internet connection and try again.';
+
+  @override
+  String get tuyaLinkErrCode =>
+      'Tuya doesn\'t know this user code. Copy it again from Smart Life.';
+
+  @override
+  String get tuyaLinkErrExpired =>
+      'The code wasn\'t approved in time. Try again.';
+
+  @override
+  String tuyaLinkErrRefused(String detail) {
+    return 'Tuya refused the request. $detail';
+  }
+
+  @override
+  String tuyaFoundLinked(String ip) {
+    return 'At $ip · key ready';
   }
 }

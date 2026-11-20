@@ -27,6 +27,9 @@ Phase H0 (the foundation) and the first part of H1 (real devices) are in:
   local key, switched, and show their state and power draw live. The app
   talks to them directly (protocol 3.3, 3.4 and 3.5); Tuya's servers are not
   involved. The local key is stored in the encrypted device item.
+  "Link Smart Life" reads those keys for you: a one-time sign-in to Tuya's
+  cloud (user code plus a QR code approved in Smart Life), after which the
+  app signs out again. It is the sign-in Tuya made for Home Assistant.
 - **Matter devices:** a new device is found over Bluetooth from its QR
   code (scanned with the camera, ZXing, no Google code) and given the
   home's Wi-Fi; one already set up in another app joins from the code that

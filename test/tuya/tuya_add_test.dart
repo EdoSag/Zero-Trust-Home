@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
 import 'package:zerotrust_home/adapters/tuya/tuya_adapter.dart';
 import 'package:zerotrust_home/adapters/tuya/tuya_codec.dart';
 import 'package:zerotrust_home/adapters/tuya/tuya_link.dart';
 import 'package:zerotrust_home/adapters/tuya/tuya_providers.dart';
+import 'package:zerotrust_home/data/home_store.dart';
 import 'package:zerotrust_home/model/device.dart';
 import 'package:zerotrust_home/ui/add_device_page.dart';
 import 'package:zerotrust_home/ui/home_page.dart';
 import 'package:zerotrust_home/ui/tuya_add_page.dart';
 
+import 'package:zerotrust_home/adapters/tuya/tuya_share.dart';
+import 'package:zerotrust_home/ui/tuya_link_page.dart';
+
 import '../support/app.dart';
+import '../support/fake_tuya_cloud.dart';
 
 /// Pairs without a network: answers the way a plug with power metering
 /// would, or fails with [failure].
@@ -65,6 +71,7 @@ const old = TuyaAnnouncement(
 );
 
 late FakePairing pairing;
+late FakeTuyaCloud cloud;
 
 Widget tuyaApp(
   Widget home, {
@@ -73,6 +80,7 @@ Widget tuyaApp(
   Locale locale = ZtLanguages.english,
 }) {
   pairing = FakePairing();
+  cloud = FakeTuyaCloud();
   return app(
     home,
     homes: const [flat],
@@ -82,6 +90,7 @@ Widget tuyaApp(
     locale: locale,
     overrides: [
       tuyaAdapterProvider.overrideWithValue(pairing),
+      tuyaShareProvider.overrideWithValue(TuyaShare(send: cloud.send)),
       tuyaFoundProvider.overrideWith(
         (ref) => Stream.value({for (final f in found) f.deviceId: f}),
       ),
@@ -106,7 +115,143 @@ ListTile rowOf(WidgetTester tester, String title) => tester.widget<ListTile>(
   find.ancestor(of: find.text(title), matching: find.byType(ListTile)),
 );
 
+/// Opens "Link Smart Life" from the list of found devices, enters the user
+/// code and asks for the QR code.
+Future<void> startLink(WidgetTester tester, {String code = 'Ab12Cd'}) async {
+  await tester.tap(find.text('Link Smart Life'));
+  await settle(tester);
+  expect(find.byType(TuyaLinkPage), findsOneWidget);
+  await tester.enterText(find.byType(TextFormField), code);
+  await tester.tap(find.text('Show the code to scan'));
+  await settle(tester);
+}
+
 void main() {
+  testWidgets('linking Smart Life fills in names and keys', (tester) async {
+    phone(tester);
+    await tester.pumpWidget(tuyaApp(const TuyaAddPage()));
+    await settle(tester);
+    // The link is offered above the found devices, on screen without
+    // scrolling.
+    final link = tester.getRect(find.text('Link Smart Life'));
+    final first = tester.getRect(find.text('Device at 192.168.1.50'));
+    expect(link.bottom, lessThan(first.top));
+    expect(link.bottom, lessThan(720));
+
+    await startLink(tester);
+    // The code is shown whole, dark on white, and the page waits.
+    final qr = tester.getRect(find.byKey(const Key('tuya-link-qr')));
+    expect(qr.width, greaterThanOrEqualTo(240));
+    expect(qr.left, greaterThanOrEqualTo(0));
+    expect(qr.right, lessThanOrEqualTo(360));
+    expect(qr.bottom, lessThan(720));
+    expect(find.textContaining('Waiting for you to approve'), findsOneWidget);
+    expect(find.byType(TuyaLinkPage), findsOneWidget);
+
+    cloud.approved = true;
+    await tester.pump(const Duration(seconds: 2));
+    await settle(tester);
+
+    // Signed out again, and back on the list, which now knows the plug.
+    expect(cloud.signedOut, hasLength(1));
+    expect(cloud.badRequests, isEmpty);
+    expect(find.byType(TuyaLinkPage), findsNothing);
+    expect(find.text('2 device keys read'), findsOneWidget);
+    expect(find.text('2 keys ready. Tap to link again.'), findsOneWidget);
+    expect(rowOf(tester, 'Kettle').enabled, isTrue);
+    expect(find.text('At 192.168.1.50 · key ready'), findsOneWidget);
+
+    await tester.tap(find.text('Kettle'));
+    await settle(tester);
+    expect(find.byType(TuyaPairPage), findsOneWidget);
+    expect(find.widgetWithText(TextFormField, 'Kettle'), findsOneWidget);
+    await tester.tap(find.text('Connect'));
+    await settle(tester);
+    expect(pairing.asked.single.key, 'abcdefghijklmnop');
+    expect(pairing.asked.single.deviceId, kettle.deviceId);
+  });
+
+  testWidgets('linking gives a saved device its new key', (tester) async {
+    phone(tester);
+    await tester.pumpWidget(
+      tuyaApp(
+        const TuyaAddPage(),
+        devices: [
+          HomeDevice(
+            id: 'd9',
+            homeId: 'h1',
+            name: 'My kettle',
+            adapter: 'tuya',
+            address: {
+              'deviceId': kettle.deviceId,
+              'localKey': 'old-key-old-key-',
+              'ip': '192.168.1.50',
+              'version': '3.4',
+            },
+          ),
+        ],
+      ),
+    );
+    await settle(tester);
+    cloud.approved = true;
+    await startLink(tester);
+    await settle(tester);
+
+    expect(
+      find.text('2 device keys read, 1 saved device got its new key'),
+      findsOneWidget,
+    );
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(TuyaAddPage)),
+    );
+    final saved = container.read(devicesProvider).value!.single;
+    expect(saved.address['localKey'], 'abcdefghijklmnop');
+    expect(saved.name, 'My kettle');
+    expect(saved.address['ip'], '192.168.1.50');
+  });
+
+  testWidgets('a wrong user code is explained and can be retried', (
+    tester,
+  ) async {
+    phone(tester);
+    await tester.pumpWidget(tuyaApp(const TuyaAddPage()));
+    await settle(tester);
+    await startLink(tester, code: 'wrong');
+    expect(find.textContaining("Tuya doesn't know this user code"), findsOne);
+    expect(find.byKey(const Key('tuya-link-qr')), findsNothing);
+    final button = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Show the code to scan'),
+    );
+    expect(button.onPressed, isNotNull);
+  });
+
+  testWidgets('leaving the page stops asking Tuya', (tester) async {
+    phone(tester);
+    await tester.pumpWidget(tuyaApp(const TuyaAddPage()));
+    await settle(tester);
+    await startLink(tester);
+    await tester.pageBack();
+    await settle(tester);
+    await tester.pump(const Duration(seconds: 2));
+    final asked = cloud.asked;
+    await tester.pump(const Duration(seconds: 10));
+    expect(cloud.asked, asked);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('the link page reads right to left in Hebrew', (tester) async {
+    phone(tester);
+    await tester.pumpWidget(
+      tuyaApp(const TuyaAddPage(), locale: ZtLanguages.hebrew),
+    );
+    await settle(tester);
+    await tester.tap(find.text('קישור Smart Life'));
+    await settle(tester);
+    expect(find.text('קוד משתמש'), findsOneWidget);
+    expect(find.text('הצגת הקוד לסריקה'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('Tuya is a way to add a device, and lists what it found', (
     tester,
   ) async {

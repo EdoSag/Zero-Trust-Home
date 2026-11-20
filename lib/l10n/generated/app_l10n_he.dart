@@ -306,7 +306,7 @@ class AppL10nHe extends AppL10n {
 
   @override
   String get tuyaKeyHelpBody =>
-      'לכל מכשיר יש מפתח מקומי סודי, שהוא מקבל כשמגדירים אותו באפליקציית Smart Life. ‏ZT Home צריך אותו פעם אחת, כדי לדבר עם המכשיר ישירות. Tuya מציגה אותו רק באתר המפתחים שלה:\n\n1. נרשמים בחינם באתר iot.tuya.com ויוצרים פרויקט ענן (Cloud project).\n2. בפרויקט פותחים את Devices, בוחרים Link App Account וסורקים את הקוד עם אפליקציית Smart Life.\n3. ב-API Explorer מריצים את \"Query Device Details\" עם מזהה המכשיר שמופיע למטה, ומעתיקים את \"local_key\" מהתשובה.\n\nהמפתח נשמר מוצפן בחשבון ה-ZT שלך. הוא אף פעם לא יוצא מהמכשירים שלך בלי הצפנה.';
+      'לכל מכשיר יש מפתח מקומי סודי, שהוא מקבל כשמגדירים אותו באפליקציית Smart Life. ‏ZT Home צריך אותו פעם אחת, כדי לדבר עם המכשיר ישירות. Tuya מציגה אותו רק באתר המפתחים שלה:\n\nהדרך הקלה: חזרו אחורה והשתמשו ב\"קישור Smart Life\", שקורא את המפתחות של כל המכשירים. ידנית, באתר המפתחים של Tuya:\n\n1. נרשמים בחינם באתר iot.tuya.com ויוצרים פרויקט ענן (Cloud project).\n2. בפרויקט פותחים את Devices, בוחרים Link App Account וסורקים את הקוד עם אפליקציית Smart Life.\n3. ב-API Explorer מריצים את \"Query Device Details\" עם מזהה המכשיר שמופיע למטה, ומעתיקים את \"local_key\" מהתשובה.\n\nהמפתח נשמר מוצפן בחשבון ה-ZT שלך. הוא אף פעם לא יוצא מהמכשירים שלך בלי הצפנה.';
 
   @override
   String get close => 'סגירה';
@@ -793,5 +793,102 @@ class AppL10nHe extends AppL10n {
   @override
   String hueErrFailed(String detail) {
     return 'ה-Bridge סירב: $detail';
+  }
+
+  @override
+  String get tuyaLinkTitle => 'קישור Smart Life';
+
+  @override
+  String get tuyaLinkBody =>
+      'קבלת המפתחות של כל המכשירים בבת אחת, בלי להקליד אותם.';
+
+  @override
+  String tuyaLinkLinked(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count מפתחות מוכנים',
+      one: 'מפתח אחד מוכן',
+    );
+    return '$_temp0. הקישו כדי לקשר שוב.';
+  }
+
+  @override
+  String get tuyaLinkIntro =>
+      'קודם מגדירים את המכשירים באפליקציית Smart Life או Tuya Smart. אחר כך מקשרים כאן את החשבון פעם אחת: ZT Home קורא את המפתח המקומי של כל מכשיר, מתנתק, ומאז מדבר עם המכשירים רק דרך ה-Wi-Fi שלכם.';
+
+  @override
+  String get tuyaLinkCloudNote =>
+      'זה הרגע היחיד שבו ZT Home פונה לשרתים של Tuya. נעשה שימוש בכניסה ש-Tuya יצרה עבור Home Assistant, ולכן ייתכן ש-Smart Life תציג את השם הזה בזמן האישור. דבר מחשבון Tuya לא נשמר מלבד המפתחות של המכשירים שתוסיפו.';
+
+  @override
+  String get tuyaLinkUserCode => 'קוד משתמש';
+
+  @override
+  String get tuyaLinkUserCodeHint =>
+      'ב-Smart Life: אני, סמל גלגל השיניים, חשבון ואבטחה, קוד משתמש.';
+
+  @override
+  String get tuyaLinkShowCode => 'הצגת הקוד לסריקה';
+
+  @override
+  String get tuyaLinkScan =>
+      'באפליקציית Smart Life הקישו על סמל הסריקה במסך הבית, סרקו את הקוד הזה ואשרו.';
+
+  @override
+  String get tuyaLinkSamePhone =>
+      'Smart Life נמצאת באותו טלפון? צלמו את המסך, ואז בחרו את התמונה מהאלבום בתוך הסורק של Smart Life. אפשר גם להראות את המסך הזה לטלפון אחר שיש בו Smart Life.';
+
+  @override
+  String get tuyaLinkWaiting => 'ממתין לאישור שלכם ב-Smart Life…';
+
+  @override
+  String tuyaLinkDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'נקראו מפתחות של $count מכשירים',
+      one: 'נקרא מפתח של מכשיר אחד',
+      zero: 'החשבון קושר, אבל אין בו מכשירים',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tuyaLinkDoneUpdated(int count, int updated) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'נקראו מפתחות של $count מכשירים',
+      one: 'נקרא מפתח של מכשיר אחד',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      updated,
+      locale: localeName,
+      other: '$updated מכשירים שמורים קיבלו את המפתח החדש שלהם',
+      one: 'מכשיר שמור אחד קיבל את המפתח החדש שלו',
+    );
+    return '$_temp0, $_temp1';
+  }
+
+  @override
+  String get tuyaLinkErrOffline =>
+      'אין גישה לשרתים של Tuya. בדקו את החיבור לאינטרנט ונסו שוב.';
+
+  @override
+  String get tuyaLinkErrCode =>
+      'Tuya לא מכירה את קוד המשתמש הזה. העתיקו אותו שוב מ-Smart Life.';
+
+  @override
+  String get tuyaLinkErrExpired => 'הקוד לא אושר בזמן. נסו שוב.';
+
+  @override
+  String tuyaLinkErrRefused(String detail) {
+    return 'Tuya דחתה את הבקשה. $detail';
+  }
+
+  @override
+  String tuyaFoundLinked(String ip) {
+    return 'בכתובת $ip · המפתח מוכן';
   }
 }
