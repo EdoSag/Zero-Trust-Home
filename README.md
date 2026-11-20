@@ -64,6 +64,10 @@ Phase H0 (the foundation) and the first part of H1 (real devices) are in:
   scenes, then the other devices), built on the suite's widget kit
   (`HomeWidget.kt`). Same rule as the panel: a tile opens ZT Home with the
   tap. With the switch off it shows no names, only how to turn it on.
+- **Matter bridges:** adding a bridge by its Matter code (a Hue Bridge,
+  IKEA DIRIGERA, Aqara or SwitchBot hub) brings the lights and plugs
+  behind it, each with the name it has on the bridge, and shows one the
+  bridge has lost as not reachable while the others keep working.
 - **Philips Hue (`lib/adapters/hue`):** lights and smart plugs on a Hue
   Bridge through its local API (CLIP v2) on the home network, with no Hue
   account. Paired once per home with the bridge's button; the key is saved

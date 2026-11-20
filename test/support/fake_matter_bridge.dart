@@ -8,9 +8,15 @@ import 'package:zerotrust_home/adapters/matter/matter_tlv.dart';
 
 /// One part of a fake device: its device type and whether it dims.
 class FakePart {
-  FakePart({this.deviceType = 0x010A, this.dims = false});
+  FakePart({this.deviceType = 0x010A, this.dims = false, this.bridgedName});
   final int deviceType;
   final bool dims;
+
+  /// Set for a device behind a bridge: the name it has there.
+  final String? bridgedName;
+
+  /// Whether the bridge reaches it.
+  bool bridgedReachable = true;
   bool on = false;
   int level = 254;
 }
@@ -138,7 +144,24 @@ class FakeMatterBridge implements MatterBridge {
                 MatterIds.descriptor,
                 MatterIds.onOff,
                 if (part.dims) MatterIds.levelControl,
+                if (part.bridgedName != null) MatterIds.bridgedInformation,
               ]),
+            (MatterIds.bridgedInformation, MatterIds.bridgedName)
+                when part.bridgedName != null =>
+              MatterAttribute(
+                endpoint,
+                path.cluster,
+                path.attribute,
+                part.bridgedName,
+              ),
+            (MatterIds.bridgedInformation, MatterIds.bridgedReachable)
+                when part.bridgedName != null =>
+              MatterAttribute(
+                endpoint,
+                path.cluster,
+                path.attribute,
+                part.bridgedReachable,
+              ),
             (MatterIds.onOff, 0) => MatterAttribute(
               endpoint,
               path.cluster,
@@ -170,6 +193,7 @@ class FakeMatterBridge implements MatterBridge {
   static const _all = [
     MatterPath(null, MatterIds.onOff, 0),
     MatterPath(null, MatterIds.levelControl, 0),
+    MatterPath(null, MatterIds.bridgedInformation, MatterIds.bridgedReachable),
   ];
 
   @override
