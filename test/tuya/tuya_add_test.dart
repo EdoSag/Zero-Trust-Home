@@ -138,9 +138,10 @@ ListTile rowOf(WidgetTester tester, String title) => tester.widget<ListTile>(
 /// Opens "Link Smart Life" from the list of found devices, enters the user
 /// code and asks for the QR code.
 Future<void> startLink(WidgetTester tester, {String code = 'Ab12Cd'}) async {
-  await tester.tap(find.text('Link Smart Life'));
+  await tester.tap(find.text('Link Smart Life · Experimental'));
   await settle(tester);
   expect(find.byType(TuyaLinkPage), findsOneWidget);
+  expect(find.textContaining('Experimental: Tuya may'), findsOneWidget);
   await tester.enterText(find.byType(TextFormField), code);
   await tester.tap(find.text('Show the code to scan'));
   await settle(tester);
@@ -153,7 +154,7 @@ void main() {
     await settle(tester);
     // The link is offered above the found devices, on screen without
     // scrolling.
-    final link = tester.getRect(find.text('Link Smart Life'));
+    final link = tester.getRect(find.text('Link Smart Life · Experimental'));
     final first = tester.getRect(find.text('Device at 192.168.1.50'));
     expect(link.bottom, lessThan(first.top));
     expect(link.bottom, lessThan(720));
@@ -297,7 +298,7 @@ void main() {
       tuyaApp(const TuyaAddPage(), locale: ZtLanguages.hebrew),
     );
     await settle(tester);
-    await tester.tap(find.text('קישור Smart Life'));
+    await tester.tap(find.text('קישור Smart Life · ניסיוני'));
     await settle(tester);
     expect(find.text('קוד משתמש'), findsOneWidget);
     expect(find.text('הצגת הקוד לסריקה'), findsOneWidget);

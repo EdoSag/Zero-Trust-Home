@@ -234,5 +234,7 @@
   "tuyaLinkErrCode": "Tuya לא מכירה את קוד המשתמש הזה. העתיקו אותו שוב מ-Smart Life.",
   "tuyaLinkErrExpired": "הקוד לא אושר בזמן. נסו שוב.",
   "tuyaLinkErrRefused": "Tuya דחתה את הבקשה. {detail}",
-  "tuyaFoundLinked": "בכתובת {ip} · המפתח מוכן"
+  "tuyaFoundLinked": "בכתובת {ip} · המפתח מוכן",
+  "tuyaLinkExperimental": "ניסיוני: Tuya עשויה לשנות או לסגור את הכניסה הזאת. הזנת מפתחות ידנית תמשיך לעבוד.",
+  "tuyaLinkTitleTag": "ניסיוני"
 }

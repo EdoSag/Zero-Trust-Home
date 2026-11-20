@@ -893,4 +893,11 @@ class AppL10nEn extends AppL10n {
   String tuyaFoundLinked(String ip) {
     return 'At $ip · key ready';
   }
+
+  @override
+  String get tuyaLinkExperimental =>
+      'Experimental: Tuya may change or close this sign-in. Entering keys by hand keeps working.';
+
+  @override
+  String get tuyaLinkTitleTag => 'Experimental';
 }

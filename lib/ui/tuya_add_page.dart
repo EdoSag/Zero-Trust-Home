@@ -51,7 +51,7 @@ class TuyaAddPage extends ConsumerWidget {
           ),
           ListTile(
             leading: const Icon(Icons.link),
-            title: Text(l.tuyaLinkTitle),
+            title: Text('${l.tuyaLinkTitle} · ${l.tuyaLinkTitleTag}'),
             subtitle: Text(
               keys.isEmpty ? l.tuyaLinkBody : l.tuyaLinkLinked(keys.length),
             ),

@@ -526,5 +526,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "tuyaLinkExperimental": "Experimental: Tuya may change or close this sign-in. Entering keys by hand keeps working.",
+  "tuyaLinkTitleTag": "Experimental"
 }

@@ -891,4 +891,11 @@ class AppL10nHe extends AppL10n {
   String tuyaFoundLinked(String ip) {
     return 'בכתובת $ip · המפתח מוכן';
   }
+
+  @override
+  String get tuyaLinkExperimental =>
+      'ניסיוני: Tuya עשויה לשנות או לסגור את הכניסה הזאת. הזנת מפתחות ידנית תמשיך לעבוד.';
+
+  @override
+  String get tuyaLinkTitleTag => 'ניסיוני';
 }

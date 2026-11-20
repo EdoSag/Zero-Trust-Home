@@ -106,6 +106,11 @@ class _TuyaLinkPageState extends ConsumerState<TuyaLinkPage> {
               Text(l.tuyaLinkIntro),
               const SizedBox(height: 12),
               Text(l.tuyaLinkCloudNote, style: text.bodySmall),
+              const SizedBox(height: 12),
+              Text(
+                l.tuyaLinkExperimental,
+                style: text.bodySmall?.copyWith(color: scheme.tertiary),
+              ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _code,

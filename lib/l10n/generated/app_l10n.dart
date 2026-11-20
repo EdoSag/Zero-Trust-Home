@@ -1506,6 +1506,18 @@ abstract class AppL10n {
   /// In en, this message translates to:
   /// **'At {ip} · key ready'**
   String tuyaFoundLinked(String ip);
+
+  /// No description provided for @tuyaLinkExperimental.
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental: Tuya may change or close this sign-in. Entering keys by hand keeps working.'**
+  String get tuyaLinkExperimental;
+
+  /// No description provided for @tuyaLinkTitleTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental'**
+  String get tuyaLinkTitleTag;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {
