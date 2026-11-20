@@ -50,6 +50,7 @@ class _TuyaLinkPageState extends ConsumerState<TuyaLinkPage> {
     final l = context.l10n;
     final share = ref.read(tuyaShareProvider);
     final keys = ref.read(tuyaKeysProvider.notifier);
+    final account = keys.account;
     final userCode = _code.text.trim();
     setState(() {
       _busy = true;
@@ -68,7 +69,7 @@ class _TuyaLinkPageState extends ConsumerState<TuyaLinkPage> {
         // Whatever happened, the cloud session ends here.
         await share.signOut(session);
       }
-      final updated = await keys.take(devices);
+      final updated = await keys.take(devices, account: account);
       if (!mounted) return;
       showSnack(
         context,

@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/auth_providers.dart';
 import '../../data/home_store.dart';
 import '../../model/device.dart';
 import 'tuya_adapter.dart';
@@ -49,12 +50,24 @@ final tuyaKeysProvider =
 
 class TuyaKeys extends Notifier<Map<String, TuyaSharedDevice>> {
   @override
-  Map<String, TuyaSharedDevice> build() => const {};
+  Map<String, TuyaSharedDevice> build() {
+    // Another account signing in starts with no keys.
+    ref.watch(currentUserProvider.select((user) => user?.id));
+    return const {};
+  }
+
+  /// The account the keys are read for: pass it to [take], so keys read
+  /// for an account that signed out meanwhile are dropped.
+  String? get account => ref.read(currentUserProvider)?.id;
 
   /// Takes the account's devices, and gives saved devices whose key
   /// changed (removed and set up again in Smart Life) the new one. Returns
   /// how many saved devices were updated.
-  Future<int> take(List<TuyaSharedDevice> devices) async {
+  Future<int> take(
+    List<TuyaSharedDevice> devices, {
+    required String? account,
+  }) async {
+    if (account != this.account) return 0;
     state = {for (final d in devices) d.deviceId: d};
     final repository = ref.read(homeRepositoryProvider);
     var updated = 0;

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show User;
 import 'package:zero_trust_core/zero_trust_core.dart';
+import 'package:zerotrust_home/app/auth_providers.dart';
 import 'package:zerotrust_home/adapters/tuya/tuya_adapter.dart';
 import 'package:zerotrust_home/adapters/tuya/tuya_codec.dart';
 import 'package:zerotrust_home/adapters/tuya/tuya_link.dart';
@@ -73,6 +75,23 @@ const old = TuyaAnnouncement(
 late FakePairing pairing;
 late FakeTuyaCloud cloud;
 
+User account(String id) => User(
+  id: id,
+  appMetadata: const {},
+  userMetadata: const {},
+  aud: '',
+  createdAt: '',
+);
+
+/// Who is signed in; tests change it to sign out or switch accounts.
+final signedIn = NotifierProvider<SignedIn, User?>(SignedIn.new);
+
+class SignedIn extends Notifier<User?> {
+  @override
+  User? build() => account('u1');
+  void set(User? user) => state = user;
+}
+
 Widget tuyaApp(
   Widget home, {
   List<TuyaAnnouncement> found = const [kettle, old],
@@ -89,6 +108,7 @@ Widget tuyaApp(
     adapters: [FakeAdapter(id: 'tuya')],
     locale: locale,
     overrides: [
+      currentUserProvider.overrideWith((ref) => ref.watch(signedIn)),
       tuyaAdapterProvider.overrideWithValue(pairing),
       tuyaShareProvider.overrideWithValue(TuyaShare(send: cloud.send)),
       tuyaFoundProvider.overrideWith(
@@ -208,6 +228,38 @@ void main() {
     expect(saved.address['localKey'], 'abcdefghijklmnop');
     expect(saved.name, 'My kettle');
     expect(saved.address['ip'], '192.168.1.50');
+  });
+
+  testWidgets('keys don\'t pass to the next account', (tester) async {
+    phone(tester);
+    await tester.pumpWidget(tuyaApp(const TuyaAddPage()));
+    await settle(tester);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(TuyaAddPage)),
+    );
+    cloud.approved = true;
+    await startLink(tester);
+    await settle(tester);
+    expect(rowOf(tester, 'Kettle').enabled, isTrue);
+
+    // Signing out forgets the keys, and so does another account signing in.
+    container.read(signedIn.notifier).set(null);
+    await settle(tester);
+    expect(container.read(tuyaKeysProvider), isEmpty);
+    container.read(signedIn.notifier).set(account('u2'));
+    await settle(tester);
+    expect(find.text('Kettle'), findsNothing);
+    expect(find.text('Device at 192.168.1.50'), findsOneWidget);
+
+    // Keys that arrive for an account that has left are dropped.
+    await container.read(tuyaKeysProvider.notifier).take(const [
+      TuyaSharedDevice(
+        deviceId: 'bf1234567890abcdefghij',
+        name: 'Kettle',
+        localKey: 'abcdefghijklmnop',
+      ),
+    ], account: 'u1');
+    expect(container.read(tuyaKeysProvider), isEmpty);
   });
 
   testWidgets('a wrong user code is explained and can be retried', (
