@@ -134,6 +134,7 @@ class QuickDevice(
     val capabilities: Set<String>,
     val home: String,
     val room: String?,
+    val favourite: Boolean,
 )
 
 class QuickScene(val id: String, val name: String, val home: String) {
@@ -175,6 +176,7 @@ class QuickCatalog(val devices: List<QuickDevice>, val scenes: List<QuickScene>)
                         capabilities = (0 until (caps?.length() ?: 0)).map { caps!!.optString(it) }.toSet(),
                         home = homes[d.optString("homeId")] ?: "",
                         room = if (d.isNull("roomId")) null else rooms[d.optString("roomId")],
+                        favourite = d.optBoolean("favourite"),
                     )
                 }.filter { it.id.isNotEmpty() },
                 (0 until (scenes?.length() ?: 0)).map { i ->

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_widget_tile"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/zt_widget_tile"
+    android:gravity="center_vertical"
+    android:minHeight="52dp"
+    android:orientation="vertical"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="8dp">
+
+    <TextView
+        android:id="@+id/home_widget_tile_name"
+        style="@style/ZtWidget.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/home_widget_tile_caption"
+        style="@style/ZtWidget.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

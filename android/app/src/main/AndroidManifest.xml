@@ -59,7 +59,20 @@
             </intent-filter>
         </activity>
 
-        <!-- Tiles in the controls panel open this. Not exported: only this
+        <!-- The home screen widget: devices and scenes by name. -->
+        <receiver
+            android:name=".HomeWidget"
+            android:exported="true"
+            android:label="ZT Home">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/home_widget_info"/>
+        </receiver>
+
+        <!-- Tiles in the controls panel and on the widget open this. Not exported: only this
              app's own tiles can hand ZT Home a tap. -->
         <activity
             android:name=".QuickTapActivity"

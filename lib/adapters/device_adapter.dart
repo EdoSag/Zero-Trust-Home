@@ -5,6 +5,8 @@ import '../model/device.dart';
 import '../model/scene.dart';
 import 'homeassistant/ha_adapter.dart';
 import 'homeassistant/ha_providers.dart';
+import 'hue/hue_adapter.dart';
+import 'hue/hue_providers.dart';
 import 'matter/matter_adapter.dart';
 import 'matter/matter_providers.dart';
 import 'tuya/tuya_adapter.dart';
@@ -49,6 +51,7 @@ final deviceAdaptersProvider = Provider<Map<String, DeviceAdapter>>(
   (ref) => {
     MatterAdapter.adapterId: ref.watch(matterAdapterProvider),
     HomeAssistantAdapter.adapterId: ref.watch(haAdapterProvider),
+    HueAdapter.adapterId: ref.watch(hueAdapterProvider),
     TuyaAdapter.adapterId: ref.watch(tuyaAdapterProvider),
   },
 );

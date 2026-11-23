@@ -1,7 +1,7 @@
 name: zerotrust_home
 description: "Zero-Trust Home: private, local-first smart home control. End-to-end encrypted."
 publish_to: none
-version: 0.7.2+14
+version: 0.11.0+20
 
 environment:
   sdk: ^3.9.0
@@ -26,7 +26,7 @@ dependencies:
     git:
       url: https://github.com/EdoSag/Zero-Trust-Core.git
       path: packages/zero_trust_core
-      ref: cd50d2ddfeb18abb25687b9f956478d7ced83aae
+      ref: v1.0.1
   flutter_riverpod: ^3.5.0
   supabase_flutter: ^2.9.0
   # Password-reset links that open the app (see lib/app/email_links.dart).
@@ -37,6 +37,9 @@ dependencies:
   uuid: ^4.5.1
   # AES and HMAC for the Tuya local protocol (lib/adapters/tuya). Pure Dart.
   pointycastle: ^4.0.0
+  # Draws the sign-in code of "Link Smart Life" (lib/ui/tuya_link_page.dart).
+  # Pure Dart.
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   # Release checks every Zero-Trust app runs in CI (keys, sync, sign-in, app
@@ -46,7 +49,7 @@ dev_dependencies:
     git:
       url: https://github.com/EdoSag/Zero-Trust-Core.git
       path: packages/zt_release_checks
-      ref: 277df7b098227f8aa49cf3c5e761c517069878e7
+      ref: v1.0.1
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0

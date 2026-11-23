@@ -183,7 +183,8 @@ class AppL10nEn extends AppL10n {
   String get connHue => 'Philips Hue';
 
   @override
-  String get connHueBody => 'Lights and sensors on a Hue Bridge.';
+  String get connHueBody =>
+      'Lights and plugs on a Hue Bridge, with no Hue account.';
 
   @override
   String get connTuya => 'Tuya / Smart Life';
@@ -304,7 +305,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get tuyaKeyHelpBody =>
-      'Each device has a secret local key, given to it when it is set up in the Smart Life app. ZT Home needs it once, to talk to the device directly. Tuya only shows it on its developer site:\n\n1. Sign up for free at iot.tuya.com and create a cloud project.\n2. In the project, open Devices, choose Link App Account and scan the code with the Smart Life app.\n3. In API Explorer, run \"Query Device Details\" with the Device ID below, and copy \"local_key\" from the answer.\n\nThe key is saved encrypted in your ZT account. It never leaves your devices unencrypted.';
+      'Each device has a secret local key, given to it when it is set up in the Smart Life app. ZT Home needs it once, to talk to the device directly.\n\nThe easy way: go back and use \"Link Smart Life\", which reads the keys of all your devices.\n\nBy hand, on Tuya\'s developer site:\n\n1. Sign up for free at iot.tuya.com and create a cloud project.\n2. In the project, open Devices, choose Link App Account and scan the code with the Smart Life app.\n3. In API Explorer, run \"Query Device Details\" with the Device ID below, and copy \"local_key\" from the answer.\n\nThe key is saved encrypted in your ZT account. It never leaves your devices unencrypted.';
 
   @override
   String get close => 'Close';
@@ -709,7 +710,7 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get quickControlsBody =>
-      'Off: the phone\'s controls panel only opens ZT Home. On: the names of your homes, rooms, devices and scenes are kept on this phone, sealed by Android, so the panel can list them. A tap there opens ZT Home and is carried out once you unlock. How to reach your devices never leaves the app.';
+      'Off: the phone\'s controls panel and the home screen widget only open ZT Home. On: the names of your homes, rooms, devices and scenes are kept on this phone, sealed by Android, so the panel and the widget can list them. A tap there opens ZT Home and is carried out once you unlock. How to reach your devices never leaves the app.';
 
   @override
   String quickTurnedOn(String name) {
@@ -740,4 +741,163 @@ class AppL10nEn extends AppL10n {
   String quickNoAnswer(String name) {
     return '$name didn\'t answer.';
   }
+
+  @override
+  String get hueIntro =>
+      'Connect your Hue Bridge once, and pick which of its lights to show here. The app talks to the bridge on your home network, with no Hue account. The key the bridge gives is encrypted with the rest of your home.';
+
+  @override
+  String get hueAddress => 'Bridge address';
+
+  @override
+  String get hueAddressHint =>
+      'In the Hue app: Settings, My Hue system, your bridge, then IP address. Your router\'s list of devices shows it too.';
+
+  @override
+  String get hueAddressBad => 'Enter an address like 192.168.1.20';
+
+  @override
+  String get huePressButton =>
+      'Press the round button on top of the bridge, then tap Connect within 30 seconds.';
+
+  @override
+  String get huePairAgain => 'Connect the bridge again';
+
+  @override
+  String hueConnectedTo(String host) {
+    return 'Connected to the bridge at $host. Pick the lights to show in this home.';
+  }
+
+  @override
+  String get hueNothing => 'This bridge has no lights or plugs yet.';
+
+  @override
+  String get hueErrUnreachable =>
+      'The bridge didn\'t answer at that address. Check that this phone is on your home Wi-Fi and the address is right.';
+
+  @override
+  String get hueErrButton =>
+      'Press the round button on top of the bridge, then tap Connect again.';
+
+  @override
+  String get hueErrKey =>
+      'The bridge no longer accepts this app. Connect it again with its button.';
+
+  @override
+  String get hueErrNotHue =>
+      'Something answered at that address, but it isn\'t a Hue Bridge.';
+
+  @override
+  String get hueErrChanged =>
+      'What answers at that address isn\'t the bridge you connected. If you replaced or reset your bridge, connect it again with its button.';
+
+  @override
+  String hueErrFailed(String detail) {
+    return 'The bridge refused: $detail';
+  }
+
+  @override
+  String get tuyaLinkTitle => 'Link Smart Life';
+
+  @override
+  String get tuyaLinkBody =>
+      'Get the keys of all your devices at once, instead of typing them.';
+
+  @override
+  String tuyaLinkLinked(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count keys ready',
+      one: '1 key ready',
+    );
+    return '$_temp0. Tap to link again.';
+  }
+
+  @override
+  String get tuyaLinkIntro =>
+      'Set your devices up in the Smart Life or Tuya Smart app first. Then link the account here once: ZT Home reads the local key of every device, signs out again, and from then on talks to the devices over your Wi-Fi only.';
+
+  @override
+  String get tuyaLinkCloudNote =>
+      'This is the one moment ZT Home contacts Tuya\'s servers. It uses the sign-in Tuya made for Home Assistant, so Smart Life may show that name when you approve. Nothing from Tuya\'s account is kept except the keys of devices you add.';
+
+  @override
+  String get tuyaLinkUserCode => 'User code';
+
+  @override
+  String get tuyaLinkUserCodeHint =>
+      'In Smart Life: Me, the gear icon, Account and Security, User Code.';
+
+  @override
+  String get tuyaLinkShowCode => 'Show the code to scan';
+
+  @override
+  String get tuyaLinkScan =>
+      'In the Smart Life app, tap the scan icon on the home screen, scan this code and approve.';
+
+  @override
+  String get tuyaLinkSamePhone =>
+      'Smart Life on this same phone? Take a screenshot of this code, then choose it from the album inside Smart Life\'s scanner. Or show this screen to another phone that has Smart Life.';
+
+  @override
+  String get tuyaLinkWaiting => 'Waiting for you to approve in Smart Life…';
+
+  @override
+  String tuyaLinkDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count device keys read',
+      one: '1 device key read',
+      zero: 'Linked, but the account has no devices',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String tuyaLinkDoneUpdated(int count, int updated) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count device keys read',
+      one: '1 device key read',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      updated,
+      locale: localeName,
+      other: '$updated saved devices got their new key',
+      one: '1 saved device got its new key',
+    );
+    return '$_temp0, $_temp1';
+  }
+
+  @override
+  String get tuyaLinkErrOffline =>
+      'Tuya\'s servers can\'t be reached. Check the internet connection and try again.';
+
+  @override
+  String get tuyaLinkErrCode =>
+      'Tuya doesn\'t know this user code. Copy it again from Smart Life.';
+
+  @override
+  String get tuyaLinkErrExpired =>
+      'The code wasn\'t approved in time. Try again.';
+
+  @override
+  String tuyaLinkErrRefused(String detail) {
+    return 'Tuya refused the request. $detail';
+  }
+
+  @override
+  String tuyaFoundLinked(String ip) {
+    return 'At $ip · key ready';
+  }
+
+  @override
+  String get tuyaLinkExperimental =>
+      'Experimental: Tuya may change or close this sign-in. Entering keys by hand keeps working.';
+
+  @override
+  String get tuyaLinkTitleTag => 'Experimental';
 }

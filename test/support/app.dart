@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:zero_trust_core/zero_trust_core.dart';
 import 'package:zerotrust_home/adapters/device_adapter.dart';
 import 'package:zerotrust_home/adapters/homeassistant/ha_server.dart';
+import 'package:zerotrust_home/adapters/hue/hue_bridge.dart';
 import 'package:zerotrust_home/app/home_config.dart';
 import 'package:zerotrust_home/adapters/matter/matter_fabric.dart';
 import 'package:zerotrust_home/data/home_store.dart';
@@ -135,6 +136,16 @@ class MemoryRepository extends HomeRepository {
   Future<void> saveHaServer(HaServer s) async => haServers[s.homeId] = s;
   @override
   Future<void> removeHaServer(String homeId) async => haServers.remove(homeId);
+
+  final hueBridges = <String, HueBridge>{};
+
+  @override
+  Future<HueBridge?> loadHueBridge(String homeId) async => hueBridges[homeId];
+  @override
+  Future<void> saveHueBridge(HueBridge b) async => hueBridges[b.homeId] = b;
+  @override
+  Future<void> removeHueBridge(String homeId) async =>
+      hueBridges.remove(homeId);
 
   @override
   Future<void> removeHome(String id) async {

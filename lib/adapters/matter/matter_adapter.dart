@@ -20,6 +20,13 @@ abstract final class MatterIds {
   static const descriptor = 0x001D;
   static const basicInformation = 0x0028;
 
+  /// On each device behind a bridge (a Hue Bridge, an IKEA hub): the name
+  /// it has there (attribute [bridgedName]) and whether the bridge reaches
+  /// it (attribute [bridgedReachable]).
+  static const bridgedInformation = 0x0039;
+  static const bridgedName = 0x0005;
+  static const bridgedReachable = 0x0011;
+
   // Device types that are lights (on/off, dimmable, colour temperature,
   // extended colour) and plugs (on/off, dimmable).
   static const lights = {0x0100, 0x0101, 0x010C, 0x010D};
@@ -56,10 +63,15 @@ class MatterPart {
     required this.endpoint,
     required this.type,
     required this.capabilities,
+    this.name,
   });
   final int endpoint;
   final DeviceType type;
   final Set<Capability> capabilities;
+
+  /// What a bridge calls this device ("Desk lamp"); null for a device
+  /// that joined by itself.
+  final String? name;
 }
 
 /// Reads a device's own description (its Descriptor clusters) into the
@@ -68,7 +80,15 @@ class MatterPart {
 List<MatterPart> matterParts(List<MatterAttribute> attributes) {
   final types = <int, Set<int>>{};
   final clusters = <int, Set<int>>{};
+  final names = <int, String>{};
   for (final a in attributes) {
+    final value = a.value;
+    if (a.cluster == MatterIds.bridgedInformation &&
+        a.attribute == MatterIds.bridgedName &&
+        value is String &&
+        value.trim().isNotEmpty) {
+      names[a.endpoint] = value.trim();
+    }
     if (a.cluster != MatterIds.descriptor || a.value is! List) continue;
     final list = a.value as List;
     if (a.attribute == 0) {
@@ -107,6 +127,7 @@ List<MatterPart> matterParts(List<MatterAttribute> attributes) {
           Capability.onOff,
           if (has.contains(MatterIds.levelControl)) Capability.brightness,
         },
+        name: names[endpoint],
       ),
     );
   }
@@ -305,7 +326,8 @@ class MatterAdapter implements DeviceAdapter {
           id: newId(),
           homeId: homeId,
           roomId: roomId,
-          name: parts.length == 1 ? name : '$name ${i + 1}',
+          // Behind a bridge, each device keeps the name it has there.
+          name: part.name ?? (parts.length == 1 ? name : '$name ${i + 1}'),
           type: part.type,
           adapter: adapterId,
           address: MatterAddress(
@@ -323,6 +345,7 @@ class MatterAdapter implements DeviceAdapter {
     const paths = [
       MatterPath(null, MatterIds.descriptor, 0),
       MatterPath(null, MatterIds.descriptor, 1),
+      MatterPath(null, MatterIds.bridgedInformation, MatterIds.bridgedName),
     ];
     try {
       return await bridge.read(nodeId, paths);
@@ -486,6 +509,14 @@ class _NodeSession {
 
   DeviceState _state(int endpoint) {
     if (!_reachable) return const DeviceState.unreachable();
+    // Behind a bridge: the bridge answers, but it has lost this device.
+    final bridged =
+        _values[(
+          endpoint,
+          MatterIds.bridgedInformation,
+          MatterIds.bridgedReachable,
+        )];
+    if (bridged == false) return const DeviceState.unreachable();
     final on = _values[(endpoint, MatterIds.onOff, 0)];
     final level = _values[(endpoint, MatterIds.levelControl, 0)];
     return DeviceState(
@@ -527,6 +558,11 @@ class _NodeSession {
           .subscribe(nodeId, const [
             MatterPath(null, MatterIds.onOff, 0),
             MatterPath(null, MatterIds.levelControl, 0),
+            MatterPath(
+              null,
+              MatterIds.bridgedInformation,
+              MatterIds.bridgedReachable,
+            ),
           ])
           .listen(
             _onEvent,

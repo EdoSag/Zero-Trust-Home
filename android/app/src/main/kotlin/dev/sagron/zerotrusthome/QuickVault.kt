@@ -16,7 +16,7 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
 /**
- * The names the controls panel shows (see `lib/quick/quick_snapshot.dart`;
+ * The names the controls panel and the home screen widget show (see `lib/quick/quick_snapshot.dart`;
  * never addresses or keys): one file, sealed with AES-GCM under a key that
  * lives in the Android Keystore and never leaves it. Only this app on this
  * phone can open it. It sits in the no-backup folder, so it is never backed
@@ -144,11 +144,13 @@ object QuickVault {
                 when (call.method) {
                     "save" -> {
                         save(app, call.argument<String>("text")!!)
+                        HomeWidget.refresh(app)
                         result.success(null)
                     }
                     "load" -> result.success(load(app))
                     "clear" -> {
                         clear(app)
+                        HomeWidget.refresh(app)
                         result.success(null)
                     }
                     "takeTap" -> result.success(takeTap(app))
