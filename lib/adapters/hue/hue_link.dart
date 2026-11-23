@@ -46,7 +46,7 @@ abstract class HueLink {
   Stream<Map<String, dynamic>> events();
 
   /// SHA-256 (hex) of the certificate the bridge showed, once it showed
-  /// one that no authority vouches for.
+  /// one.
   String? get seenCertificate;
 
   void close();
@@ -63,8 +63,10 @@ class HttpHueLink implements HueLink {
   HttpHueLink(this.host, {this.key, this.pin}) {
     _http
       ..connectionTimeout = const Duration(seconds: 6)
-      // Called only for a certificate the phone doesn't trust by itself,
-      // which is every bridge: they sign their own.
+      // The client trusts no authority, so this runs for every certificate,
+      // before anything (the key included) is sent: a server with a
+      // publicly trusted certificate for the bridge's name is held to the
+      // pin too, and pairing always sees the certificate to pin.
       ..badCertificateCallback = (certificate, _, _) {
         final seen = _hex(
           SHA256Digest().process(Uint8List.fromList(certificate.der)),
@@ -77,7 +79,7 @@ class HttpHueLink implements HueLink {
   final String host;
   final String? key;
   final String? pin;
-  final _http = HttpClient();
+  final _http = HttpClient(context: SecurityContext(withTrustedRoots: false));
 
   @override
   String? seenCertificate;
@@ -181,7 +183,11 @@ String? hueErrorText(Object? json) {
   return first is Map ? first['description'] as String? : null;
 }
 
+/// Set (to true) on a change that says the resource was deleted.
+const hueDeleted = 'zt_deleted';
+
 /// The resources changed in one `data:` line of the bridge's event stream.
+/// A deleted one comes with [hueDeleted] set.
 List<Map<String, dynamic>> hueEventChanges(String data) {
   final Object? json;
   try {
@@ -191,8 +197,13 @@ List<Map<String, dynamic>> hueEventChanges(String data) {
   }
   return [
     for (final event in json is List ? json : const <Object?>[])
-      if (event is Map && (event['type'] == 'update' || event['type'] == 'add'))
+      if (event is Map &&
+          const {'update', 'add', 'delete'}.contains(event['type']))
         for (final item in event['data'] as List? ?? const <Object?>[])
-          if (item is Map) Map<String, dynamic>.from(item),
+          if (item is Map)
+            {
+              ...Map<String, dynamic>.from(item),
+              if (event['type'] == 'delete') hueDeleted: true,
+            },
   ];
 }

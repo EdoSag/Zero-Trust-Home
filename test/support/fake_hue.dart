@@ -75,6 +75,14 @@ class FakeHue {
     }
   }
 
+  /// A light taken off the bridge (deleted in the Hue app).
+  void delete(String id) {
+    lights.remove(id);
+    for (final l in links) {
+      l._tell({'id': id, 'type': 'light', hueDeleted: true});
+    }
+  }
+
   /// A bulb switched off at the wall, or back.
   void reach(String id, {required bool connected}) {
     connected ? lost.remove('dev-$id') : lost.add('dev-$id');

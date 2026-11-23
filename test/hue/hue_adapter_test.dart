@@ -98,6 +98,7 @@ void main() {
           'type': 'light',
           'on': {'on': true},
         },
+        {'id': 'x', 'type': 'light', hueDeleted: true},
       ],
     );
     expect(hueEventChanges(' hi'), isEmpty);
@@ -219,6 +220,19 @@ void main() {
       hue.reach('desk', connected: true);
       await settle();
       expect(states.last.reachable, isTrue);
+      await sub.cancel();
+      await a.dispose();
+    });
+
+    test('a light deleted from the bridge is unreachable at once', () async {
+      final a = adapter();
+      final states = <DeviceState>[];
+      final sub = a.watch(device(a, 'desk')).listen(states.add);
+      await settle();
+      expect(states.last.reachable, isTrue);
+      hue.delete('desk');
+      await settle();
+      expect(states.last.reachable, isFalse);
       await sub.cancel();
       await a.dispose();
     });

@@ -312,6 +312,12 @@ class _HueSession {
     final id = change['id'];
     if (id is! String) return;
     switch (change['type']) {
+      // Taken off the bridge: unreachable from now on, not its last state.
+      case 'light' when change[hueDeleted] == true:
+        _lights.remove(id);
+        _emit(id);
+      case 'zigbee_connectivity' when change[hueDeleted] == true:
+        return;
       case 'light':
         _lights[id] = hueMerge(_lights[id], change);
         _emit(id);
