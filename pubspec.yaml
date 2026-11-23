@@ -1,7 +1,7 @@
 name: zerotrust_home
 description: "Zero-Trust Home: private, local-first smart home control. End-to-end encrypted."
 publish_to: none
-version: 0.10.1+19
+version: 0.11.0+20
 
 environment:
   sdk: ^3.9.0
@@ -26,11 +26,7 @@ dependencies:
     git:
       url: https://github.com/EdoSag/Zero-Trust-Core.git
       path: packages/zero_trust_core
-      # The core commit this app used before, plus the import-freeze fix of
-      # Core PR #89 and #90. It lives on the Core branch
-      # backport/import-freeze-fix-on-core-cd50d2d: keep that branch until
-      # this pin moves to a core that has the fix.
-      ref: bb408cc33ae6d113a1ee3da751ae2a4cef6166b2
+      ref: v1.0.1
   flutter_riverpod: ^3.5.0
   supabase_flutter: ^2.9.0
   # Password-reset links that open the app (see lib/app/email_links.dart).
@@ -53,7 +49,7 @@ dev_dependencies:
     git:
       url: https://github.com/EdoSag/Zero-Trust-Core.git
       path: packages/zt_release_checks
-      ref: 277df7b098227f8aa49cf3c5e761c517069878e7
+      ref: v1.0.1
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
