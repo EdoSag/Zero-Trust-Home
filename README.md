@@ -1,18 +1,15 @@
 # Zero-Trust Home
 
-Private, local-first smart home control (on the phone: **ZT Home**). Same
-account, settings and look as the other Zero-Trust apps, built on
-[Zero-Trust-Core](https://github.com/EdoSag/Zero-Trust-Core), and end-to-end
-encrypted like them.
+Private, local-first smart home control. Lights, plugs, locks, thermostats
+and sensors are controlled directly over the home network, with no company
+cloud in between, and homes, rooms and devices sync end-to-end encrypted to
+your other phones. On the phone it is called **ZT Home**; in stores and on
+release pages, **Zero-Trust Home**. Same account, settings and look as the
+other Zero-Trust apps, built on
+[Zero-Trust-Core](https://github.com/EdoSag/Zero-Trust-Core). Part of the
+[Zero-Trust suite](https://zerotrust.bz).
 
-The goal: add lights, plugs, locks, thermostats and sensors from any brand,
-control them directly over the home network with no company cloud in
-between, share the home with family, and reach it from outside through an
-encrypted relay to a hub in the home.
-
-## Where it stands
-
-Phase H0 (the foundation) and the first part of H1 (real devices) are in:
+## What it does
 
 - **Account, lock, settings and sync** from the shared core, in English and
   Hebrew.
@@ -82,9 +79,58 @@ Phase H0 (the foundation) and the first part of H1 (real devices) are in:
   `DeviceAdapter`. The ones not built yet are listed under "Add a device"
   as coming soon.
 
-Next: home screen widgets, then
-Thread devices and checking devices against the official list of Matter
-manufacturers.
+Not built yet: Thread devices, checking devices against the official list
+of Matter manufacturers, the Shelly and Switcher adapters, sharing a home
+with family, and reaching the home from outside through an encrypted relay
+to a hub in the home.
+
+## Privacy
+
+Like every Zero-Trust app, it is zero-knowledge: your data is encrypted on
+your device, with keys made from your password, before anything is sent.
+The server stores only ciphertext and your password itself is never
+sent, so neither we nor anyone who breaks into the server can read your
+data. The recovery key shown at sign-up is the only way back in if you
+forget the password. How the keys work:
+[Zero-Trust-Core](https://github.com/EdoSag/Zero-Trust-Core#key-hierarchy) and
+[zerotrust.bz/security](https://zerotrust.bz/security/).
+
+- Homes, rooms, devices, scenes, Matter keys, Tuya local keys, the Hue
+  bridge key and the Home Assistant token are encrypted items in the
+  account. A device's address is inside the encrypted item.
+- Devices are reached on the home network. The one exception is "Link
+  Smart Life", a one-time sign-in to Tuya's cloud to read local keys, after
+  which the app signs out again.
+- The Device Controls panel and the widget are off by default. When on,
+  only names and kinds are kept for them on the phone, sealed with a key in
+  the Android Keystore; a tap is carried out after the app is unlocked.
+- Scenes lock doors but never unlock them, and unlocking always asks first.
+
+## One account, one core
+
+One Zero-Trust account opens every app in the suite. Sign-in, unlock
+(fingerprint or face, auto-lock), the recovery key, settings, the look,
+sync and languages come from
+[Zero-Trust-Core](https://github.com/EdoSag/Zero-Trust-Core), so they work
+the same in every app. Accounts made before the core still sign in and
+see their data.
+
+## Install
+
+Android: get the latest signed APK from this repository's
+[Releases](https://github.com/EdoSag/Zero-Trust-Home/releases/latest),
+or from [zerotrust.bz/install](https://zerotrust.bz/install/#home),
+which also shows each file's SHA-256, the signing fingerprint and an
+Obtainium link. GitHub Releases are the main way the apps are published.
+
+Builds from GitHub check for a newer release themselves (Settings > About,
+one anonymous request a day, can be turned off). Every Zero-Trust app is signed
+with the same key, and Android only installs an update signed with it.
+
+## Languages
+
+English and Hebrew, with right-to-left layout. Choose under
+Settings > Appearance > Language.
 
 ## How it is built
 
@@ -113,10 +159,14 @@ manufacturers.
 - A device saved by a newer version (an adapter, type or capability this
   version doesn't know) still loads and is shown as needing a newer version.
 
-## Build
+## Build from source
+
+Flutter 3.47.9, the version CI pins (3.50 deprecates `material.dart` and
+fails analyze).
 
 ```bash
-# .env (not committed; CI writes its own)
+# .env (not committed; CI writes its own). Public client values only:
+# never a service-role key, because .env is bundled into the APK.
 SUPABASE_URL=https://<project>.supabase.co
 SUPABASE_ANON_KEY=<publishable key>
 
@@ -126,14 +176,57 @@ flutter analyze && flutter test test/
 flutter run
 ```
 
-Flutter 3.47.9 (3.50 deprecates `material.dart` and fails analyze).
+Never add `cryptography_flutter`: it breaks the core's key derivation and
+sign-in fails.
 
-Pushing to `main` builds a signed APK and a Play bundle and publishes them as
-a GitHub Release (`.github/workflows/android-apk.yml`). It needs the
-repository secrets `ANDROID_KEYSTORE_BASE64` and `ANDROID_KEYSTORE_PASSWORD`,
-the same keystore as the other Zero-Trust apps. Pull requests target `Dev`;
-releases are one `Dev` → `main` pull request.
+## Branches and releases
+
+Work happens on `Dev`: pull requests target `Dev`, never `main`, and get a
+test build. A release is one `Dev` → `main` pull request. Every push to
+`main` runs the suite's release checks, builds a signed APK and a Google Play bundle
+and publishes them as a GitHub Release named "Zero-Trust Home"
+(`.github/workflows/android-apk.yml`). The workflow needs the repository
+secrets `ANDROID_KEYSTORE_BASE64` and `ANDROID_KEYSTORE_PASSWORD`, the
+keystore shared by all Zero-Trust apps.
+
+## Support and security
+
+- Help centre: [zerotrust.bz/help](https://zerotrust.bz/help/). Questions and
+  account deletion: support@zerotrust.bz.
+- Security problems: please report them privately to cyber@zerotrust.bz. What
+  the encryption does and doesn't protect against is on
+  [zerotrust.bz/security](https://zerotrust.bz/security/).
+- [Privacy policy](https://zerotrust.bz/privacy/) and
+  [terms](https://zerotrust.bz/terms/).
 
 ## License
 
-AGPL-3.0. See [LICENSE](LICENSE).
+Copyright (C) 2026 Edo Sagron (https://zerotrust.bz)
+
+Zero-Trust is open source under the [GNU Affero General Public License v3.0](LICENSE)
+(AGPL-3.0-only), the same licence Signal uses.
+
+- You may use, study, change and share the code, including in your own projects.
+- If you share a changed version, or run it for other people over a network, you must
+  publish your full source code under the same licence.
+- This program comes with no warranty; see the licence for details.
+
+Third-party libraries keep their own licences; the app lists them under
+Settings > Open-source licences.
+
+### Name and logo
+
+The AGPL covers the code, not the brand. "Zero-Trust", "ZT", the app names and icons are
+reserved. If you publish a fork, give it a different name and icon so nobody mistakes it
+for an official Zero-Trust app.
+
+### Servers
+
+The official apps use the Zero-Trust servers. A fork must use its own backend (for
+example its own Supabase project) and must not connect to the official servers.
+
+### Contributing
+
+Pull requests are welcome. By sending one you agree that your contribution is licensed
+under the AGPL-3.0 and that the copyright holder may also license it under other terms,
+including commercially. This keeps the project able to offer paid plans and other licences.
